@@ -4,10 +4,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/navigation_habit"
+        android:enabled="true"
         android:icon="@drawable/ic_menu_habit"
         android:title="@string/navigation_habit"/>
     <item
         android:id="@+id/navigation_habitEvent"
+        android:enabled="true"
         android:icon="@drawable/ic_menu_habitevent"
         android:title="@string/navigation_habitEvent"/>
     <item
