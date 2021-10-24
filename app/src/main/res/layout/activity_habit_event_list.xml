@@ -9,7 +9,7 @@
 
     <com.google.android.material.bottomnavigation.BottomNavigationView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/bottom_navigation_habit_event"
+        android:id="@+id/bottom_navigation_event"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -22,6 +22,8 @@
         android:id="@+id/lv_habit_event"
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
-        android:layout_above="@id/bottom_navigation_habit_event" />
+        android:clickable="true"
+        android:enabled="true"
+        android:layout_above="@id/bottom_navigation_event" />
 
 </RelativeLayout>

@@ -10,6 +10,7 @@
         <entry key="app/src/main/res/drawable/ic_menu_habit.xml" value="0.2135" />
         <entry key="app/src/main/res/drawable/ic_menu_habitevent.xml" value="0.2135" />
         <entry key="app/src/main/res/drawable/ic_menu_homepage.xml" value="0.2135" />
+        <entry key="app/src/main/res/layout/activity_habit_event_edit.xml" value="0.35572916666666665" />
         <entry key="app/src/main/res/layout/activity_habit_event_list.xml" value="0.5625" />
         <entry key="app/src/main/res/layout/activity_habitevent_edit.xml" value="0.5765625" />
         <entry key="app/src/main/res/layout/activity_habitevent_map.xml" value="0.5765625" />
