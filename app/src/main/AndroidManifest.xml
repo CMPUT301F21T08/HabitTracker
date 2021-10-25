@@ -12,7 +12,6 @@
         android:theme="@style/Theme.HabitTracker">
 
 
-
         <activity
             android:name=".HabitEventEditActivity"
             android:exported="true"

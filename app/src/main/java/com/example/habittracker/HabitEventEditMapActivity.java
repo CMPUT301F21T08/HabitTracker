@@ -2,76 +2,82 @@ package com.example.habittracker;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+
+
 import android.view.View;
-import android.widget.Button;
-
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlacePicker;
 
+import com.google.android.gms.common.api.Status;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
 
+import com.google.android.libraries.places.widget.Autocomplete;
+import com.google.android.libraries.places.widget.AutocompleteActivity;
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
+
+import java.util.Arrays;
+import java.util.List;
+
+// Reference: https://www.youtube.com/watch?v=t8nGh4gN1Q0
 public class HabitEventEditMapActivity extends AppCompatActivity {
-    Button choose_location_button;
+    EditText location_editText;
     TextView location_information;
-    int PLACE_PICKER_REQUEST = 1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-
-
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_habit_event_edit);
+        setContentView(R.layout.activity_main);
 
-        getSupportActionBar().setTitle("Habit Event - Edit");
-
-        Intent intent = getIntent();
-
-        choose_location_button = findViewById(R.id.habitEvent_chooseLocation_button);
+        location_editText = findViewById(R.id.habitEvent_enterLocation_editText);
         location_information = findViewById(R.id.habitEvent_locationInfo_textView);
-        final String TAG = HabitEventEditMapActivity.class.getSimpleName();
 
-        choose_location_button.setOnClickListener(new View.OnClickListener() {
+
+        // initialize place
+        Places.initialize(getApplicationContext(),"AIzaSyBNWUxVi9YbT9JV813uxfe64Y-5AxtO46E");
+
+        // set edit text non focusable
+        location_editText.setFocusable(false);
+        location_editText.setOnClickListener(new View.OnClickListener(){
             @Override
-            public void onClick(View view) {
+            public void onClick(View v){
+                // initialize place field list
+                List<Place.Field> fieldList = Arrays.asList(Place.Field.ADDRESS,Place.Field.LAT_LNG,Place.Field.NAME);
 
-                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
-                try {
-                    startActivityForResult(builder.build(HabitEventEditMapActivity.this)
-                            ,PLACE_PICKER_REQUEST);
-                } catch (GooglePlayServicesRepairableException e) {
-                    Log.e(TAG, "onCLick: GooglePlayServicesRepairableException: " +e.getMessage());
-                } catch (GooglePlayServicesNotAvailableException e) {
-                    Log.e(TAG, "onCLick: GooglePlayServicesNotAvailableException: " +e.getMessage());
-                }
+                // Create intent
+                Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY,fieldList).build(HabitEventEditMapActivity.this);
+
+                // stat=rt activity result
+                startActivityForResult(intent, 100);
             }
         });
     }
+
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PLACE_PICKER_REQUEST) {
-            if (resultCode == RESULT_OK) {
-                Place place = PlacePicker.getPlace(this, data);
-                StringBuilder stringBuilder = new StringBuilder();
+    protected void onActivityResult(int requestCode, int resultCode,@Nullable Intent data){
+        super.onActivityResult(requestCode,resultCode, data);
+        if (requestCode  == 100 && requestCode == RESULT_OK){
+            //when success
+            // initial place
+            Place place = Autocomplete.getPlaceFromIntent(data);
+            // set address on edit text
+            location_editText.setText(place.getAddress());
+            // set locally name
+            location_information.setText(String.format("Location is %s", place.getName()));
+        }else if (resultCode == AutocompleteActivity.RESULT_ERROR){
+            // when have error
+            // initialize status
+            Status status = Autocomplete.getStatusFromIntent(data);
 
-                String address = String.valueOf(place.getAddress());
-                String name = String.valueOf(place.getName());
-                stringBuilder.append("Name: ");
-                stringBuilder.append(name);
-                stringBuilder.append("Address: ");
-                stringBuilder.append(address);
-                stringBuilder.append("/n");
-
-                location_information.setText(stringBuilder.toString());
-            }
+            // display toast
+            Toast.makeText(getApplicationContext(),status.getStatusMessage(),Toast.LENGTH_SHORT).show();
         }
     }
+
 
 }
