@@ -1,5 +1,6 @@
 package com.example.habittracker;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -19,10 +20,15 @@ public class HabitEventEditActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
 
-        Button cancelBtn = findViewById(R.id.habitEvent_delete_button);
+        Button deleteBtn = findViewById(R.id.habitEvent_delete_button);
+        Button confirmBtn = findViewById(R.id.habitEvent_confirm_button);
+        // set return button
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
 
         // set return function to the cancel button
-        cancelBtn.setOnClickListener(new View.OnClickListener() {
+        deleteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intentReturn = new Intent(getApplicationContext(), HabitEventListActivity.class); // Return to the habit event list page
@@ -30,6 +36,16 @@ public class HabitEventEditActivity extends AppCompatActivity {
                 finish(); // finish current activity
             }
         });
+        confirmBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intentReturn = new Intent(getApplicationContext(), HabitEventListActivity.class); // Return to the habit event list page
+                startActivity(intentReturn);
+                finish(); // finish current activity
+            }
+        });
+
+
     }
 
 
