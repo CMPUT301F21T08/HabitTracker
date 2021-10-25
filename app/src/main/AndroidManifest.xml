@@ -11,6 +11,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HabitTracker">
 
+        <activity android:name=".HabitEventEditMapActivity" />
+
 
         <activity
             android:name=".HabitEventEditActivity"
@@ -30,6 +32,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>
