@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:labelVisibilityMode="labeled"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/navigation_habit"
+        android:enabled="true"
+        android:icon="@drawable/ic_menu_habit"
+        android:title="@string/navigation_habit"/>
+    <item
+        android:id="@+id/navigation_habitEvent"
+        android:enabled="true"
+        android:icon="@drawable/ic_menu_habitevent"
+        android:title="@string/navigation_habitEvent"/>
+    <item
+        android:id="@+id/navigation_homePage"
+        android:enabled="true"
+        android:icon="@drawable/ic_menu_homepage"
+        android:title="@string/navigation_homePage"/>
+    <item
+        android:id="@+id/navigation_following"
+        android:enabled="true"
+        android:icon="@drawable/ic_menu_following"
+        android:title="@string/navigation_following"/>
+    <item
+        android:id="@+id/navigation_settings"
+        android:enabled="true"
+        android:icon="@drawable/ic_menu_settings"
+        android:title="@string/navigation_settings"/>
+</menu>

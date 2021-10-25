@@ -10,14 +10,40 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HabitTracker">
         <activity
+            android:name=".HabitDescriptionActivity"
+            android:exported="true" />
+        <activity
+            android:name=".HabitListActivity"
+            android:exported="true" />
+        <activity
+            android:name=".HabitEditActivity"
+            android:exported="true" />
+        <activity
+            android:name=".SignUpActivity"
+            android:exported="true" />
+        <activity
+            android:name=".LogInActivity"
+            android:exported="true" />
+        <activity android:name=".HabitEventEditMapActivity" />
+        <activity
+            android:name=".HabitEventEditActivity"
+            android:exported="true"
+            android:parentActivityName=".HabitEventListActivity" />
+        <activity
+            android:name=".HabitEventListActivity"
+            android:exported="true"
+            android:launchMode="singleTask" />
+        <activity
             android:name=".MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>

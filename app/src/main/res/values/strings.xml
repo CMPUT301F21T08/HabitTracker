@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">HabitTracker</string>
+    <string name="navigation_habit">Habit</string>
+    <string name="navigation_habitEvent">Habit Event</string>
+    <string name="navigation_homePage">Home Page</string>
+    <string name="navigation_settings">Settings</string>
+    <string name="navigation_following">Following</string>
+    <string name="habit_event_edit">Habit Event - Edit</string>
+    <string name="add_or_edit_photo">Add/Edit Photo</string>
+    <string name="comment">Comment:</string>
+    <string name="location">Location:</string>
+    <string name="add_location">Enter location</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
+    <string name="location_information">Your location information is...</string>
+    <string name="delete">Delete</string>
+    <string name="delete_event">Delete Event</string>
 </resources>
