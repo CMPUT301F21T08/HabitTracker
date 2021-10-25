@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".HabitEditActivity"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:text="Habit Title"
+        android:textSize="25sp">
+
+    </TextView>
+    <EditText
+        android:id= "@+id/TitleInput"
+        style="@style/Widget.AppCompat.EditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:ems="10"
+        android:hint="Habit Name"
+        android:inputType="textCapWords"
+        android:textColor="#000000" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:text="start Date"
+        android:textSize="25sp"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/DatePicker"
+            style="@style/Widget.AppCompat.EditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignTop="@+id/Habit_startDate_button"
+            android:layout_alignBottom="@+id/Habit_startDate_button"
+            android:layout_toLeftOf="@+id/Habit_startDate_button"
+            android:ems="10"
+            android:hint="Habit Start"
+            android:inputType="textCapWords"
+            android:textColor="#000000" />
+
+        <Button
+            android:id="@+id/Habit_startDate_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_alignParentEnd="true"
+            android:text="Start Date" />
+    </RelativeLayout>
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:text="Frequency "
+        android:textSize="25sp"/>
+
+    <RelativeLayout
+
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+
+        <TextView
+            android:id= "@+id/HabitEdit_Frequency_textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/frequency_detail_button"
+            android:layout_alignBottom="@+id/frequency_detail_button"
+            android:layout_toLeftOf="@+id/frequency_detail_button"
+            android:gravity="center"
+            android:text="Number"
+            android:textSize="20sp"
+            tools:ignore="NotSibling" />
+
+        <EditText
+            android:id= "@+id/editFrequency"
+            style="@style/Widget.AppCompat.EditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:hint="Habit frequency"
+            android:inputType="textCapWords"
+            android:textColor="#000000" />
+
+        <Button
+            android:id="@+id/frequency_detail_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pre day" />
+
+
+    </RelativeLayout>
+
+
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:text="Content "
+        android:textSize="25sp"/>
+    <EditText
+        android:id= "@+id/editContent"
+        style="@style/Widget.AppCompat.EditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:ems="10"
+        android:hint="Habit Content"
+        android:inputType="textCapWords"
+        android:textColor="#000000" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:text="Reason"
+        android:textSize="25sp"/>
+
+    <EditText
+        android:id= "@+id/editReason"
+        style="@style/Widget.AppCompat.EditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:ems="10"
+        android:hint="Habit Reason"
+        android:inputType="textCapWords"
+        android:textColor="#000000" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:id= "@+id/habitEdit_return_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:layout_marginStart="10dp"
+            android:text="Return" />
+        <Button
+            android:id= "@+id/habitEdit_confirm_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginEnd="10dp"
+            android:text="Confirm"/>
+
+    </FrameLayout>
+
+
+</LinearLayout>
