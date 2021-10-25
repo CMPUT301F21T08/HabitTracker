@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 
-public class HabitEventEditActivity extends AppCompatActivity {
+public class HabitEventEditActivity extends AppCompatActivity implements DeleteConfirmFragment.OnDeleteConfirmFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,17 +25,13 @@ public class HabitEventEditActivity extends AppCompatActivity {
         // set return button
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-
-
-        // set return function to the cancel button
         deleteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intentReturn = new Intent(getApplicationContext(), HabitEventListActivity.class); // Return to the habit event list page
-                startActivity(intentReturn);
-                finish(); // finish current activity
+                new DeleteConfirmFragment("Are you sure you want to delete?").show(getSupportFragmentManager(), "DELETE_HABIT_EVENT");
             }
         });
+
         confirmBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -45,7 +41,10 @@ public class HabitEventEditActivity extends AppCompatActivity {
             }
         });
 
+    }
 
+    public void onConfirmDeletePressed() {
+        return;
     }
 
 
