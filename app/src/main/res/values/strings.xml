@@ -12,7 +12,7 @@
     <string name="add_location">Enter location</string>
     <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>
-    <string name="location_information">Your location infomation is...</string>
+    <string name="location_information">Your location information is...</string>
     <string name="delete">Delete</string>
     <string name="delete_event">Delete Event</string>
 </resources>
