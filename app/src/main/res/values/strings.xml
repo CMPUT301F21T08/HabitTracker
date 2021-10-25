@@ -9,10 +9,10 @@
     <string name="add_or_edit_photo">Add/Edit Photo</string>
     <string name="comment">Comment:</string>
     <string name="location">Location:</string>
-    <string name="add_location">Choose location</string>
+    <string name="add_location">Enter location</string>
     <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>
-    <string name="location_information">Your location infomation is...</string>
+    <string name="location_information">Your location information is...</string>
     <string name="delete">Delete</string>
     <string name="delete_event">Delete Event</string>
 </resources>
