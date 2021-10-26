@@ -3,15 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/ychu3/Documents/GitHub/cmput301_d04_t08/app/src/main/res/layout/activity_main.xml" value="0.25" />
-        <entry key="..\:/Users/ychu3/Documents/GitHub/cmput301_d04_t08/app/src/main/res/layout/all_habits_content.xml" value="0.335" />
-        <entry key="..\:/Users/ychu3/Documents/GitHub/cmput301_d04_t08/app/src/main/res/layout/all_habits_page.xml" value="0.335" />
-        <entry key="..\:/Users/ychu3/Documents/GitHub/cmput301_d04_t08/app/src/main/res/layout/date_adapter.xml" value="0.375" />
-        <entry key="..\:/Users/ychu3/Documents/GitHub/cmput301_d04_t08/app/src/main/res/layout/habit_description_page.xml" value="0.375" />
-        <entry key="..\:/Users/ychu3/Documents/GitHub/cmput301_d04_t08/app/src/main/res/layout/meonthly_occurence_date_dialog.xml" value="0.2871376811594203" />
-        <entry key="..\:/Users/ychu3/Documents/GitHub/cmput301_d04_t08/app/src/main/res/layout/monthly_occurence_date.xml" value="0.25" />
-        <entry key="..\:/Users/ychu3/Documents/GitHub/cmput301_d04_t08/app/src/main/res/layout/monthly_occurence_date_dialog.xml" value="0.375" />
-        <entry key="..\:/Users/ychu3/Documents/GitHub/cmput301_d04_t08/app/src/main/res/layout/weekly_detail_dialog.xml" value="0.17760416666666667" />
+
       </map>
     </option>
   </component>
