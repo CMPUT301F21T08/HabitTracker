@@ -2,16 +2,16 @@
 
 <resources>
     <style name="text_style" parent="TextAppearance.AppCompat">
-        <item name ="android:textSize">@dimen/normal_textSize</item>
-        <item name ="android:padding">@dimen/padding</item>
+        <item name ="android:textSize">14sp</item>
+        <item name ="android:padding">14dp</item>
         <item name="android:fontFamily">sans-serif</item>
     </style>
 
 
     <style name="header_textview_style" parent="TextAppearance.AppCompat">
         <item name ="android:textColor">@color/white</item>
-        <item name ="android:textSize">@dimen/header_textSize</item>
-        <item name ="android:padding">@dimen/padding</item>
+        <item name ="android:textSize">20sp</item>
+        <item name ="android:padding">18dp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:fontFamily">sans-serif</item>
     </style>

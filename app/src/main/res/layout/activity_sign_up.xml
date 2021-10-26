@@ -19,7 +19,7 @@
             style="@style/header_textview_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/signUp_mainHeader_TextView_String"
+            android:text="HabitTracker"
             android:textColor="@color/white"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -30,7 +30,7 @@
             style="@style/text_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/signUp_secondHeader_TextView_String"
+            android:text="Create your own account"
             android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -141,7 +141,7 @@
         android:id="@+id/signUp_createAccount_Button"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:text="@string/signUp_create_account_string"
+        android:text="Create Account"
         app:layout_constraintTop_toBottomOf="@id/signUp_confirm_passWord_TextView"/>
 
 
