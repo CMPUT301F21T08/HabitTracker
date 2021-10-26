@@ -14,6 +14,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
 
+
         <TextView
             android:id="@+id/signUp_mainHeader_TextView"
             style="@style/header_textview_style"
@@ -83,6 +84,29 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Username: "
+        android:textColor="@color/black"
+        app:layout_constraintRight_toRightOf="@id/guideline3"
+        app:layout_constraintTop_toBottomOf="@id/signUp_userEmail_TextView"/>
+
+    <EditText
+        android:id="@+id/signUp_userEmail_EditView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:autofillHints="emailAddress"
+        android:hint="Enter your email"
+        android:inputType="text"
+        android:textColor="@color/black"
+        app:layout_constraintBaseline_toBaselineOf="@id/signUp_userEmail_TextView"
+        app:layout_constraintLeft_toLeftOf="@id/guideline3"
+        style="@style/text_style"/>
+
+
+    <TextView
+        android:id="@+id/signUp_userEmail_TextView"
+        style="@style/text_style"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Email: "
         android:textColor="@color/black"
         app:layout_constraintRight_toRightOf="@id/guideline3"
         app:layout_constraintTop_toBottomOf="@id/signUp_profilePic_ImageButton"/>

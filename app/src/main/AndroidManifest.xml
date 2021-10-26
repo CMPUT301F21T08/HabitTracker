@@ -16,7 +16,16 @@
             android:name=".HabitListActivity"
             android:exported="true" />
         <activity
+            android:name=".ProfileActivity"
+            android:exported="true" />
+        <activity
             android:name=".HabitEditActivity"
+            android:exported="true" />
+        <activity
+            android:name=".FollowingActivity"
+            android:exported="true" />
+        <activity
+            android:name=".ToDoActivity"
             android:exported="true" />
         <activity
             android:name=".SignUpActivity"

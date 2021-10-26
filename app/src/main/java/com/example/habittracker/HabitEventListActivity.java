@@ -3,6 +3,7 @@ package com.example.habittracker;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -62,12 +63,24 @@ public class HabitEventListActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.navigation_habit:
+                        Intent intent1 = new Intent(HabitEventListActivity.this, HabitListActivity.class);
+                        startActivity(intent1);
+                        finish();
                         return true;
                     case R.id.navigation_homePage:
+                        Intent intent2 = new Intent(HabitEventListActivity.this, ToDoActivity.class);
+                        startActivity(intent2);
+                        finish();
                         return true;
                     case R.id.navigation_following:
+                        Intent intent3 = new Intent(HabitEventListActivity.this, FollowingActivity.class);
+                        startActivity(intent3);
+                        finish();
                         return true;
                     case R.id.navigation_settings:
+                        Intent intent4 = new Intent(HabitEventListActivity.this, ProfileActivity.class);
+                        startActivity(intent4);
+                        finish();
                         return true;
                 }
                 return false;
@@ -79,4 +92,6 @@ public class HabitEventListActivity extends AppCompatActivity {
         Intent intent = new Intent(this, HabitEventEditActivity.class);
         startActivity(intent);
     }
+
+
 }
