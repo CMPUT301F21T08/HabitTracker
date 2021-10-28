@@ -33,7 +33,9 @@
         <activity
             android:name=".LogInActivity"
             android:exported="true" />
-        <activity android:name=".HabitEventEditMapActivity" />
+        <activity
+            android:name=".HabitEventEditMapActivity"
+            android:exported="true"/>
         <activity
             android:name=".HabitEventEditActivity"
             android:exported="true"
