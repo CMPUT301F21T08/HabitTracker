@@ -9,6 +9,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.HabitTracker">
+
+        <meta-data android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyCJvvbjw-Qdfxe_fwAnE9HwVFE9SelWUP0"/>
+
+
+
+
+
+
         <activity
             android:name=".HabitDescriptionActivity"
             android:exported="true" />
@@ -33,7 +42,6 @@
         <activity
             android:name=".LogInActivity"
             android:exported="true" />
-        <activity android:name=".HabitEventEditMapActivity" />
         <activity
             android:name=".HabitEventEditActivity"
             android:exported="true"
