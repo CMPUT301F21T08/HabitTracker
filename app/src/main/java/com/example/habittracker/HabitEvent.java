@@ -1,5 +1,6 @@
 package com.example.habittracker;
 
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -7,7 +8,9 @@ import android.os.Parcelable;
 public class HabitEvent implements Parcelable {
     private String eventTitle;
     private String comment;
-//    private String location;
+    private String location;
+    private String imageName;
+
 
     public static final Parcelable.Creator<HabitEvent> CREATOR = new Parcelable.Creator<HabitEvent>() {
 
@@ -22,16 +25,18 @@ public class HabitEvent implements Parcelable {
         }
     };
 
-    public HabitEvent(String title, String comment) {
-        this.eventTitle = title;
+    public HabitEvent(String title, String comment, String location, String imageName) {
+        this.eventTitle = title +  "-" + System.currentTimeMillis(); // create unique event name
         this.comment = comment;
-        // missing location
+        this.location = location;
+        this.imageName = imageName;
     }
 
     public HabitEvent(Parcel in) {
         this.eventTitle = in.readString();
         this.comment = in.readString();
-//        this.location = in.readString();
+        this.location = in.readString();
+        this.imageName = in.readString();
     }
 
     public String getEventTitle() {
@@ -50,6 +55,22 @@ public class HabitEvent implements Parcelable {
         this.comment = comment;
     }
 
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getImageName() {
+        return imageName;
+    }
+
+    public void setImageName(String imageName) {
+        this.imageName = imageName;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -59,6 +80,7 @@ public class HabitEvent implements Parcelable {
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(this.eventTitle);
         parcel.writeString(this.comment);
-//        parcel.writeString(this.location);
+        parcel.writeString(this.location);
+        parcel.writeString(this.imageName);
     }
 }

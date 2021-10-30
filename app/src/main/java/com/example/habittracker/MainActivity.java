@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void switch_activity() {
         Intent intent = new Intent(this, HabitEventListActivity.class);
+        intent.putExtra("StartMode", "normal"); // Have to add this string, or the activity won't start
         startActivity(intent);
     }
 

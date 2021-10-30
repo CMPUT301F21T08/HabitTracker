@@ -5,14 +5,23 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -33,7 +42,11 @@ import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.List;
 
@@ -47,6 +60,15 @@ public class HabitEventEditActivity extends AppCompatActivity implements DeleteC
     ImageView photo_imageView;
     ActivityResultLauncher<Intent> activityResultLauncher;
     ActivityResultLauncher<Intent> activityResultLauncher2;
+
+    HabitEvent passedEvent;
+    HabitEvent newEvent;
+    String habitName;
+    String imageFilePath; // This always saves the latest uri of the image shown in event
+    int eventIndexInList;
+
+    private static int REQUEST_CODE = 100;
+    OutputStream outputStream;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,11 +85,31 @@ public class HabitEventEditActivity extends AppCompatActivity implements DeleteC
         deleteBtn = findViewById(R.id.habitEvent_delete_button);
         confirmBtn = findViewById(R.id.habitEvent_confirm_button);
         location_editText = findViewById(R.id.habitEvent_enterLocation_editText);
-//        location_information = findViewById(R.id.habitEvent_locationInfo_textView);
         comment_editText = findViewById(R.id.habitEvent_comment_editText);
+        photo_imageView = findViewById(R.id.habitEvent_photo_imageView);
 
+        //Get passed habit event object from other events------------------------------------------------------------------------------------------------
+        // And display information (if any)
+        Bundle data = intent.getExtras();
+        eventIndexInList = data.getInt("EventIndex");
 
-        //------------------------------------------------------------------------------------------------------------------------------------
+        if (eventIndexInList >= 0) {
+            // In this case we are editing an entry in the list
+            passedEvent = (HabitEvent) data.getParcelable("HabitEventForEdit");
+            comment_editText.setText(passedEvent.getComment());
+            location_editText.setText(passedEvent.getLocation());
+
+            // load image
+            File dir = new File(Environment.getExternalStorageDirectory(), "SavedImage");
+            File image = new File(dir, passedEvent.getImageName());
+            Bitmap imageBitMap = BitmapFactory.decodeFile(image.getAbsolutePath());
+            photo_imageView.setImageBitmap(imageBitMap);
+        }
+        else {
+            // In this case we are adding a new event
+            habitName = data.getString("HabitName"); //TODO: use this on the habit side to transfer data
+        }
+
 
 
         // Set on-click listener for all buttons------------------------------------------------------------------------------------------------
@@ -82,24 +124,45 @@ public class HabitEventEditActivity extends AppCompatActivity implements DeleteC
         confirmBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String comment = comment_editText.getText().toString();
-                String name = "Habit name"; //TODO: generate habit event name by habit name and date
-                HabitEvent newEvent = new HabitEvent(name, comment);  // Comment can be empty, hence no error checking
-                //TODO: pass this habit event to the habit event list
-
-
                 Intent intentReturn = new Intent(getApplicationContext(), HabitEventListActivity.class); // Return to the habit event list page
-                intentReturn.putExtra("habit event", newEvent);
+                intentReturn.putExtra("StartMode", "Edit");
+
+                String comment = comment_editText.getText().toString();
+                String location = location_editText.getText().toString();
+
+                if (eventIndexInList >= 0) {
+                    // modify current entry
+                    passedEvent.setComment(comment);
+                    passedEvent.setLocation(location);
+                    if (ContextCompat.checkSelfPermission(HabitEventEditActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                        System.out.println("66666666666666666666666666");
+                        saveImage(passedEvent);
+                    }
+                    else {
+                        System.out.println("77777777777777777777777777");
+                        askPermission();
+                    }
+                    intentReturn.putExtra("EventIndex", eventIndexInList);
+                    intentReturn.putExtra("HabitEventFromEdit", passedEvent);
+                }
+                else {
+                    // create new entry
+                    newEvent = new HabitEvent(habitName, comment, location, habitName+System.currentTimeMillis()+".jpg");  // Comment can be empty, hence no error checking
+                    saveImage(newEvent);
+                    intentReturn.putExtra("EventIndex", eventIndexInList);
+                    intentReturn.putExtra("HabitEventFromEdit", newEvent);
+                }
+
                 startActivity(intentReturn);
                 finish(); // finish current activity
             }
         });
 
-        //------------------------------------------------------------------------------------------------------------------------------------
 
-// photo part
+
+        // Add photo to event------------------------------------------------------------------------------------------------------------------------------------
+        // photo part
         photo_button = findViewById(R.id.habitEvent_addPhoto_button);
-        photo_imageView = findViewById(R.id.habitEvent_photo_imageView);
 
         // Initialize result launcher
         ActivityResultLauncher<Intent> resultLauncher2 = registerForActivityResult(
@@ -114,8 +177,7 @@ public class HabitEventEditActivity extends AppCompatActivity implements DeleteC
                             // when result data is not equal to empty
                             try{
                                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(
-                                        getContentResolver(),intent.getData()
-                                );
+                                        getContentResolver(),intent.getData());
                                 // set bitmap on image view
                                 photo_imageView.setImageBitmap(bitmap);
 
@@ -143,11 +205,11 @@ public class HabitEventEditActivity extends AppCompatActivity implements DeleteC
 
 
         //-----------------------------Location Information Process---------------------------------------------------------------------------
-// location part
+        // location part
         location_editText = findViewById(R.id.habitEvent_enterLocation_editText);
 
 
-    // Reference: https://www.youtube.com/watch?v=t8nGh4gN1Q0
+        // Reference: https://www.youtube.com/watch?v=t8nGh4gN1Q0
         // Implement Autocomplete Place Api
 
         // initialize place
@@ -206,12 +268,77 @@ public class HabitEventEditActivity extends AppCompatActivity implements DeleteC
             }
         });
 
-        //--------------------------------------------------------------------------------------------------------------------------------------
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == REQUEST_CODE)
+        {
+            System.out.println("9999999999999999999999999999");
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                if (eventIndexInList >= 0) {
+                    saveImage(passedEvent);
+                }
+                else{
+                    saveImage(newEvent);
+                }
+            }else {
+                Toast.makeText(HabitEventEditActivity.this,"Please provide the required permissions",Toast.LENGTH_SHORT).show();
+            }
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    private void askPermission() {
+        System.out.println("88888888888888888888888888888");
+        ActivityCompat.requestPermissions(HabitEventEditActivity.this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},REQUEST_CODE);
     }
 
 
     public void onConfirmDeletePressed() {
         return;
+    }
+
+    public void saveImage(HabitEvent event) {
+        if (photo_imageView.getDrawable() == null) {
+            System.out.println("No image is shown currently");
+            return;
+        }
+
+        // Save file
+        File dir = new File(Environment.getExternalStorageDirectory(), "SavedImage");
+        if (!dir.exists()) {
+            dir.mkdir();
+        }
+
+        BitmapDrawable drawable = (BitmapDrawable) photo_imageView.getDrawable();
+        Bitmap bitmap = drawable.getBitmap();
+
+        File file = new File(dir, event.getImageName()); // Save image as the image name provided in the SavedImage folder
+
+        try {
+            outputStream = new FileOutputStream(file);
+        }
+        catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        bitmap.compress(Bitmap.CompressFormat.JPEG,100,outputStream);
+
+        try {
+            outputStream.flush();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            outputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("99999999999999999999999999999");
     }
 
 
