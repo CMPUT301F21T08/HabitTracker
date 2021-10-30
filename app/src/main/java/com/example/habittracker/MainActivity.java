@@ -19,12 +19,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Intent intent = new Intent(MainActivity.this, LogInActivity.class);
-        startActivity(intent);
-        finish();
+//        Intent intent = new Intent(MainActivity.this, LogInActivity.class);
+//        startActivity(intent);
+//        finish();
         setContentView(R.layout.activity_main);
 
         bottomNavigationView = findViewById(R.id.bottom_navigation_main);
+        bottomNavigationView.setSelectedItemId(R.id.navigation_homePage);
 
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override

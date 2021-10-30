@@ -2,6 +2,7 @@ package com.example.habittracker;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -30,20 +31,32 @@ import java.util.List;
 public class HabitEventEditActivity extends AppCompatActivity implements DeleteConfirmFragment.OnDeleteConfirmFragmentInteractionListener {
     EditText location_editText;
     TextView location_information;
+    EditText comment_editText;
+    Button deleteBtn;
+    Button confirmBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_habit_event_edit);
 
-        getSupportActionBar().setTitle("Habit Event - Edit");
-
+        // Initial setup for activity------------------------------------------------------------------------------------------------
         Intent intent = getIntent();
-
-        Button deleteBtn = findViewById(R.id.habitEvent_delete_button);
-        Button confirmBtn = findViewById(R.id.habitEvent_confirm_button);
+        getSupportActionBar().setTitle("Habit Event - Edit");
         // set return button
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        deleteBtn = findViewById(R.id.habitEvent_delete_button);
+        confirmBtn = findViewById(R.id.habitEvent_confirm_button);
+        location_editText = findViewById(R.id.habitEvent_enterLocation_editText);
+        location_information = findViewById(R.id.habitEvent_locationInfo_textView);
+        comment_editText = findViewById(R.id.habitEvent_comment_editText);
+
+
+        //------------------------------------------------------------------------------------------------------------------------------------
+
+
+        // Set on-click listener for all buttons------------------------------------------------------------------------------------------------
 
         deleteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,15 +68,24 @@ public class HabitEventEditActivity extends AppCompatActivity implements DeleteC
         confirmBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String comment = comment_editText.getText().toString();
+                String name = "Habit name"; //TODO: generate habit event name by habit name and date
+                HabitEvent newEvent = new HabitEvent(name, comment);  // Comment can be empty, hence no error checking
+                //TODO: pass this habit event to the habit event list
+
+
                 Intent intentReturn = new Intent(getApplicationContext(), HabitEventListActivity.class); // Return to the habit event list page
+                intentReturn.putExtra("habit event", newEvent);
                 startActivity(intentReturn);
                 finish(); // finish current activity
             }
         });
-        location_editText = findViewById(R.id.habitEvent_enterLocation_editText);
-        location_information = findViewById(R.id.habitEvent_locationInfo_textView);
 
-// Reference: https://www.youtube.com/watch?v=t8nGh4gN1Q0
+        //------------------------------------------------------------------------------------------------------------------------------------
+
+        //-----------------------------Location Information Process---------------------------------------------------------------------------
+
+        // Reference: https://www.youtube.com/watch?v=t8nGh4gN1Q0
         // Implement Autocomplete Place Api
 
         // initialize place
@@ -94,6 +116,8 @@ public class HabitEventEditActivity extends AppCompatActivity implements DeleteC
 
             }
         });
+
+        //--------------------------------------------------------------------------------------------------------------------------------------
     }
 
     @Override

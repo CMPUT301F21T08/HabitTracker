@@ -38,9 +38,10 @@ public class HabitEventListActivity extends AppCompatActivity {
 
         // Test only -----------------------------------------------
         String [] titles = {"Event 1", "Event 2", "Event 3"};
+        String [] comments = {"Comment 1", "Comment 2", "Comment 3"};
 
         for (int i = 0; i < 3; i++) {
-            habitEventList.add(new HabitEvent(titles[i]));
+            habitEventList.add(new HabitEvent(titles[i], comments[i]));
         }
         // Test only -----------------------------------------------
 
@@ -54,7 +55,7 @@ public class HabitEventListActivity extends AppCompatActivity {
             }
         });
 
-        // Process Navigation Bar
+        // Process Navigation Bar-----------------------------------------------------------------------------------------------------
         bottomNavigationView = findViewById(R.id.bottom_navigation_event);
         bottomNavigationView.setSelectedItemId(R.id.navigation_habitEvent);
 
