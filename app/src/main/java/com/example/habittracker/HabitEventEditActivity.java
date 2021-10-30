@@ -1,15 +1,35 @@
 package com.example.habittracker;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.common.api.Status;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.android.libraries.places.widget.Autocomplete;
+import com.google.android.libraries.places.widget.AutocompleteActivity;
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class HabitEventEditActivity extends AppCompatActivity implements DeleteConfirmFragment.OnDeleteConfirmFragmentInteractionListener {
+    EditText location_editText;
+    TextView location_information;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,8 +60,63 @@ public class HabitEventEditActivity extends AppCompatActivity implements DeleteC
                 finish(); // finish current activity
             }
         });
+        location_editText = findViewById(R.id.habitEvent_enterLocation_editText);
+        location_information = findViewById(R.id.habitEvent_locationInfo_textView);
 
+// Reference: https://www.youtube.com/watch?v=t8nGh4gN1Q0
+        // Implement Autocomplete Place Api
+
+        // initialize place
+       Places.initialize(getApplicationContext(),"AIzaSyCJvvbjw-Qdfxe_fwAnE9HwVFE9SelWUP0");
+        PlacesClient placesClient = Places.createClient(this);
+
+
+        // set edit text non focusable
+        location_editText.setFocusable(false);
+        location_editText.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                // initialize place field list
+                List<Place.Field> fieldList = Arrays.asList(Place.Field.ADDRESS,Place.Field.LAT_LNG,Place.Field.NAME);
+
+                try{
+                    // Create intent
+                    Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN,fieldList).build(HabitEventEditActivity.this);
+
+                    // stat=rt activity result
+                    startActivityForResult(intent, 100);
+                } catch (Exception e) {
+                    // TODO: Handle the error.
+                    Log.e("error", e.getMessage());
+                    e.printStackTrace();
+                }
+
+
+            }
+        });
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode,@Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 100 && requestCode == RESULT_OK) {
+            //when success
+            // initial place
+            Place place = Autocomplete.getPlaceFromIntent(data);
+            // set address on edit text
+            location_editText.setText(place.getAddress());
+            // set locally name
+            location_information.setText(String.format("Location is %s", place.getName()));
+        } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
+            // when have error
+            // initialize status
+            Status status = Autocomplete.getStatusFromIntent(data);
+
+            // display toast
+            Toast.makeText(getApplicationContext(), status.getStatusMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
 
     public void onConfirmDeletePressed() {
         return;
