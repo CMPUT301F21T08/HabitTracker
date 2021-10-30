@@ -35,7 +35,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="0dp"
         android:layout_marginEnd="60dp"
         android:text="@string/comment"
         android:textSize="22sp"
@@ -63,7 +63,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="0dp"
         android:layout_marginEnd="60dp"
         android:text="@string/location"
         android:textSize="22sp"
@@ -82,15 +82,11 @@
         android:layout_marginTop="4dp"
         android:layout_marginEnd="60dp"
         android:background="@android:drawable/editbox_background"
-
         android:drawableLeft="@drawable/ic_location"
         android:drawablePadding="16dp"
-
-
         android:hint="@string/add_location"
         android:minHeight="95dp"
         android:padding="30dp"
-
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -114,34 +110,51 @@
 <!--        app:layout_constraintTop_toBottomOf="@id/habitEvent_enterLocation_editText" />-->
 
     <Button
-        android:id="@+id/habitEvent_delete_button"
+        android:id="@+id/habitEvent_currentLocation_button"
+        android:layout_marginStart="60dp"
+        android:layout_marginEnd="60dp"
         android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginTop="5dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        android:text="@string/current_location"
+
+
+        app:layout_constraintStart_toEndOf="@+id/habitEvent_confirm_button"
+        app:layout_constraintTop_toBottomOf="@+id/habitEvent_enterLocation_editText" />
+
+    <Button
+        android:id="@+id/habitEvent_delete_button"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="60dp"
         android:layout_marginRight="60dp"
         android:text="@string/delete_event"
+        app:layout_constrainedHeight="true"
+
         app:layout_constraintBottom_toBottomOf="@+id/habitEvent_confirm_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/habitEvent_confirm_button"
-        app:layout_constraintTop_toBottomOf="@+id/habitEvent_enterLocation_editText" />
+        app:layout_constraintTop_toBottomOf="@+id/habitEvent_currentLocation_button" />
 
     <Button
         android:id="@+id/habitEvent_confirm_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="60dp"
-        android:layout_marginLeft="60dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
         android:layout_marginBottom="24dp"
         android:text="@string/confirm"
+        app:layout_constrainedHeight="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/habitEvent_delete_button"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/habitEvent_enterLocation_editText"
+        app:layout_constraintTop_toBottomOf="@+id/habitEvent_currentLocation_button"
         app:layout_constraintVertical_bias="0.0" />
 
 

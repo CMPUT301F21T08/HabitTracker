@@ -8,7 +8,6 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -17,12 +16,18 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -35,6 +40,10 @@ import android.widget.Toast;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.PlacesClient;
@@ -49,17 +58,19 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 public class HabitEventEditActivity extends AppCompatActivity implements DeleteConfirmFragment.OnDeleteConfirmFragmentInteractionListener {
     EditText location_editText;
-    TextView location_information;
     EditText comment_editText;
-    Button deleteBtn;
-    Button confirmBtn;
     Button photo_button;
     ImageView photo_imageView;
     ActivityResultLauncher<Intent> activityResultLauncher;
-    ActivityResultLauncher<Intent> activityResultLauncher2;
+
+    Button currentLocation_button;
+    Button deleteBtn;
+    Button confirmBtn;
+    FusedLocationProviderClient fusedLocationProviderClient;
 
     HabitEvent passedEvent;
     HabitEvent newEvent;
@@ -75,12 +86,7 @@ public class HabitEventEditActivity extends AppCompatActivity implements DeleteC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_habit_event_edit);
 
-        // Initial setup for activity------------------------------------------------------------------------------------------------
         Intent intent = getIntent();
-        getSupportActionBar().setTitle("Habit Event - Edit");
-
-        // set return button
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         deleteBtn = findViewById(R.id.habitEvent_delete_button);
         confirmBtn = findViewById(R.id.habitEvent_confirm_button);
@@ -112,7 +118,14 @@ public class HabitEventEditActivity extends AppCompatActivity implements DeleteC
 
 
 
-        // Set on-click listener for all buttons------------------------------------------------------------------------------------------------
+
+        getSupportActionBar().setTitle("Habit Event - Edit");
+
+
+        Button deleteBtn = findViewById(R.id.habitEvent_delete_button);
+        Button confirmBtn = findViewById(R.id.habitEvent_confirm_button);
+        // set return button
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         deleteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,6 +138,7 @@ public class HabitEventEditActivity extends AppCompatActivity implements DeleteC
             @Override
             public void onClick(View view) {
                 Intent intentReturn = new Intent(getApplicationContext(), HabitEventListActivity.class); // Return to the habit event list page
+
                 intentReturn.putExtra("StartMode", "Edit");
 
                 String comment = comment_editText.getText().toString();
@@ -160,8 +174,11 @@ public class HabitEventEditActivity extends AppCompatActivity implements DeleteC
 
 
 
+
         // Add photo to event------------------------------------------------------------------------------------------------------------------------------------
         // photo part
+        // reference: https://www.youtube.com/watch?v=HxlAktedIhM
+
         photo_button = findViewById(R.id.habitEvent_addPhoto_button);
 
         // Initialize result launcher
@@ -206,15 +223,65 @@ public class HabitEventEditActivity extends AppCompatActivity implements DeleteC
 
         //-----------------------------Location Information Process---------------------------------------------------------------------------
         // location part
+
+        // location part
         location_editText = findViewById(R.id.habitEvent_enterLocation_editText);
 
 
-        // Reference: https://www.youtube.com/watch?v=t8nGh4gN1Q0
+    // Reference: https://www.youtube.com/watch?v=t8nGh4gN1Q0
+//        and https://www.youtube.com/watch?v=qO3FFuBrT2E for onActivityResult is Deprecated
         // Implement Autocomplete Place Api
 
         // initialize place
         Places.initialize(getApplicationContext(),"AIzaSyCJvvbjw-Qdfxe_fwAnE9HwVFE9SelWUP0");
         PlacesClient placesClient = Places.createClient(this);
+
+
+        // get current location https://www.youtube.com/watch?v=Ak1O9Gip-pg
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        currentLocation_button = findViewById(R.id.habitEvent_currentLocation_button);
+        currentLocation_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // check permission
+                if(ActivityCompat.checkSelfPermission(HabitEventEditActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)== PackageManager.PERMISSION_GRANTED) {
+                    // when permission granted
+
+                    fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Location> task) {
+                            // initialize location
+                            Location location = task.getResult();
+                            if(location != null){
+                                try{
+                                    // initialize getCoder
+                                    Geocoder geocoder = new Geocoder(HabitEventEditActivity.this, Locale.getDefault());
+                                    // initialize address list
+                                    List<Address> addresses = geocoder.getFromLocation(
+                                            location.getLatitude(),location.getLongitude(),1
+
+                                    );
+                                    location_editText.setText(Html.fromHtml(addresses.get(0).getAddressLine(0)));
+                                } catch(IOException e1){
+                                    e1.printStackTrace();
+                                }
+
+                            }
+                        }
+                    });
+                }else{
+                    // when permission denied
+                    ActivityCompat.requestPermissions(HabitEventEditActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);
+                }
+            }
+        });
+
+
+
+
+
+
+
 
         activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
             @Override
@@ -293,6 +360,7 @@ public class HabitEventEditActivity extends AppCompatActivity implements DeleteC
         System.out.println("88888888888888888888888888888");
         ActivityCompat.requestPermissions(HabitEventEditActivity.this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},REQUEST_CODE);
     }
+
 
 
     public void onConfirmDeletePressed() {
