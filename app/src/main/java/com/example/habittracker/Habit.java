@@ -22,6 +22,8 @@ public class Habit implements Serializable {
         this.occurrenceDay = occurrenceDay;
     }
 
+    public Habit(){
+    }
 
     public String getHabitTitle() {
         return habitTitle;
