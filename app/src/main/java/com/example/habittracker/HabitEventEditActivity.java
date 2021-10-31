@@ -132,8 +132,8 @@ public class HabitEventEditActivity extends AppCompatActivity  {
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 Intent intentReturn = new Intent(getApplicationContext(), HabitEventListActivity.class); // Return to the habit event list page
 
-                                intentReturn.putExtra("StartMode", "Edit");
-
+                                intentReturn.putExtra("StartMode", "Delete");
+                                intentReturn.putExtra("EventIndex", eventIndexInList);
 
 
                                 startActivity(intentReturn);

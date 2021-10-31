@@ -57,38 +57,11 @@ public class HabitEventListActivity extends AppCompatActivity {
 //--------------------------------------------- Process List View-----------------------------------------------------------------------------------------------------
         habitEventAdapter = new HabitEventListAdapter(this, habitEventList);
         habitEventListView.setAdapter(habitEventAdapter); // Sets the adapter for event list, used for showing list items
-
         habitEventListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                final int which_item = i;
-                AlertDialog.Builder builder = new AlertDialog.Builder(HabitEventListActivity.this);
-                builder.setMessage("What do you want to do?")
-                        .setPositiveButton("Edit/View", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                goToEventEditActivity(which_item); // TODO: Later we need to find ways to pass habit event objects to the edit activity here
-
-
-                            }
-                        })
-                        .setNegativeButton("Delete", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-
-                                habitEventList.remove(which_item);
-                                habitEventAdapter.notifyDataSetChanged();
-
-
-
-                            }
-                        });
-
-                AlertDialog alert = builder.create();
-                alert.show();
-
-
-                }
+                goToEventEditActivity(i);
+            }
         });
 
 
@@ -144,7 +117,7 @@ public class HabitEventListActivity extends AppCompatActivity {
         // This is used to enter this activity without editing the list
         // in another word: since data won;t be passed if we just want to enter this activity and see contents, we use a StartMode to identify different entry method
         // we only fetch data when it's needed
-        if (!(startMode.equals("normal"))) {
+        if (startMode.equals("Edit")) {
             int eventIndexInList = data.getInt("EventIndex");
             passedEvent = (HabitEvent) data.getParcelable("HabitEventFromEdit");
 
@@ -159,6 +132,11 @@ public class HabitEventListActivity extends AppCompatActivity {
                 // add new entry to list
                 habitEventAdapter.add(passedEvent);
             }
+            habitEventAdapter.notifyDataSetChanged();
+        }
+        else if (startMode.equals("Delete")) {
+            int eventIndexInList = data.getInt("EventIndex");
+            habitEventList.remove(eventIndexInList);
             habitEventAdapter.notifyDataSetChanged();
         }
 
