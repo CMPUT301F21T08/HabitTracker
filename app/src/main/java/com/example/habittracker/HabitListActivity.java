@@ -18,6 +18,12 @@ import android.widget.ListView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -30,6 +36,10 @@ public class HabitListActivity extends AppCompatActivity {
     private FloatingActionButton addButton;
     private ArrayAdapter<Habit> habitAdapter;
     private ArrayList<Habit> habitList;
+
+    private FirebaseAuth authentication;
+    private String uid;
+
     private ActivityResultLauncher<Intent> activityLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
@@ -68,9 +78,34 @@ public class HabitListActivity extends AppCompatActivity {
         habitListView = findViewById(R.id.allHabits_habitList_listView);
         addButton = findViewById(R.id.allHabits_addButton_button);
 
-        habitList = new ArrayList<>();
+        authentication = FirebaseAuth.getInstance();
+        if (authentication.getCurrentUser() != null){
+            uid = authentication.getCurrentUser().getUid();
+        }
+
+        habitList = new ArrayList<Habit>();
         habitAdapter = new HabitListAdapter(this, habitList);
         habitListView.setAdapter(habitAdapter);
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child(uid).child("Habit");
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()){
+                    Habit hab = (Habit) dataSnapshot.getValue(Habit.class);
+                    habitList.add(hab);
+
+                }
+                habitAdapter.notifyDataSetChanged();
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                System.out.println("Read Data Failed");
+            }
+        });
+
+
+
 
         habitListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
