@@ -33,6 +33,7 @@ public class ToDoActivity extends AppCompatActivity
                         return true;
                     case R.id.navigation_habitEvent:
                         Intent intent2 = new Intent(ToDoActivity.this, HabitEventListActivity.class);
+                        intent2.putExtra("StartMode", "normal");
                         startActivity(intent2);
                         finish();
                         return true;

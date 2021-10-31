@@ -105,6 +105,7 @@ public class HabitListActivity extends AppCompatActivity {
                         return true;
                     case R.id.navigation_habitEvent:
                         Intent intent1 = new Intent(HabitListActivity.this, HabitEventListActivity.class);
+                        intent1.putExtra("StartMode", "normal");
                         startActivity(intent1);
                         finish();
                         return true;

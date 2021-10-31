@@ -85,6 +85,7 @@ public class ProfileActivity extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.navigation_habit:
                         Intent intent1 = new Intent(ProfileActivity.this, HabitListActivity.class);
+                        intent1.putExtra("StartMode", "normal");
                         startActivity(intent1);
                         finish();
                         return true;
