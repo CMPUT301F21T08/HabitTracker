@@ -156,5 +156,4 @@ public class HabitEventListActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-
 }

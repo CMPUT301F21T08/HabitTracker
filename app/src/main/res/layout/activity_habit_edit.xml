@@ -11,46 +11,47 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textStyle="bold"
-        android:text="Habit Title"
+        android:text="@string/habit_title"
         android:textSize="25sp">
 
     </TextView>
+
     <EditText
-        android:id= "@+id/TitleInput"
-        style="@style/Widget.AppCompat.EditText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:id="@+id/TitleInput"
+        android:layout_width="match_parent"
+        android:layout_height="105dp"
+        android:hint="Please enter the habit name"
+        android:maxLength="20"
         android:ems="10"
-        android:hint="Habit Name"
         android:inputType="textCapWords"
-        android:textColor="#000000" />
+        android:textColor="#000000"
+        android:autofillHints="Please enter the habit name" />
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textStyle="bold"
-        android:text="start Date"
+        android:text="@string/start_date"
         android:textSize="25sp"/>
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <EditText
-            android:id="@+id/DatePicker"
-            style="@style/Widget.AppCompat.EditText"
+            android:id="@+id/dateInput"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignTop="@+id/Habit_startDate_button"
-            android:layout_alignBottom="@+id/Habit_startDate_button"
-            android:layout_toLeftOf="@+id/Habit_startDate_button"
+            android:layout_alignTop="@+id/addDate_button"
+            android:layout_alignBottom="@+id/addDate_button"
+            android:layout_alignParentStart="true"
+            android:layout_toLeftOf="@+id/addDate_button"
+            android:autofillHints="Start date of habit"
+            android:hint="Start date of habit"
             android:ems="10"
-            android:hint="Habit Start"
-            android:inputType="textCapWords"
+            android:focusable="false"
             android:textColor="#000000" />
 
         <Button
-            android:id="@+id/Habit_startDate_button"
+            android:id="@+id/addDate_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -63,43 +64,43 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textStyle="bold"
-        android:text="Frequency "
+        android:text="@string/frequency"
         android:textSize="25sp"/>
 
     <RelativeLayout
 
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
-
-
-        <TextView
-            android:id= "@+id/HabitEdit_Frequency_textView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/frequency_detail_button"
-            android:layout_alignBottom="@+id/frequency_detail_button"
-            android:layout_toLeftOf="@+id/frequency_detail_button"
-            android:gravity="center"
-            android:text="Number"
-            android:textSize="20sp"
-            tools:ignore="NotSibling" />
+        android:layout_height="63dp">
 
         <EditText
-            android:id= "@+id/editFrequency"
-            style="@style/Widget.AppCompat.EditText"
+            android:id="@+id/frequencyInput"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_height="match_parent"
             android:ems="10"
-            android:hint="Habit frequency"
-            android:inputType="textCapWords"
+            android:focusable="false"
+            android:hint="number"
+            android:gravity="center"
+            android:inputType="number"
             android:textColor="#000000" />
 
-        <Button
-            android:id="@+id/frequency_detail_button"
-            android:layout_width="wrap_content"
+        <TextView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Pre day" />
+            android:id="@+id/frequency_type"
+            android:layout_alignTop="@+id/frequencyInput"
+            android:layout_alignBottom="@+id/frequencyInput"
+            android:layout_toEndOf="@+id/frequencyInput"
+            android:gravity="center_vertical"
+            android:text="@string/choose_frequency"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <Spinner
+            android:id="@+id/frequency_spinner"
+            android:layout_width="34dp"
+            android:layout_height="61dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="-16dp" />
 
 
     </RelativeLayout>
@@ -111,53 +112,55 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textStyle="bold"
-        android:text="Content "
+        android:text="@string/content"
         android:textSize="25sp"/>
+
     <EditText
-        android:id= "@+id/editContent"
+        android:id="@+id/contentInput"
         style="@style/Widget.AppCompat.EditText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="105dp"
+        android:autofillHints="Please enter the content of the habit"
         android:ems="10"
-        android:hint="Habit Content"
-        android:inputType="textCapWords"
+        android:hint="Please enter the content of the habit"
         android:textColor="#000000" />
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textStyle="bold"
-        android:text="Reason"
+        android:text="@string/reason"
         android:textSize="25sp"/>
 
     <EditText
-        android:id= "@+id/editReason"
+        android:id="@+id/reasonInput"
         style="@style/Widget.AppCompat.EditText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="105dp"
+        android:autofillHints="Please enter the reason of the habit"
         android:ems="10"
-        android:hint="Habit Reason"
-        android:inputType="textCapWords"
+        android:hint="Please enter the reason of the habit"
+        android:maxLength="30"
         android:textColor="#000000" />
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <Button
-            android:id= "@+id/habitEdit_return_button"
+            android:id="@+id/habitEdit_return_button"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="start"
             android:layout_marginStart="10dp"
-            android:text="Return" />
+            android:text="@string/Return" />
+
         <Button
             android:id= "@+id/habitEdit_confirm_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:layout_marginEnd="10dp"
-            android:text="Confirm"/>
+            android:text="@string/confirm"/>
 
     </FrameLayout>
 </LinearLayout>

@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.navigation_habit:
+                        switch_habit();
                         return true;
                     case R.id.navigation_habitEvent:
                         switch_activity();
@@ -55,6 +56,11 @@ public class MainActivity extends AppCompatActivity {
     public void switch_activity() {
         Intent intent = new Intent(this, HabitEventListActivity.class);
         intent.putExtra("StartMode", "normal"); // Have to add this string, or the activity won't start
+        startActivity(intent);
+    }
+
+    public void switch_habit(){
+        Intent intent = new Intent(this, HabitListActivity.class);
         startActivity(intent);
     }
 
