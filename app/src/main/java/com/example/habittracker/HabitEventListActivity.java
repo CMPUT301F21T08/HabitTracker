@@ -32,6 +32,7 @@ public class HabitEventListActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        System.out.println("8888888888888888888888888888");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_habit_event_list);
 
@@ -41,17 +42,18 @@ public class HabitEventListActivity extends AppCompatActivity {
 
         habitEventList = new ArrayList<>();
 
-//----------------------------------For Test only -----------------------------------------------
-        String [] habitNames = {"Habit 1", "Habit 2", "Habit 3"};
+        // Test only -----------------------------------------------
+        String [] titles = {"Event 1", "Event 2", "Event 3"};
         String [] comments = {"Comment 1", "Comment 2", "Comment 3"};
         String [] locations = {"location 1", "location 2", "location 3"};
 
         for (int i = 0; i < 3; i++) {
-            habitEventList.add(new HabitEvent(habitNames[i], comments[i], locations[i], null));
+            habitEventList.add(new HabitEvent(titles[i], comments[i], locations[i], titles[i]+System.currentTimeMillis()+".jpg"));
         }
-//---------------------------------For Test only -----------------------------------------------
+        // Test only -----------------------------------------------
 
-//--------------------------------------------- Process List View-----------------------------------------------------------------------------------------------------
+
+        // Process List View-----------------------------------------------------------------------------------------------------
         habitEventAdapter = new HabitEventListAdapter(this, habitEventList);
         habitEventListView.setAdapter(habitEventAdapter); // Sets the adapter for event list, used for showing list items
 
@@ -64,7 +66,7 @@ public class HabitEventListActivity extends AppCompatActivity {
         });
 
 
-//---------------------------------------- Process Navigation Bar-----------------------------------------------------------------------------------------------------
+        // Process Navigation Bar-----------------------------------------------------------------------------------------------------
         bottomNavigationView = findViewById(R.id.bottom_navigation_event);
         bottomNavigationView.setSelectedItemId(R.id.navigation_habitEvent);
 
@@ -101,9 +103,6 @@ public class HabitEventListActivity extends AppCompatActivity {
 
     }
 
-    /**
-     * Here are the steps we should take everytime we return to this activity
-     */
     @Override
     protected void onResume() {
         super.onResume();
@@ -125,7 +124,7 @@ public class HabitEventListActivity extends AppCompatActivity {
                 HabitEvent tempEvent = habitEventAdapter.getItem(eventIndexInList);
                 tempEvent.setComment(passedEvent.getComment());
                 tempEvent.setLocation(passedEvent.getLocation());
-                tempEvent.setImageFilePath(passedEvent.getImageFilePath());
+                System.out.println("-----------------"+passedEvent.getImageName());
             }
             else {
                 // add new entry to list

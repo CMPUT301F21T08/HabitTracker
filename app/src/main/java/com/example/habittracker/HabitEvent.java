@@ -4,15 +4,12 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 // Here we use Parcelable interface to achieve passing event object between activities
 public class HabitEvent implements Parcelable {
     private String eventTitle;
     private String comment;
     private String location;
-    private String imageFilePath;
+    private String imageName;
 
 
     public static final Parcelable.Creator<HabitEvent> CREATOR = new Parcelable.Creator<HabitEvent>() {
@@ -28,19 +25,18 @@ public class HabitEvent implements Parcelable {
         }
     };
 
-    public HabitEvent(String habitName, String comment, String location, String imageFilePath) {
-        String date = new SimpleDateFormat("MM-dd-yyyy").format(new Date());
-        this.eventTitle = habitName +": "+ date; // create unique event name
+    public HabitEvent(String title, String comment, String location, String imageName) {
+        this.eventTitle = title +  "-" + System.currentTimeMillis(); // create unique event name
         this.comment = comment;
         this.location = location;
-        this.imageFilePath = imageFilePath;
+        this.imageName = imageName;
     }
 
     public HabitEvent(Parcel in) {
         this.eventTitle = in.readString();
         this.comment = in.readString();
         this.location = in.readString();
-        this.imageFilePath = in.readString();
+        this.imageName = in.readString();
     }
 
     public String getEventTitle() {
@@ -67,12 +63,12 @@ public class HabitEvent implements Parcelable {
         this.location = location;
     }
 
-    public String getImageFilePath() {
-        return imageFilePath;
+    public String getImageName() {
+        return imageName;
     }
 
-    public void setImageFilePath(String imageFilePath) {
-        this.imageFilePath = imageFilePath;
+    public void setImageName(String imageName) {
+        this.imageName = imageName;
     }
 
     @Override
@@ -85,6 +81,6 @@ public class HabitEvent implements Parcelable {
         parcel.writeString(this.eventTitle);
         parcel.writeString(this.comment);
         parcel.writeString(this.location);
-        parcel.writeString(this.imageFilePath);
+        parcel.writeString(this.imageName);
     }
 }
