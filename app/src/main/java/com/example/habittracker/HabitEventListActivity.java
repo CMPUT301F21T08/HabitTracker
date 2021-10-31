@@ -12,6 +12,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -28,11 +30,9 @@ public class HabitEventListActivity extends AppCompatActivity {
     BottomNavigationView bottomNavigationView;
 
     HabitEvent passedEvent;
-    int position;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        System.out.println("8888888888888888888888888888");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_habit_event_list);
 
@@ -42,31 +42,58 @@ public class HabitEventListActivity extends AppCompatActivity {
 
         habitEventList = new ArrayList<>();
 
-        // Test only -----------------------------------------------
-        String [] titles = {"Event 1", "Event 2", "Event 3"};
+//----------------------------------For Test only -----------------------------------------------
+        String [] habitNames = {"Habit 1", "Habit 2", "Habit 3"};
         String [] comments = {"Comment 1", "Comment 2", "Comment 3"};
         String [] locations = {"location 1", "location 2", "location 3"};
 
         for (int i = 0; i < 3; i++) {
-            habitEventList.add(new HabitEvent(titles[i], comments[i], locations[i], titles[i]+System.currentTimeMillis()+".jpg"));
+            habitEventList.add(new HabitEvent(habitNames[i], comments[i], locations[i], null));
         }
-        // Test only -----------------------------------------------
+//---------------------------------For Test only -----------------------------------------------
 
 
-        // Process List View-----------------------------------------------------------------------------------------------------
+
+//--------------------------------------------- Process List View-----------------------------------------------------------------------------------------------------
         habitEventAdapter = new HabitEventListAdapter(this, habitEventList);
         habitEventListView.setAdapter(habitEventAdapter); // Sets the adapter for event list, used for showing list items
 
         habitEventListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                goToEventEditActivity(i); // TODO: Later we need to find ways to pass habit event objects to the edit activity here
-                position = i;
-            }
+                final int which_item = i;
+                AlertDialog.Builder builder = new AlertDialog.Builder(HabitEventListActivity.this);
+                builder.setMessage("What do you want to do?")
+                        .setPositiveButton("Edit/View", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                goToEventEditActivity(which_item); // TODO: Later we need to find ways to pass habit event objects to the edit activity here
+
+
+                            }
+                        })
+                        .setNegativeButton("Delete", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                                habitEventList.remove(which_item);
+                                habitEventAdapter.notifyDataSetChanged();
+
+
+
+                            }
+                        });
+
+                AlertDialog alert = builder.create();
+                alert.show();
+
+
+                }
         });
 
 
-        // Process Navigation Bar-----------------------------------------------------------------------------------------------------
+
+//---------------------------------------- Process Navigation Bar-----------------------------------------------------------------------------------------------------
         bottomNavigationView = findViewById(R.id.bottom_navigation_event);
         bottomNavigationView.setSelectedItemId(R.id.navigation_habitEvent);
 
@@ -100,9 +127,11 @@ public class HabitEventListActivity extends AppCompatActivity {
         });
 
 
-
     }
 
+    /**
+     * Here are the steps we should take everytime we return to this activity
+     */
     @Override
     protected void onResume() {
         super.onResume();
@@ -124,7 +153,7 @@ public class HabitEventListActivity extends AppCompatActivity {
                 HabitEvent tempEvent = habitEventAdapter.getItem(eventIndexInList);
                 tempEvent.setComment(passedEvent.getComment());
                 tempEvent.setLocation(passedEvent.getLocation());
-                System.out.println("-----------------"+passedEvent.getImageName());
+                tempEvent.setImageFilePath(passedEvent.getImageFilePath());
             }
             else {
                 // add new entry to list
@@ -148,7 +177,6 @@ public class HabitEventListActivity extends AppCompatActivity {
         intent.putExtra("EventIndex", index);
         startActivity(intent);
     }
-
 
 
 }
