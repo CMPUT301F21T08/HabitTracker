@@ -80,7 +80,8 @@ public class HabitEventListActivity extends AppCompatActivity {
                         finish();
                         return true;
                     case R.id.navigation_homePage:
-                        Intent intent2 = new Intent(HabitEventListActivity.this, ToDoActivity.class);
+                        Intent intent2 = new Intent(HabitEventListActivity.this, MainPageActivity.class);
+                        intent2.putExtra("StartMode", "normal");
                         startActivity(intent2);
                         finish();
                         return true;

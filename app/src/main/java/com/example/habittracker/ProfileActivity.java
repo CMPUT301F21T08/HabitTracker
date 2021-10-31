@@ -95,7 +95,7 @@ public class ProfileActivity extends AppCompatActivity {
                         finish();
                         return true;
                     case R.id.navigation_homePage:
-                        Intent intent3 = new Intent(ProfileActivity.this, ToDoActivity.class);
+                        Intent intent3 = new Intent(ProfileActivity.this, MainPageActivity.class);
                         startActivity(intent3);
                         finish();
                         return true;

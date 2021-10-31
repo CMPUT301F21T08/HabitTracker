@@ -33,11 +33,12 @@ public class FollowingActivity extends AppCompatActivity{
                         return true;
                     case R.id.navigation_habitEvent:
                         Intent intent2 = new Intent(FollowingActivity.this, HabitEventListActivity.class);
+                        intent2.putExtra("StartMode", "normal");
                         startActivity(intent2);
                         finish();
                         return true;
                     case R.id.navigation_homePage:
-                        Intent intent3 = new Intent(FollowingActivity.this, ToDoActivity.class);
+                        Intent intent3 = new Intent(FollowingActivity.this, MainPageActivity.class);
                         startActivity(intent3);
                         finish();
                         return true;

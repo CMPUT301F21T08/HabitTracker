@@ -145,7 +145,7 @@ public class HabitListActivity extends AppCompatActivity {
                         finish();
                         return true;
                     case R.id.navigation_homePage:
-                        Intent intent2 = new Intent(HabitListActivity.this, ToDoActivity.class);
+                        Intent intent2 = new Intent(HabitListActivity.this, MainPageActivity.class);
                         startActivity(intent2);
                         finish();
                         return true;
