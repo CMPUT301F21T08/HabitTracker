@@ -1,16 +1,62 @@
 package com.example.habittracker;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationBarView;
 
+import java.util.ArrayList;
+
 public class HabitListActivity extends AppCompatActivity {
+    // Result code
+    private int back = 11;
+    private int delete = 22;
+    private int add = 55;
+    private ListView habitListView;
+    private FloatingActionButton addButton;
+    private ArrayAdapter<Habit> habitAdapter;
+    private ArrayList<Habit> habitList;
+    private ActivityResultLauncher<Intent> activityLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == back) {
+                        Intent data = result.getData();
+                        String action = data.getStringExtra("action");
+                        if(action.equals("new")){
+                            habitAdapter.notifyDataSetChanged();
+                        }
+
+                    }
+                    if(result.getResultCode() == delete){
+                        Intent data = result.getData();
+                        int position = Integer.parseInt(data.getStringExtra("position"));
+                        habitList.remove(position);
+                        habitAdapter.notifyDataSetChanged();
+                    }
+                    if(result.getResultCode() == add) {
+                        Intent data = result.getData();
+                        Habit newHabit = (Habit) data.getExtras().getSerializable("habit");
+                        habitList.add(newHabit);
+                        habitAdapter.notifyDataSetChanged();
+                    }
+                }
+            });
 
 
     BottomNavigationView bottomNavigationView;
@@ -18,6 +64,34 @@ public class HabitListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_habit_list);
+        getSupportActionBar().setTitle("Habit - All Habits");
+        habitListView = findViewById(R.id.allHabits_habitList_listView);
+        addButton = findViewById(R.id.allHabits_addButton_button);
+
+        habitList = new ArrayList<>();
+        habitAdapter = new HabitListAdapter(this, habitList);
+        habitListView.setAdapter(habitAdapter);
+
+        habitListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Habit tapHabit = habitList.get(i);
+                goToHabitDescriptionActivity(i, tapHabit);
+
+            }
+        });
+
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), HabitEditActivity.class);
+                intent.putExtra("action", "add");
+                activityLauncher.launch(intent);
+            }
+        });
+
+
+
 
         // Process Navigation Bar
         bottomNavigationView = findViewById(R.id.bottom_navigation_event);
@@ -53,5 +127,14 @@ public class HabitListActivity extends AppCompatActivity {
                 return false;
             }
         });
+    }
+
+    private void goToHabitDescriptionActivity(int position, Habit tapHabit){
+        Intent intent = new Intent(this, HabitDescriptionActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putInt("position", position);
+        bundle.putSerializable("habit",tapHabit);
+        intent.putExtras(bundle);
+        activityLauncher.launch(intent);
     }
 }

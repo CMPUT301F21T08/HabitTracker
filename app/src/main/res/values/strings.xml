@@ -15,4 +15,20 @@
     <string name="location_information">Your location information is...</string>
     <string name="delete">Delete</string>
     <string name="delete_event">Delete Event</string>
+    <string name="habit_title">Habit Title</string>
+    <string name="start_date">start Date</string>
+    <string name="frequency">Frequency</string>
+    <string name="content">Content</string>
+    <string name="reason">Reason</string>
+    <string name="Return">return</string>
+    <string name="to_do">To Do</string>
+    <string name="done">Done</string>
+    <string name="choose_frequency">choose frequency</string>
+    <string name="sunday">Sunday</string>
+    <string name="saturday">Saturday</string>
+    <string name="friday">Friday</string>
+    <string name="thursday">Thursday</string>
+    <string name="wednesday">Wednesday</string>
+    <string name="tuesday">Tuesday</string>
+    <string name="monday">Monday</string>
 </resources>
