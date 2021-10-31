@@ -8,15 +8,16 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
-import android.content.DialogInterface;
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 
 import android.graphics.BitmapFactory;
@@ -29,15 +30,15 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.provider.OpenableColumns;
 import android.text.Html;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -60,12 +61,11 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-public class HabitEventEditActivity extends AppCompatActivity {
+public class HabitEventEditActivity extends AppCompatActivity implements DeleteConfirmFragment.OnDeleteConfirmFragmentInteractionListener {
     EditText location_editText;
     EditText comment_editText;
     Button photo_button;
@@ -77,75 +77,36 @@ public class HabitEventEditActivity extends AppCompatActivity {
     Button confirmBtn;
     FusedLocationProviderClient fusedLocationProviderClient;
 
-
-
-    ListView habitEventListView;
-    ArrayAdapter<HabitEvent> habitEventAdapter;
-    ArrayList<HabitEvent> habitEventList;
-
-
-
     HabitEvent passedEvent;
     HabitEvent newEvent;
     String habitName;
-    String imageFilePath; // This always saves the latest uri of the image shown in event
+    String imageFilePath; // This always saves the path for the current image shown in photo_imageView
     int eventIndexInList;
 
+    // Storage Permissions
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    private static String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
 
-    private static int REQUEST_CODE = 100;
-    OutputStream outputStream;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_habit_event_edit);
 
-        Intent intent = getIntent();
 
-
-        habitEventListView = findViewById(R.id.lv_habit_event);
-        habitEventAdapter = new HabitEventListAdapter(this, habitEventList);
-        habitEventList = new ArrayList<>();
-
-
+//-------------------------------------------------- Initial setup for the activity-------------------------------------------------------------------------------------------------------------
         deleteBtn = findViewById(R.id.habitEvent_delete_button);
         confirmBtn = findViewById(R.id.habitEvent_confirm_button);
         location_editText = findViewById(R.id.habitEvent_enterLocation_editText);
         comment_editText = findViewById(R.id.habitEvent_comment_editText);
         photo_imageView = findViewById(R.id.habitEvent_photo_imageView);
-
-        //Get passed habit event object from other events------------------------------------------------------------------------------------------------
-        // And display information (if any)
-        Bundle data = intent.getExtras();
-        eventIndexInList = data.getInt("EventIndex");
-
-
-
-        if (eventIndexInList >= 0) {
-            // In this case we are editing an entry in the list
-            passedEvent = (HabitEvent) data.getParcelable("HabitEventForEdit");
-            comment_editText.setText(passedEvent.getComment());
-            location_editText.setText(passedEvent.getLocation());
-
-            // load image
-            File dir = new File(Environment.getExternalStorageDirectory(), "SavedImage");
-            File image = new File(dir, passedEvent.getImageName());
-            Bitmap imageBitMap = BitmapFactory.decodeFile(image.getAbsolutePath());
-            photo_imageView.setImageBitmap(imageBitMap);
-        }
-        else {
-            // In this case we are adding a new event
-            habitName = data.getString("HabitName"); //TODO: use this on the habit side to transfer data
-        }
-
-
-
+        deleteBtn = findViewById(R.id.habitEvent_delete_button);
+        confirmBtn = findViewById(R.id.habitEvent_confirm_button);
 
         getSupportActionBar().setTitle("Habit Event - Edit");
-
-
-        Button deleteBtn = findViewById(R.id.habitEvent_delete_button);
-        Button confirmBtn = findViewById(R.id.habitEvent_confirm_button);
         // set return button
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -153,34 +114,11 @@ public class HabitEventEditActivity extends AppCompatActivity {
         deleteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(HabitEventEditActivity.this);
-                builder.setMessage("Are you sure you want to delete?")
-                        .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                Intent intentReturn = new Intent(getApplicationContext(), HabitEventListActivity.class); // Return to the habit event list page
-
-                                intentReturn.putExtra("StartMode", "Edit");
-                                habitEventAdapter.remove(passedEvent);
-                                habitEventAdapter.notifyDataSetChanged();
-
-
-                                startActivity(intentReturn);
-                                finish(); // finish current activity
-
-                            }
-                        }).setNegativeButton("Cancel",null);
-
-                AlertDialog alert = builder.create();
-                alert.show();
-
-
+                new DeleteConfirmFragment("Are you sure you want to delete?").show(getSupportFragmentManager(), "DELETE_HABIT_EVENT");
             }
         });
 
-
-
-
+        // This onclick listener processed the information we have in each input space, and edit the corresponding habit event accordingly
         confirmBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -192,24 +130,16 @@ public class HabitEventEditActivity extends AppCompatActivity {
                 String location = location_editText.getText().toString();
 
                 if (eventIndexInList >= 0) {
-                    // modify current entry
+                    // modify current entry, put necessary information and pass them to list activity
                     passedEvent.setComment(comment);
                     passedEvent.setLocation(location);
-                    if (ContextCompat.checkSelfPermission(HabitEventEditActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                        System.out.println("66666666666666666666666666");
-                        saveImage(passedEvent);
-                    }
-                    else {
-                        System.out.println("77777777777777777777777777");
-                        askPermission();
-                    }
+                    passedEvent.setImageFilePath(imageFilePath);
                     intentReturn.putExtra("EventIndex", eventIndexInList);
                     intentReturn.putExtra("HabitEventFromEdit", passedEvent);
                 }
                 else {
                     // create new entry
-                    newEvent = new HabitEvent(habitName, comment, location, habitName+System.currentTimeMillis()+".jpg");  // Comment can be empty, hence no error checking
-                    saveImage(newEvent);
+                    newEvent = new HabitEvent(habitName, comment, location, imageFilePath);  // Comment can be empty, hence no error checking
                     intentReturn.putExtra("EventIndex", eventIndexInList);
                     intentReturn.putExtra("HabitEventFromEdit", newEvent);
                 }
@@ -219,11 +149,46 @@ public class HabitEventEditActivity extends AppCompatActivity {
             }
         });
 
+//-------------------------------------------------Get passed habit event object from other events------------------------------------------------------------------------------------------------
+        Intent intentGetData = getIntent();
+
+        verifyStoragePermissions(this);
+
+        // And display information (if any)
+        Bundle data = intentGetData.getExtras();
+        eventIndexInList = data.getInt("EventIndex");
+
+        if (eventIndexInList >= 0) {
+            // In this case we are editing an entry in the list
+            passedEvent = (HabitEvent) data.getParcelable("HabitEventForEdit");
+            comment_editText.setText(passedEvent.getComment());
+            location_editText.setText(passedEvent.getLocation());
+
+            // load image from image file path
+            imageFilePath = passedEvent.getImageFilePath();
+            if (imageFilePath != null) {
+                File imageFile = new File(imageFilePath);
+                if (imageFile.exists()) {
+                    Bitmap bitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
+                    photo_imageView.setImageBitmap(bitmap);
+                }
+                else {
+                    System.out.println("-------------------------> Failed to load image file!");
+                }
+            }
+            else{
+                System.out.println("-------------------------> Image file path is null!");
+            }
+        }
+        else {
+            // In this case we are adding a new event, hence no manipulation is needed
+            habitName = data.getString("HabitName"); //TODO: use this on the habit side to transfer data
+        }
 
 
 
-        // Add photo to event------------------------------------------------------------------------------------------------------------------------------------
-        // photo part
+
+//------------------------------------------------------- Upload photo from phone and display in imageView------------------------------------------------------------------------------------------------------------------------------------
         // reference: https://www.youtube.com/watch?v=HxlAktedIhM
 
         photo_button = findViewById(R.id.habitEvent_addPhoto_button);
@@ -240,14 +205,15 @@ public class HabitEventEditActivity extends AppCompatActivity {
                         if(intent != null){
                             // when result data is not equal to empty
                             try{
+                                Uri uri = intent.getData();
                                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(
-                                        getContentResolver(),intent.getData());
+                                        getContentResolver(),uri);
                                 // set bitmap on image view
                                 photo_imageView.setImageBitmap(bitmap);
 
-
-
-                            }catch (IOException e){
+                                imageFilePath = getPathFromURI(HabitEventEditActivity.this, uri);
+                            }
+                            catch (IOException e){
                                 e.printStackTrace();
                             }
                         }
@@ -270,21 +236,16 @@ public class HabitEventEditActivity extends AppCompatActivity {
 
 
 
-        //-----------------------------Location Information Process---------------------------------------------------------------------------
-        // location part
-
-        // location part
-        location_editText = findViewById(R.id.habitEvent_enterLocation_editText);
-
-
-    // Reference: https://www.youtube.com/watch?v=t8nGh4gN1Q0
-//        and https://www.youtube.com/watch?v=qO3FFuBrT2E for onActivityResult is Deprecated
+//----------------------------------------------Location Information Process---------------------------------------------------------------------------
+        // Reference: https://www.youtube.com/watch?v=t8nGh4gN1Q0
+        // and https://www.youtube.com/watch?v=qO3FFuBrT2E for onActivityResult is Deprecated
         // Implement Autocomplete Place Api
+
+        location_editText = findViewById(R.id.habitEvent_enterLocation_editText);
 
         // initialize place
         Places.initialize(getApplicationContext(),"AIzaSyCJvvbjw-Qdfxe_fwAnE9HwVFE9SelWUP0");
         PlacesClient placesClient = Places.createClient(this);
-
 
         // get current location https://www.youtube.com/watch?v=Ak1O9Gip-pg
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
@@ -314,22 +275,16 @@ public class HabitEventEditActivity extends AppCompatActivity {
                                 } catch(IOException e1){
                                     e1.printStackTrace();
                                 }
-
                             }
                         }
                     });
-                }else{
+                }
+                else{
                     // when permission denied
                     ActivityCompat.requestPermissions(HabitEventEditActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);
                 }
             }
         });
-
-
-
-
-
-
 
 
         activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
@@ -341,16 +296,16 @@ public class HabitEventEditActivity extends AppCompatActivity {
                     Place place = Autocomplete.getPlaceFromIntent(result.getData());
                     // set address on edit text
                     location_editText.setText(place.getAddress());
-//                    // set locally name
-//                    location_information.setText(String.format("Location is %s", place.getName()));
-                } else if (result.getResultCode() == AutocompleteActivity.RESULT_ERROR) {
+                    // set locally name
+                    // location_information.setText(String.format("Location is %s", place.getName()));
+                }
+                else if (result.getResultCode() == AutocompleteActivity.RESULT_ERROR) {
                     // when have error
                     // initialize status
                     Status status = Autocomplete.getStatusFromIntent(result.getData());
 
                     // display toast
                     Toast.makeText(getApplicationContext(), status.getStatusMessage(), Toast.LENGTH_SHORT).show();
-
                 }
             }
         });
@@ -367,98 +322,91 @@ public class HabitEventEditActivity extends AppCompatActivity {
                 try{
                     // Create intent
                     Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN,fieldList).build(HabitEventEditActivity.this);
-
-                    // start activity result
-
-//                    startActivityForResult(intent, 100);
                     activityResultLauncher.launch(intent);
-
-
                 } catch (Exception e) {
                     // TODO: Handle the error.
                     Log.e("error", e.getMessage());
                     e.printStackTrace();
                 }
-
-
             }
         });
 
     }
 
+    /**
+     * This function makes sure that when returning to habit event list using the arrow in the tool bar, a mode string will be passed
+     * so that the return can be successful
+     * @param item
+     * @return
+     */
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                Intent intentReturn = new Intent(getApplicationContext(), HabitEventListActivity.class); // Return to the habit event list page
+                intentReturn.putExtra("StartMode", "normal");
+                startActivity(intentReturn);
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    /**
+     * Request permission to access external storage from user
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == REQUEST_CODE)
-        {
-            System.out.println("9999999999999999999999999999");
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                if (eventIndexInList >= 0) {
-                    saveImage(passedEvent);
+        switch(requestCode) {
+            case REQUEST_EXTERNAL_STORAGE:
+                if (grantResults.length > 0 &&
+                        grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    System.out.println("---------------------> access granted!");
+                }  else {
+                    System.out.println("---------------------> request access failed!");
                 }
-                else{
-                    saveImage(newEvent);
-                }
-            }else {
-                Toast.makeText(HabitEventEditActivity.this,"Please provide the required permissions",Toast.LENGTH_SHORT).show();
-            }
+                return;
         }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
-
-    private void askPermission() {
-        System.out.println("88888888888888888888888888888");
-        ActivityCompat.requestPermissions(HabitEventEditActivity.this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},REQUEST_CODE);
     }
 
 
 
-//    public void onConfirmDeletePressed() {
-//        Intent intentReturn = new Intent(getApplicationContext(), HabitEventListActivity.class); // Return to the habit event list page
-//
-//        intentReturn.putExtra("StartMode", "Edit");
-//        passedEvent.remove();
-//    }
+    //-------------------------------------------functional APIs-------------------------------------------------------------------------------------------------------------
 
-    public void saveImage(HabitEvent event) {
-        if (photo_imageView.getDrawable() == null) {
-            System.out.println("No image is shown currently");
-            return;
+
+
+    public void onConfirmDeletePressed() {
+        return;
+    }
+
+    // The following two methods took reference from: https://www.youtube.com/watch?v=-sItRxJ3rVk
+    public String getPathFromURI(Context context, Uri uri) {
+        String[] proj = {MediaStore.Images.Media.DATA};
+        Cursor cursor = context.getContentResolver().query(uri, proj, null, null, null);
+        if (cursor != null) {
+            int column_inedx = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_inedx);
         }
+        return null;
+    }
 
-        // Save file
-        File dir = new File(Environment.getExternalStorageDirectory(), "SavedImage");
-        if (!dir.exists()) {
-            dir.mkdir();
+    public static void verifyStoragePermissions(Activity activity) {
+        // Check if we have write permission
+        int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            // We don't have permission so prompt the user
+            ActivityCompat.requestPermissions(
+                    activity,
+                    PERMISSIONS_STORAGE,
+                    REQUEST_EXTERNAL_STORAGE
+            );
         }
-
-        BitmapDrawable drawable = (BitmapDrawable) photo_imageView.getDrawable();
-        Bitmap bitmap = drawable.getBitmap();
-
-        File file = new File(dir, event.getImageName()); // Save image as the image name provided in the SavedImage folder
-
-        try {
-            outputStream = new FileOutputStream(file);
-        }
-        catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        bitmap.compress(Bitmap.CompressFormat.JPEG,100,outputStream);
-
-        try {
-            outputStream.flush();
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            outputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        System.out.println("99999999999999999999999999999");
     }
 
 
