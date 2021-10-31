@@ -9,7 +9,7 @@ public class HabitEvent implements Parcelable {
     private String eventTitle;
     private String comment;
     private String location;
-    private String imageName;
+    private String imageName; // image Uri
 
 
     public static final Parcelable.Creator<HabitEvent> CREATOR = new Parcelable.Creator<HabitEvent>() {

@@ -13,8 +13,10 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 
 import android.graphics.BitmapFactory;
@@ -106,10 +108,32 @@ public class HabitEventEditActivity extends AppCompatActivity implements DeleteC
             location_editText.setText(passedEvent.getLocation());
 
             // load image
-            File dir = new File(Environment.getExternalStorageDirectory(), "SavedImage");
-            File image = new File(dir, passedEvent.getImageName());
-            Bitmap imageBitMap = BitmapFactory.decodeFile(image.getAbsolutePath());
-            photo_imageView.setImageBitmap(imageBitMap);
+            imageFilePath = passedEvent.getImageName();
+            Uri photo_uri = Uri.parse(imageFilePath);
+
+            try {
+
+
+
+
+
+                Bitmap bitmap = null;
+
+
+                bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), photo_uri);
+                photo_imageView.setImageBitmap(bitmap);
+                Toast.makeText(HabitEventEditActivity.this, "pic good", Toast.LENGTH_SHORT).show();
+            } catch (IOException e) {
+                e.printStackTrace();
+                Toast.makeText(HabitEventEditActivity.this, "no pic", Toast.LENGTH_SHORT).show();
+            }
+
+
+
+//            File dir = new File(Environment.getExternalStorageDirectory(), "SavedImage");
+//            File image = new File(dir, passedEvent.getImageName());
+//            Bitmap imageBitMap = BitmapFactory.decodeFile(image.getAbsolutePath());
+//            photo_imageView.setImageBitmap(imageBitMap);
         }
         else {
             // In this case we are adding a new event
@@ -143,26 +167,28 @@ public class HabitEventEditActivity extends AppCompatActivity implements DeleteC
 
                 String comment = comment_editText.getText().toString();
                 String location = location_editText.getText().toString();
+                String imageName = imageFilePath;
 
                 if (eventIndexInList >= 0) {
                     // modify current entry
                     passedEvent.setComment(comment);
                     passedEvent.setLocation(location);
-                    if (ContextCompat.checkSelfPermission(HabitEventEditActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                        System.out.println("66666666666666666666666666");
-                        saveImage(passedEvent);
-                    }
-                    else {
-                        System.out.println("77777777777777777777777777");
-                        askPermission();
-                    }
+                    passedEvent.setImageName(imageName);
+//                    if (ContextCompat.checkSelfPermission(HabitEventEditActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+//                        System.out.println("66666666666666666666666666");
+////                        saveImage(passedEvent);
+//                    }
+//                    else {
+//                        System.out.println("77777777777777777777777777");
+////                        askPermission();
+//                    }
                     intentReturn.putExtra("EventIndex", eventIndexInList);
                     intentReturn.putExtra("HabitEventFromEdit", passedEvent);
                 }
                 else {
                     // create new entry
                     newEvent = new HabitEvent(habitName, comment, location, habitName+System.currentTimeMillis()+".jpg");  // Comment can be empty, hence no error checking
-                    saveImage(newEvent);
+//                    saveImage(newEvent);
                     intentReturn.putExtra("EventIndex", eventIndexInList);
                     intentReturn.putExtra("HabitEventFromEdit", newEvent);
                 }
@@ -198,11 +224,15 @@ public class HabitEventEditActivity extends AppCompatActivity implements DeleteC
                                 // set bitmap on image view
                                 photo_imageView.setImageBitmap(bitmap);
 
+                                imageFilePath = intent.getData().toString();
+
+
                             }catch (IOException e){
                                 e.printStackTrace();
                             }
                         }
                     }
+
                 }
         );
 
@@ -337,29 +367,29 @@ public class HabitEventEditActivity extends AppCompatActivity implements DeleteC
 
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == REQUEST_CODE)
-        {
-            System.out.println("9999999999999999999999999999");
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                if (eventIndexInList >= 0) {
-                    saveImage(passedEvent);
-                }
-                else{
-                    saveImage(newEvent);
-                }
-            }else {
-                Toast.makeText(HabitEventEditActivity.this,"Please provide the required permissions",Toast.LENGTH_SHORT).show();
-            }
-        }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
-
-    private void askPermission() {
-        System.out.println("88888888888888888888888888888");
-        ActivityCompat.requestPermissions(HabitEventEditActivity.this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},REQUEST_CODE);
-    }
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        if (requestCode == REQUEST_CODE)
+//        {
+//            System.out.println("9999999999999999999999999999");
+//            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+//                if (eventIndexInList >= 0) {
+//                    saveImage(passedEvent);
+//                }
+//                else{
+//                    saveImage(newEvent);
+//                }
+//            }else {
+//                Toast.makeText(HabitEventEditActivity.this,"Please provide the required permissions",Toast.LENGTH_SHORT).show();
+//            }
+//        }
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//    }
+//
+//    private void askPermission() {
+//        System.out.println("88888888888888888888888888888");
+//        ActivityCompat.requestPermissions(HabitEventEditActivity.this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},REQUEST_CODE);
+//    }
 
 
 
@@ -367,47 +397,47 @@ public class HabitEventEditActivity extends AppCompatActivity implements DeleteC
         return;
     }
 
-    public void saveImage(HabitEvent event) {
-        if (photo_imageView.getDrawable() == null) {
-            System.out.println("No image is shown currently");
-            return;
-        }
-
-        // Save file
-        File dir = new File(Environment.getExternalStorageDirectory(), "SavedImage");
-        if (!dir.exists()) {
-            dir.mkdir();
-        }
-
-        BitmapDrawable drawable = (BitmapDrawable) photo_imageView.getDrawable();
-        Bitmap bitmap = drawable.getBitmap();
-
-        File file = new File(dir, event.getImageName()); // Save image as the image name provided in the SavedImage folder
-
-        try {
-            outputStream = new FileOutputStream(file);
-        }
-        catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        bitmap.compress(Bitmap.CompressFormat.JPEG,100,outputStream);
-
-        try {
-            outputStream.flush();
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            outputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        System.out.println("99999999999999999999999999999");
-    }
-
+//    public void saveImage(HabitEvent event) {
+//        if (photo_imageView.getDrawable() == null) {
+//            System.out.println("No image is shown currently");
+//            return;
+//        }
+//
+//        // Save file
+//        File dir = new File(Environment.getExternalStorageDirectory(), "SavedImage");
+//        if (!dir.exists()) {
+//            dir.mkdir();
+//        }
+//
+//        BitmapDrawable drawable = (BitmapDrawable) photo_imageView.getDrawable();
+//        Bitmap bitmap = drawable.getBitmap();
+//
+//        File file = new File(dir, event.getImageName()); // Save image as the image name provided in the SavedImage folder
+//
+//        try {
+//            outputStream = new FileOutputStream(file);
+//        }
+//        catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
+//
+//        bitmap.compress(Bitmap.CompressFormat.JPEG,100,outputStream);
+//
+//        try {
+//            outputStream.flush();
+//        }
+//        catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//        try {
+//            outputStream.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//        System.out.println("99999999999999999999999999999");
+//    }
+//
 
 }
