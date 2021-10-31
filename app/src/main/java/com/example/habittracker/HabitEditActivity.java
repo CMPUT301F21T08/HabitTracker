@@ -17,9 +17,14 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
+
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 
 public class HabitEditActivity extends AppCompatActivity implements AddWeekDaysFragment.OnFragmentInteractionListener {
     private Habit habit;
@@ -35,6 +40,11 @@ public class HabitEditActivity extends AppCompatActivity implements AddWeekDaysF
     private EditText frequency;
     private TextView frequencyType;
     private Spinner spinner;
+
+
+    private FirebaseAuth authentication;
+    private String uid;
+
     // variables used to construct the spinner
     private ArrayList<String> frequencyList = new ArrayList<String>();
     private ArrayAdapter<String> spinnerAdapter;
@@ -53,7 +63,7 @@ public class HabitEditActivity extends AppCompatActivity implements AddWeekDaysF
     private int add = 55;
     private int original= 44;
     private int newObject= 33;
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,6 +80,11 @@ public class HabitEditActivity extends AppCompatActivity implements AddWeekDaysF
             initView(habit);
         } else{
             getSupportActionBar().setTitle("Habit - Add");
+        }
+
+        authentication =FirebaseAuth.getInstance();
+        if (authentication.getCurrentUser() != null){
+            uid = authentication.getCurrentUser().getUid();
         }
 
 
@@ -141,9 +156,9 @@ public class HabitEditActivity extends AppCompatActivity implements AddWeekDaysF
                     habit.setHabitContent(content.getText().toString());
                     habit.setHabitReason(reason.getText().toString());
                     habit.setOccurrenceDay(value_of_OccurrenceDate);
-                    bundle.putSerializable("habit", habit);
-                    intentConfirm.putExtras(bundle);
-                    setResult(newObject, intentConfirm);
+                    HashMap<String, Object> map = new HashMap<>();
+                    map.put(title.getText().toString(),habit);
+                    FirebaseDatabase.getInstance().getReference().child(uid).child("Habit").updateChildren(map);
                 } else {
                     String value_of_title = title.getText().toString();
                     String value_of_frequencyType = frequencyType.getText().toString();
@@ -152,9 +167,14 @@ public class HabitEditActivity extends AppCompatActivity implements AddWeekDaysF
                     String value_of_content = content.getText().toString();
                     String value_of_reason = reason.getText().toString();
                     habit = new Habit(value_of_title, value_of_reason, value_of_content, value_of_startDate, value_of_frequency, value_of_frequencyType, value_of_OccurrenceDate);
-                    bundle.putSerializable("habit", habit);
-                    intentConfirm.putExtras(bundle);
-                    setResult(add, intentConfirm);
+//                    bundle.putSerializable("habit", habit);
+//                    intentConfirm.putExtras(bundle);
+//                    setResult(add, intentConfirm);
+
+                        // adding habit into the firebase
+                    HashMap<String, Object> map = new HashMap<>();
+                    map.put(value_of_title,habit);
+                    FirebaseDatabase.getInstance().getReference().child(uid).child("Habit").updateChildren(map);
                 }
                 finish();
             }

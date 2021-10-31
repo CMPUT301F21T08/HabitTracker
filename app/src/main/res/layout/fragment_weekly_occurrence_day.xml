@@ -9,42 +9,50 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/monday"
-        android:clickable="false"/>
+        android:clickable="false"
+        android:checkable="false"/>
     <CheckBox
         android:id="@+id/checkbox_tuesday"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/tuesday"
-        android:clickable="false"/>
+        android:clickable="false"
+        android:checkable="false"/>
     <CheckBox
         android:id="@+id/checkbox_wednesday"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/wednesday"/>
+        android:text="@string/wednesday"
+        android:clickable="false"
+        android:checkable="false"/>
     <CheckBox
         android:id="@+id/checkbox_thursday"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/thursday"
-        android:clickable="false"/>
+        android:clickable="false"
+        android:checkable="false"/>
     <CheckBox
         android:id="@+id/checkbox_friday"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/friday"
-        android:clickable="false"/>
+        android:clickable="false"
+        android:checkable="false"/>
     <CheckBox
         android:id="@+id/checkbox_saturday"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/saturday"
-        android:clickable="false"/>
+        android:clickable="false"
+        android:checkable="false"/>
     <CheckBox
         android:id="@+id/checkbox_sunday"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/sunday"
-        android:clickable="false"/>
+        android:clickable="false"
+        android:checkable="false"/>
 
 
 </LinearLayout>
