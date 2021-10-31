@@ -8,11 +8,13 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -30,10 +32,12 @@ import android.provider.MediaStore;
 import android.text.Html;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -56,11 +60,12 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-public class HabitEventEditActivity extends AppCompatActivity implements DeleteConfirmFragment.OnDeleteConfirmFragmentInteractionListener {
+public class HabitEventEditActivity extends AppCompatActivity {
     EditText location_editText;
     EditText comment_editText;
     Button photo_button;
@@ -72,11 +77,20 @@ public class HabitEventEditActivity extends AppCompatActivity implements DeleteC
     Button confirmBtn;
     FusedLocationProviderClient fusedLocationProviderClient;
 
+
+
+    ListView habitEventListView;
+    ArrayAdapter<HabitEvent> habitEventAdapter;
+    ArrayList<HabitEvent> habitEventList;
+
+
+
     HabitEvent passedEvent;
     HabitEvent newEvent;
     String habitName;
     String imageFilePath; // This always saves the latest uri of the image shown in event
     int eventIndexInList;
+
 
     private static int REQUEST_CODE = 100;
     OutputStream outputStream;
@@ -88,6 +102,12 @@ public class HabitEventEditActivity extends AppCompatActivity implements DeleteC
 
         Intent intent = getIntent();
 
+
+        habitEventListView = findViewById(R.id.lv_habit_event);
+        habitEventAdapter = new HabitEventListAdapter(this, habitEventList);
+        habitEventList = new ArrayList<>();
+
+
         deleteBtn = findViewById(R.id.habitEvent_delete_button);
         confirmBtn = findViewById(R.id.habitEvent_confirm_button);
         location_editText = findViewById(R.id.habitEvent_enterLocation_editText);
@@ -98,6 +118,8 @@ public class HabitEventEditActivity extends AppCompatActivity implements DeleteC
         // And display information (if any)
         Bundle data = intent.getExtras();
         eventIndexInList = data.getInt("EventIndex");
+
+
 
         if (eventIndexInList >= 0) {
             // In this case we are editing an entry in the list
@@ -127,12 +149,37 @@ public class HabitEventEditActivity extends AppCompatActivity implements DeleteC
         // set return button
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+
         deleteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new DeleteConfirmFragment("Are you sure you want to delete?").show(getSupportFragmentManager(), "DELETE_HABIT_EVENT");
+                AlertDialog.Builder builder = new AlertDialog.Builder(HabitEventEditActivity.this);
+                builder.setMessage("Are you sure you want to delete?")
+                        .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                Intent intentReturn = new Intent(getApplicationContext(), HabitEventListActivity.class); // Return to the habit event list page
+
+                                intentReturn.putExtra("StartMode", "Edit");
+                                habitEventAdapter.remove(passedEvent);
+                                habitEventAdapter.notifyDataSetChanged();
+
+
+                                startActivity(intentReturn);
+                                finish(); // finish current activity
+
+                            }
+                        }).setNegativeButton("Cancel",null);
+
+                AlertDialog alert = builder.create();
+                alert.show();
+
+
             }
         });
+
+
+
 
         confirmBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -197,6 +244,8 @@ public class HabitEventEditActivity extends AppCompatActivity implements DeleteC
                                         getContentResolver(),intent.getData());
                                 // set bitmap on image view
                                 photo_imageView.setImageBitmap(bitmap);
+
+
 
                             }catch (IOException e){
                                 e.printStackTrace();
@@ -363,9 +412,12 @@ public class HabitEventEditActivity extends AppCompatActivity implements DeleteC
 
 
 
-    public void onConfirmDeletePressed() {
-        return;
-    }
+//    public void onConfirmDeletePressed() {
+//        Intent intentReturn = new Intent(getApplicationContext(), HabitEventListActivity.class); // Return to the habit event list page
+//
+//        intentReturn.putExtra("StartMode", "Edit");
+//        passedEvent.remove();
+//    }
 
     public void saveImage(HabitEvent event) {
         if (photo_imageView.getDrawable() == null) {

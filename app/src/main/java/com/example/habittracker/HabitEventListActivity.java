@@ -1,9 +1,11 @@
 package com.example.habittracker;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -26,6 +28,7 @@ public class HabitEventListActivity extends AppCompatActivity {
     BottomNavigationView bottomNavigationView;
 
     HabitEvent passedEvent;
+    int position;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +61,7 @@ public class HabitEventListActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 goToEventEditActivity(i); // TODO: Later we need to find ways to pass habit event objects to the edit activity here
+                position = i;
             }
         });
 
@@ -94,6 +98,7 @@ public class HabitEventListActivity extends AppCompatActivity {
                 return false;
             }
         });
+
 
 
     }
@@ -143,6 +148,7 @@ public class HabitEventListActivity extends AppCompatActivity {
         intent.putExtra("EventIndex", index);
         startActivity(intent);
     }
+
 
 
 }
