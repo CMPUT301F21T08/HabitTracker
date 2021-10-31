@@ -31,4 +31,5 @@
     <string name="wednesday">Wednesday</string>
     <string name="tuesday">Tuesday</string>
     <string name="monday">Monday</string>
+    <string name="current_location">get current location</string>
 </resources>
