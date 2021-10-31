@@ -1,28 +1,68 @@
 package com.example.habittracker;
 
 import android.content.Intent;
+import android.icu.lang.UScript;
 import android.os.Bundle;
+import android.renderscript.Sampler;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ProfileActivity extends AppCompatActivity {
 
     Button signOut_btn;
     BottomNavigationView bottomNavigationView;
+    TextView userName;
+    TextView userEmail;
+    private FirebaseAuth authentication;
+    private String uid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
+        authentication = FirebaseAuth.getInstance();
+        if (authentication.getCurrentUser() != null){
+            uid = authentication.getCurrentUser().getUid();
+        }
+        userName = findViewById(R.id.profile_userName_TextView);
+        userEmail = findViewById(R.id.profile_userEmail_TextView);
+
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child(uid).child("Info");
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    Map<String, String> map = (Map) dataSnapshot.getValue();
+                    if (map != null) {
+                        userName.setText(map.get("name"));
+                        userEmail.setText(map.get("email"));
+                    }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                System.out.println("The read failed: " + error.getCode());
+            }
+        });
 
 
         signOut_btn = findViewById(R.id.profile_signOut_button);

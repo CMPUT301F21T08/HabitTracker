@@ -16,6 +16,9 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.HashMap;
 
 public class SignUpActivity extends AppCompatActivity {
 
@@ -25,6 +28,7 @@ public class SignUpActivity extends AppCompatActivity {
     EditText passWord;
     EditText confirmPassWord;
     private FirebaseAuth authentication;
+    private String uid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +41,6 @@ public class SignUpActivity extends AppCompatActivity {
         passWord = findViewById(R.id.signUp_passWord_EditView);
         confirmPassWord = findViewById(R.id.signUp_confirm_passWord_EditView);
         authentication =  FirebaseAuth.getInstance();
-
 
         createButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,11 +58,10 @@ public class SignUpActivity extends AppCompatActivity {
                     Toast.makeText(SignUpActivity.this, "Password needs to match with Confirm Password", Toast.LENGTH_SHORT).show();
                 }
                 else  if (sPassWord.length() < 6){
-                    Toast.makeText(SignUpActivity.this, "Password needs to be atleast 6 characters", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SignUpActivity.this, "Password needs to be at least 6 characters", Toast.LENGTH_SHORT).show();
                 } else {
                     signUp(sUserEmail, sPassWord, sUserName);
                 }
-
             }
         });
     }
@@ -70,11 +72,25 @@ public class SignUpActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()){
                     Toast.makeText(SignUpActivity.this, "Signup was successful", Toast.LENGTH_SHORT).show();
+
+                    if (authentication.getCurrentUser() != null){
+                        uid = authentication.getCurrentUser().getUid();
+                        System.out.println(uid);
+                    }
+
+                    HashMap<String,Object> map = new HashMap<>();
+                    map.put("name",userName);
+                    map.put("email",userEmail);
+
+
+                    FirebaseDatabase.getInstance().getReference().child(uid).child("Info").updateChildren(map);
+
+
+
                     startActivity(new Intent(getApplicationContext(), LogInActivity.class ));
                     finish();
                  } else {
                     Toast.makeText(SignUpActivity.this, "Signup failed", Toast.LENGTH_SHORT).show();
-
                 }
 
             }

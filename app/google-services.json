@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "747727223248",
+    "firebase_url": "https://habittracker-9757c-default-rtdb.firebaseio.com",
     "project_id": "habittracker-9757c",
     "storage_bucket": "habittracker-9757c.appspot.com"
   },
