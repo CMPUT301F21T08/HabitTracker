@@ -26,6 +26,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class HabitEventListActivity extends AppCompatActivity {
 
@@ -40,6 +41,11 @@ public class HabitEventListActivity extends AppCompatActivity {
     private FirebaseAuth authentication;
     private String uid;
 
+    // test
+    HabitEvent newEvent;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +57,14 @@ public class HabitEventListActivity extends AppCompatActivity {
 
         habitEventList = new ArrayList<HabitEvent>();
 
+
+
+        habitEventAdapter = new HabitEventListAdapter(this, habitEventList);
+        habitEventListView.setAdapter(habitEventAdapter); // Sets the adapter for event list, used for showing list items
+
+
+
+
 //----------------------------------For Test only -----------------------------------------------
 //        String [] habitNames = {"Habit 1", "Habit 2", "Habit 3"};
 //        String [] comments = {"Comment 1", "Comment 2", "Comment 3"};
@@ -61,8 +75,6 @@ public class HabitEventListActivity extends AppCompatActivity {
 //        }
 //---------------------------------For Test only -----------------------------------------------
 
-        habitEventAdapter = new HabitEventListAdapter(this, habitEventList);
-        habitEventListView.setAdapter(habitEventAdapter); // Sets the adapter for event list, used for showing list items
 
 //-------------------------------------------------- FireBase-------------------------------------------------------------------------------------------------------------
 
@@ -70,9 +82,26 @@ public class HabitEventListActivity extends AppCompatActivity {
         if (authentication.getCurrentUser() != null){
             uid = authentication.getCurrentUser().getUid();
         }
-
-
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child(uid).child("HabitEvent");
+
+//----------------------------------Get some test sample -----------------------------------------------
+
+
+        String habitEventName = "habit 6" ;
+
+        newEvent = new HabitEvent(habitEventName, "comment", "", "");  // Comment can be empty, hence no error checking
+
+        HashMap<String, Object> map = new HashMap<>();
+        map.put(newEvent.getEventTitle(),newEvent);
+
+        FirebaseDatabase.getInstance().getReference().child(uid).child("HabitEvent").updateChildren(map);
+
+
+
+
+
+//----------------------------------update listView -----------------------------------------------
+
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -192,5 +221,7 @@ public class HabitEventListActivity extends AppCompatActivity {
         intent.putExtra("EventIndex", index);
         startActivity(intent);
     }
+
+
 
 }

@@ -64,6 +64,7 @@ import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -151,6 +152,9 @@ public class HabitEventEditActivity extends AppCompatActivity  {
         // set return button
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+
+
+
 //-------------------------------------------------- delete button -------------------------------------------------------------------------------------------------------------
         deleteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -168,9 +172,26 @@ public class HabitEventEditActivity extends AppCompatActivity  {
 
                                 HashMap<String, Object> map = new HashMap<>();
                                 map.put(passedEvent.getEventTitle(),passedEvent);
-                                FirebaseDatabase.getInstance().getReference().child(uid).child("HabitEvent").removeValue();
+                                FirebaseDatabase.getInstance().getReference().child(uid).child("HabitEvent").child(habitEventTitle).removeValue();
 
+                                // delete firebase storage image
+                                StorageReference reference = FirebaseStorage.getInstance().getReferenceFromUrl(passedEvent.getDownloadUrl());
+                                reference.delete()
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void unused) {
+                                                Toast.makeText(HabitEventEditActivity.this,"image is deleted",Toast.LENGTH_SHORT).show();
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Toast.makeText(HabitEventEditActivity.this,"error",Toast.LENGTH_SHORT).show();
 
+                                            }
+                                        });
+
+                                //
                                 startActivity(intentReturn);
                                 finish(); // finish current activity
 
@@ -218,6 +239,7 @@ public class HabitEventEditActivity extends AppCompatActivity  {
                     map.put(passedEvent.getEventTitle(),passedEvent);
                     FirebaseDatabase.getInstance().getReference().child(uid).child("HabitEvent").updateChildren(map);
 
+
                     intentReturn.putExtra("EventIndex", eventIndexInList);
                     intentReturn.putExtra("HabitEventFromEdit", passedEvent);
                 }
@@ -239,6 +261,8 @@ public class HabitEventEditActivity extends AppCompatActivity  {
                 finish(); // finish current activity
             }
         });
+
+
 
 //-------------------------------------------------Get passed habit event object from other events------------------------------------------------------------------------------------------------
         Intent intentGetData = getIntent();
@@ -307,6 +331,9 @@ public class HabitEventEditActivity extends AppCompatActivity  {
                                 photo_imageView.setImageBitmap(bitmap);
 
                                 imageFilePath = getPathFromURI(HabitEventEditActivity.this, uri);
+
+
+
                                 uploadImage(imageFilePath);
                             }
                             catch (IOException e){
@@ -538,6 +565,7 @@ public class HabitEventEditActivity extends AppCompatActivity  {
                         System.out.println("-----------------> Get photo url failed!");
                     }
                 });
+
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
