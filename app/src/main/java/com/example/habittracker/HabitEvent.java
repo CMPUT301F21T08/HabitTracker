@@ -42,7 +42,8 @@ public class HabitEvent implements Parcelable {
         this.location = in.readString();
         this.imageFilePath = in.readString();
     }
-
+    public HabitEvent(){
+    }
     public String getEventTitle() {
         return eventTitle;
     }

@@ -56,6 +56,9 @@ import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.File;
 
@@ -63,6 +66,8 @@ import java.io.IOException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import android.widget.ListView;
@@ -74,6 +79,12 @@ import android.content.DialogInterface;
 
 
 public class HabitEventEditActivity extends AppCompatActivity  {
+
+
+    private FirebaseAuth authentication;
+    private String uid;
+
+
     EditText location_editText;
     EditText comment_editText;
     Button photo_button;
@@ -103,6 +114,12 @@ public class HabitEventEditActivity extends AppCompatActivity  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_habit_event_edit);
+//-------------------------------------------------- FireBase-------------------------------------------------------------------------------------------------------------
+
+        authentication =FirebaseAuth.getInstance();
+        if (authentication.getCurrentUser() != null){
+            uid = authentication.getCurrentUser().getUid();
+        }
 
 
 //-------------------------------------------------- Initial setup for the activity-------------------------------------------------------------------------------------------------------------
@@ -121,7 +138,7 @@ public class HabitEventEditActivity extends AppCompatActivity  {
         // set return button
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-
+//-------------------------------------------------- delete button -------------------------------------------------------------------------------------------------------------
         deleteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -134,6 +151,11 @@ public class HabitEventEditActivity extends AppCompatActivity  {
 
                                 intentReturn.putExtra("StartMode", "Delete");
                                 intentReturn.putExtra("EventIndex", eventIndexInList);
+
+
+                                HashMap<String, Object> map = new HashMap<>();
+                                map.put(passedEvent.getEventTitle(),passedEvent);
+                                FirebaseDatabase.getInstance().getReference().child(uid).child("HabitEvent").removeValue();
 
 
                                 startActivity(intentReturn);
@@ -149,7 +171,7 @@ public class HabitEventEditActivity extends AppCompatActivity  {
             }
         });
 
-
+//-------------------------------------------------- Confirm button-------------------------------------------------------------------------------------------------------------
         // This onclick listener processed the information we have in each input space, and edit the corresponding habit event accordingly
         confirmBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -168,12 +190,19 @@ public class HabitEventEditActivity extends AppCompatActivity  {
                     passedEvent.setImageFilePath(imageFilePath);
                     intentReturn.putExtra("EventIndex", eventIndexInList);
                     intentReturn.putExtra("HabitEventFromEdit", passedEvent);
+                    HashMap<String, Object> map = new HashMap<>();
+                    map.put(passedEvent.getEventTitle(),passedEvent);
+                    FirebaseDatabase.getInstance().getReference().child(uid).child("HabitEvent").updateChildren(map);
                 }
                 else {
                     // create new entry
                     newEvent = new HabitEvent(habitName, comment, location, imageFilePath);  // Comment can be empty, hence no error checking
                     intentReturn.putExtra("EventIndex", eventIndexInList);
                     intentReturn.putExtra("HabitEventFromEdit", newEvent);
+
+                    HashMap<String, Object> map = new HashMap<>();
+                    map.put(newEvent.getEventTitle(),newEvent);
+                    FirebaseDatabase.getInstance().getReference().child(uid).child("HabitEvent").updateChildren(map);
                 }
 
                 startActivity(intentReturn);

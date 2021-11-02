@@ -18,6 +18,12 @@ import android.widget.ListView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -31,6 +37,9 @@ public class HabitEventListActivity extends AppCompatActivity {
 
     HabitEvent passedEvent;
 
+    private FirebaseAuth authentication;
+    private String uid;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,23 +49,48 @@ public class HabitEventListActivity extends AppCompatActivity {
 
         habitEventListView = findViewById(R.id.lv_habit_event);
 
-        habitEventList = new ArrayList<>();
+//        habitEventList = new ArrayList<>();
+        habitEventList = new ArrayList<HabitEvent>();
 
 //----------------------------------For Test only -----------------------------------------------
-        String [] habitNames = {"Habit 1", "Habit 2", "Habit 3"};
-        String [] comments = {"Comment 1", "Comment 2", "Comment 3"};
-        String [] locations = {"location 1", "location 2", "location 3"};
-
-        for (int i = 0; i < 3; i++) {
-            habitEventList.add(new HabitEvent(habitNames[i], comments[i], locations[i], null));
-        }
+//        String [] habitNames = {"Habit 1", "Habit 2", "Habit 3"};
+//        String [] comments = {"Comment 1", "Comment 2", "Comment 3"};
+//        String [] locations = {"location 1", "location 2", "location 3"};
+//
+//        for (int i = 0; i < 3; i++) {
+//            habitEventList.add(new HabitEvent(habitNames[i], comments[i], locations[i], null));
+//        }
 //---------------------------------For Test only -----------------------------------------------
+        habitEventAdapter = new HabitEventListAdapter(this, habitEventList);
+        habitEventListView.setAdapter(habitEventAdapter); // Sets the adapter for event list, used for showing list items
+//-------------------------------------------------- FireBase-------------------------------------------------------------------------------------------------------------
 
+        authentication = FirebaseAuth.getInstance();
+        if (authentication.getCurrentUser() != null){
+            uid = authentication.getCurrentUser().getUid();
+        }
+
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child(uid).child("HabitEvent");
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()){
+                    HabitEvent habitE = (HabitEvent) dataSnapshot.getValue(HabitEvent.class);
+                    habitEventList.add(habitE);
+
+                }
+                habitEventAdapter.notifyDataSetChanged();
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                System.out.println("Read Data Failed");
+            }
+        });
 
 
 //--------------------------------------------- Process List View-----------------------------------------------------------------------------------------------------
-        habitEventAdapter = new HabitEventListAdapter(this, habitEventList);
-        habitEventListView.setAdapter(habitEventAdapter); // Sets the adapter for event list, used for showing list items
+
         habitEventListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
