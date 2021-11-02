@@ -13,6 +13,7 @@ import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -45,10 +46,14 @@ import android.widget.ImageView;
 
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
@@ -59,11 +64,15 @@ import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 
 import java.io.IOException;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -80,15 +89,14 @@ import android.content.DialogInterface;
 
 public class HabitEventEditActivity extends AppCompatActivity  {
 
-
     private FirebaseAuth authentication;
     private String uid;
-
 
     EditText location_editText;
     EditText comment_editText;
     Button photo_button;
     ImageView photo_imageView;
+    ProgressDialog editEventProgressDialog;
     ActivityResultLauncher<Intent> activityResultLauncher;
 
     Button currentLocation_button;
@@ -99,8 +107,11 @@ public class HabitEventEditActivity extends AppCompatActivity  {
     HabitEvent passedEvent;
     HabitEvent newEvent;
     String habitName;
+    String habitEventTitle;
     String imageFilePath; // This always saves the path for the current image shown in photo_imageView
+    Uri storageURL;
     int eventIndexInList;
+    int access_granted = 0;
 
     // Storage Permissions
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
@@ -108,6 +119,8 @@ public class HabitEventEditActivity extends AppCompatActivity  {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
+
+    boolean hasUrl = false;
 
 
     @Override
@@ -130,7 +143,7 @@ public class HabitEventEditActivity extends AppCompatActivity  {
         photo_imageView = findViewById(R.id.habitEvent_photo_imageView);
         deleteBtn = findViewById(R.id.habitEvent_delete_button);
         confirmBtn = findViewById(R.id.habitEvent_confirm_button);
-
+        editEventProgressDialog = new ProgressDialog(HabitEventEditActivity.this);
 
 
 
@@ -176,6 +189,11 @@ public class HabitEventEditActivity extends AppCompatActivity  {
         confirmBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // First create a progress dialogue showing that we are currently processing this habit event
+                editEventProgressDialog.setMessage("Processing");
+                editEventProgressDialog.show();
+
+
                 Intent intentReturn = new Intent(getApplicationContext(), HabitEventListActivity.class); // Return to the habit event list page
 
                 intentReturn.putExtra("StartMode", "Edit");
@@ -188,11 +206,20 @@ public class HabitEventEditActivity extends AppCompatActivity  {
                     passedEvent.setComment(comment);
                     passedEvent.setLocation(location);
                     passedEvent.setImageFilePath(imageFilePath);
-                    intentReturn.putExtra("EventIndex", eventIndexInList);
-                    intentReturn.putExtra("HabitEventFromEdit", passedEvent);
+
+                    // If the current imageFilePath is not null, the we process image
+
+                    if (hasUrl) {
+                        passedEvent.setDownloadUrl(storageURL.toString());
+                    }
+
+                    // Upload information to real time database
                     HashMap<String, Object> map = new HashMap<>();
                     map.put(passedEvent.getEventTitle(),passedEvent);
                     FirebaseDatabase.getInstance().getReference().child(uid).child("HabitEvent").updateChildren(map);
+
+                    intentReturn.putExtra("EventIndex", eventIndexInList);
+                    intentReturn.putExtra("HabitEventFromEdit", passedEvent);
                 }
                 else {
                     // create new entry
@@ -202,8 +229,11 @@ public class HabitEventEditActivity extends AppCompatActivity  {
 
                     HashMap<String, Object> map = new HashMap<>();
                     map.put(newEvent.getEventTitle(),newEvent);
-                    FirebaseDatabase.getInstance().getReference().child(uid).child("HabitEvent").updateChildren(map);
+//                    FirebaseDatabase.getInstance().getReference().child(uid).child("HabitEvent").updateChildren(map);
+                    FirebaseDatabase.getInstance().getReference().child(uid).child("HabitEvent").setValue(map);
                 }
+
+                editEventProgressDialog.dismiss();
 
                 startActivity(intentReturn);
                 finish(); // finish current activity
@@ -214,6 +244,10 @@ public class HabitEventEditActivity extends AppCompatActivity  {
         Intent intentGetData = getIntent();
 
         verifyStoragePermissions(this);
+
+//        while (!access_granted) {
+//            wait(1);
+//        }
 
         // And display information (if any)
         Bundle data = intentGetData.getExtras();
@@ -227,15 +261,13 @@ public class HabitEventEditActivity extends AppCompatActivity  {
 
             // load image from image file path
             imageFilePath = passedEvent.getImageFilePath();
-            if (imageFilePath != null) {
-                File imageFile = new File(imageFilePath);
-                if (imageFile.exists()) {
-                    Bitmap bitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
-                    photo_imageView.setImageBitmap(bitmap);
-                }
-                else {
-                    System.out.println("-------------------------> Failed to load image file!");
-                }
+            habitEventTitle = passedEvent.getEventTitle();
+
+            String storageUrlString = passedEvent.getDownloadUrl();
+            if (storageUrlString != null) {
+                storageURL = Uri.parse(storageUrlString);
+                System.out.println("-------------------------> Obtained uri is: " + storageURL.toString());
+                loadUrlImageToImageView(storageURL);
             }
             else{
                 System.out.println("-------------------------> Image file path is null!");
@@ -244,6 +276,8 @@ public class HabitEventEditActivity extends AppCompatActivity  {
         else {
             // In this case we are adding a new event, hence no manipulation is needed
             habitName = data.getString("HabitName"); //TODO: use this on the habit side to transfer data
+            String date = new SimpleDateFormat("MM-dd-yyyy").format(new Date());
+            habitEventTitle = habitName +": "+ date;
         }
 
 
@@ -273,6 +307,7 @@ public class HabitEventEditActivity extends AppCompatActivity  {
                                 photo_imageView.setImageBitmap(bitmap);
 
                                 imageFilePath = getPathFromURI(HabitEventEditActivity.this, uri);
+                                uploadImage(imageFilePath);
                             }
                             catch (IOException e){
                                 e.printStackTrace();
@@ -414,6 +449,7 @@ public class HabitEventEditActivity extends AppCompatActivity  {
         }
     }
 
+
     /**
      * Request permission to access external storage from user
      * @param requestCode
@@ -422,6 +458,7 @@ public class HabitEventEditActivity extends AppCompatActivity  {
      */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch(requestCode) {
             case REQUEST_EXTERNAL_STORAGE:
                 if (grantResults.length > 0 &&
@@ -436,22 +473,18 @@ public class HabitEventEditActivity extends AppCompatActivity  {
 
 
 
+
+
     //-------------------------------------------functional APIs-------------------------------------------------------------------------------------------------------------
-
-
-
-//    public void onConfirmDeletePressed() {
-//        return;
-//    }
 
     // The following two methods took reference from: https://www.youtube.com/watch?v=-sItRxJ3rVk
     public String getPathFromURI(Context context, Uri uri) {
         String[] proj = {MediaStore.Images.Media.DATA};
         Cursor cursor = context.getContentResolver().query(uri, proj, null, null, null);
         if (cursor != null) {
-            int column_inedx = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
             cursor.moveToFirst();
-            return cursor.getString(column_inedx);
+            return cursor.getString(column_index);
         }
         return null;
     }
@@ -468,6 +501,55 @@ public class HabitEventEditActivity extends AppCompatActivity  {
                     REQUEST_EXTERNAL_STORAGE
             );
         }
+
+        permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE);
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            // We don't have permission so prompt the user
+            ActivityCompat.requestPermissions(
+                    activity,
+                    PERMISSIONS_STORAGE,
+                    REQUEST_EXTERNAL_STORAGE
+            );
+        }
+    }
+
+    public void uploadImage(String imagePath) {
+
+        verifyStoragePermissions(this); // First always verify permission
+
+        String imageName = habitEventTitle+".jpg"; // Generate image name: habit_event_name.jpg
+
+        Uri uri = Uri.fromFile(new File(imagePath));
+
+        StorageReference storageRef = FirebaseStorage.getInstance().getReference().child("images/users/"+ uid + "/" + imageName); // get storage reference
+        storageRef.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        storageURL = uri;
+                        hasUrl = true;
+                        System.out.println("-----------------> Get photo url success! URL: " + storageURL.toString());
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        System.out.println("-----------------> Get photo url failed!");
+                    }
+                });
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                System.out.println("-----------------> upload photo failed!");
+            }
+        });
+    }
+
+    public void loadUrlImageToImageView(Uri uri) {
+        // More on glide library: https://github.com/bumptech/glide
+        Glide.with(this).load(uri).into(photo_imageView);
     }
 
 

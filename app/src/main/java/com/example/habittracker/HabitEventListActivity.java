@@ -49,7 +49,6 @@ public class HabitEventListActivity extends AppCompatActivity {
 
         habitEventListView = findViewById(R.id.lv_habit_event);
 
-//        habitEventList = new ArrayList<>();
         habitEventList = new ArrayList<HabitEvent>();
 
 //----------------------------------For Test only -----------------------------------------------
@@ -61,8 +60,10 @@ public class HabitEventListActivity extends AppCompatActivity {
 //            habitEventList.add(new HabitEvent(habitNames[i], comments[i], locations[i], null));
 //        }
 //---------------------------------For Test only -----------------------------------------------
+
         habitEventAdapter = new HabitEventListAdapter(this, habitEventList);
         habitEventListView.setAdapter(habitEventAdapter); // Sets the adapter for event list, used for showing list items
+
 //-------------------------------------------------- FireBase-------------------------------------------------------------------------------------------------------------
 
         authentication = FirebaseAuth.getInstance();
