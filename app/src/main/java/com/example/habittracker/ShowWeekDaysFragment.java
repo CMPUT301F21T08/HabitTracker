@@ -72,25 +72,25 @@ public class ShowWeekDaysFragment extends DialogFragment {
 
     private void setCheckBox(Habit habit){
         ArrayList<Integer> days = habit.getOccurrenceDay();
-        if(days.contains(1)){
+        if(days.contains(2)){
             Monday.setChecked(true);
         }
-        if(days.contains(2)){
+        if(days.contains(3)){
             Tuesday.setChecked(true);
         }
-        if(days.contains(3)){
+        if(days.contains(4)){
             Wednesday.setChecked(true);
         }
-        if(days.contains(4)){
+        if(days.contains(5)){
             Thursday.setChecked(true);
         }
-        if(days.contains(5)){
+        if(days.contains(6)){
             Friday.setChecked(true);
         }
-        if(days.contains(6)){
+        if(days.contains(7)){
             Saturday.setChecked(true);
         }
-        if(days.contains(7)){
+        if(days.contains(1)){
             Sunday.setChecked(true);
         }
     }

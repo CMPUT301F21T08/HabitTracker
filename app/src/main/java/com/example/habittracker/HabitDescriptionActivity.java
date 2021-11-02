@@ -29,10 +29,7 @@ public class HabitDescriptionActivity extends AppCompatActivity implements Delet
     private String action ="original";
     private int position;
     //result code
-    private int original= 44;
     private int newObject= 33;
-    private int delete = 22;
-    private int back = 11;
 
     private ActivityResultLauncher<Intent> activityLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -44,10 +41,6 @@ public class HabitDescriptionActivity extends AppCompatActivity implements Delet
                         Habit newHabit = (Habit) data.getExtras().getSerializable("habit");
                         initView(newHabit);
                         habit = newHabit;
-                    }
-                    if (result.getResultCode()==original){
-                        Intent data = result.getData();
-                        action = data.getStringExtra("action");
                     }
                 }
             });
@@ -93,13 +86,9 @@ public class HabitDescriptionActivity extends AppCompatActivity implements Delet
             @Override
             public void onClick(View view) {
 
-                Intent intentReturn = new Intent();
-                Bundle bundle = new Bundle();
-                intentReturn.putExtra("action", action);
-                bundle.putSerializable("habit", habit);
-                intentReturn.putExtras(bundle);
-                setResult(back, intentReturn);
-                finish();//return to the previous activity
+                Intent intentReturn = new Intent(HabitDescriptionActivity.this, HabitListActivity.class);
+                startActivity(intentReturn);
+                finish();//return to the HabitListActivity
             }
         });
 
@@ -118,12 +107,13 @@ public class HabitDescriptionActivity extends AppCompatActivity implements Delet
 
     }
 
+    // not supported right now with database
     @Override
     public void onConfirmDeletePressed() {
-        Intent intentDelete= new Intent();
-        String text = "" + position;
-        intentDelete.putExtra("position", text);
-        setResult(delete, intentDelete);
+        Intent intentDelete= new Intent(getApplicationContext(), HabitListActivity.class);
+
+
+        startActivity(intentDelete);
         finish();
     }
 

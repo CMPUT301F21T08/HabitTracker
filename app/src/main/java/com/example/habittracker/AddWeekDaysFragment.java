@@ -76,31 +76,31 @@ public class AddWeekDaysFragment extends DialogFragment {
                     // extract the information from EditText to set up a new Medicine Object
                     public void onClick(DialogInterface dialogInterface, int i) {
                         if(Monday.isChecked()){
-                            days.add(1);
-                            valueOfFrequency++;
-                        }
-                        if(Tuesday.isChecked()){
                             days.add(2);
                             valueOfFrequency++;
                         }
-                        if(Wednesday.isChecked()){
+                        if(Tuesday.isChecked()){
                             days.add(3);
                             valueOfFrequency++;
                         }
-                        if(Thursday.isChecked()){
+                        if(Wednesday.isChecked()){
                             days.add(4);
                             valueOfFrequency++;
                         }
-                        if(Friday.isChecked()){
+                        if(Thursday.isChecked()){
                             days.add(5);
                             valueOfFrequency++;
                         }
-                        if(Saturday.isChecked()){
+                        if(Friday.isChecked()){
                             days.add(6);
                             valueOfFrequency++;
                         }
-                        if(Sunday.isChecked()){
+                        if(Saturday.isChecked()){
                             days.add(7);
+                            valueOfFrequency++;
+                        }
+                        if(Sunday.isChecked()){
+                            days.add(1);
                             valueOfFrequency++;
                         }
                         listener.onConfirmPressed(days, valueOfFrequency);
