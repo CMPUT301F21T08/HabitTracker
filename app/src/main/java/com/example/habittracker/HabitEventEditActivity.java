@@ -434,11 +434,14 @@ public class HabitEventEditActivity extends AppCompatActivity  {
         }
     }
 
+        File file = new File(dir, event.getImageName()); // Save image as the image name provided in the SavedImage folder
 
 
     //-------------------------------------------functional APIs-------------------------------------------------------------------------------------------------------------
 
 
+        BitmapDrawable drawable = (BitmapDrawable) photo_imageView.getDrawable();
+        Bitmap bitmap = drawable.getBitmap();
 
 //    public void onConfirmDeletePressed() {
 //        return;
