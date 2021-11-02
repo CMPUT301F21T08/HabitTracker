@@ -91,10 +91,10 @@ public class HabitListActivity extends AppCompatActivity {
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                habitList.clear();
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()){
                     Habit hab = (Habit) dataSnapshot.getValue(Habit.class);
                     habitList.add(hab);
-
                 }
                 habitAdapter.notifyDataSetChanged();
             }
