@@ -30,6 +30,7 @@ import android.location.Location;
 
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.MediaStore;
 
 import android.text.Html;
@@ -180,13 +181,14 @@ public class HabitEventEditActivity extends AppCompatActivity  {
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void unused) {
-                                                Toast.makeText(HabitEventEditActivity.this,"image is deleted",Toast.LENGTH_SHORT).show();
+//                                                Toast.makeText(HabitEventEditActivity.this,"image is deleted",Toast.LENGTH_SHORT).show();
+                                                System.out.println("------------------> Image successfully deleted!");
                                             }
                                         })
                                         .addOnFailureListener(new OnFailureListener() {
                                             @Override
                                             public void onFailure(@NonNull Exception e) {
-                                                Toast.makeText(HabitEventEditActivity.this,"error",Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(HabitEventEditActivity.this,"Error in removing image",Toast.LENGTH_SHORT).show();
 
                                             }
                                         });
@@ -229,6 +231,14 @@ public class HabitEventEditActivity extends AppCompatActivity  {
                     passedEvent.setImageFilePath(imageFilePath);
 
                     // If the current imageFilePath is not null, the we process image
+
+                    final Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            System.out.println("Waited for 2 seconds");
+                        }
+                    }, 2000);
 
                     if (hasUrl) {
                         passedEvent.setDownloadUrl(storageURL.toString());

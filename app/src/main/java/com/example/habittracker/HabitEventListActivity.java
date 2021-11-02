@@ -63,19 +63,6 @@ public class HabitEventListActivity extends AppCompatActivity {
         habitEventListView.setAdapter(habitEventAdapter); // Sets the adapter for event list, used for showing list items
 
 
-
-
-//----------------------------------For Test only -----------------------------------------------
-//        String [] habitNames = {"Habit 1", "Habit 2", "Habit 3"};
-//        String [] comments = {"Comment 1", "Comment 2", "Comment 3"};
-//        String [] locations = {"location 1", "location 2", "location 3"};
-//
-//        for (int i = 0; i < 3; i++) {
-//            habitEventList.add(new HabitEvent(habitNames[i], comments[i], locations[i], null));
-//        }
-//---------------------------------For Test only -----------------------------------------------
-
-
 //-------------------------------------------------- FireBase-------------------------------------------------------------------------------------------------------------
 
         authentication = FirebaseAuth.getInstance();
@@ -84,21 +71,18 @@ public class HabitEventListActivity extends AppCompatActivity {
         }
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child(uid).child("HabitEvent");
 
-//----------------------------------Get some test sample -----------------------------------------------
+//----------------------------------Get some test sample (test only) -----------------------------------------------
 
 
-//        String habitEventName = "habit 6" ;
+//        String habitEventName = "habit 1" ;
 //
-//        newEvent = new HabitEvent(habitEventName, "comment", "", "");  // Comment can be empty, hence no error checking
+//        newEvent = new HabitEvent(habitEventName, "comment 1", "", "");  // Comment can be empty, hence no error checking
 //
 //        HashMap<String, Object> map = new HashMap<>();
 //        map.put(newEvent.getEventTitle(),newEvent);
 //
 //        FirebaseDatabase.getInstance().getReference().child(uid).child("HabitEvent").updateChildren(map);
 //
-
-
-
 
 //----------------------------------update listView -----------------------------------------------
 
@@ -198,11 +182,6 @@ public class HabitEventListActivity extends AppCompatActivity {
                 // add new entry to list
                 habitEventAdapter.add(passedEvent);
             }
-            habitEventAdapter.notifyDataSetChanged();
-        }
-        else if (startMode.equals("Delete")) {
-            int eventIndexInList = data.getInt("EventIndex");
-            habitEventList.remove(eventIndexInList);
             habitEventAdapter.notifyDataSetChanged();
         }
 
