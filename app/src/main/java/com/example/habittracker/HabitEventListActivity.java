@@ -87,15 +87,15 @@ public class HabitEventListActivity extends AppCompatActivity {
 //----------------------------------Get some test sample -----------------------------------------------
 
 
-        String habitEventName = "habit 6" ;
-
-        newEvent = new HabitEvent(habitEventName, "comment", "", "");  // Comment can be empty, hence no error checking
-
-        HashMap<String, Object> map = new HashMap<>();
-        map.put(newEvent.getEventTitle(),newEvent);
-
-        FirebaseDatabase.getInstance().getReference().child(uid).child("HabitEvent").updateChildren(map);
-
+//        String habitEventName = "habit 6" ;
+//
+//        newEvent = new HabitEvent(habitEventName, "comment", "", "");  // Comment can be empty, hence no error checking
+//
+//        HashMap<String, Object> map = new HashMap<>();
+//        map.put(newEvent.getEventTitle(),newEvent);
+//
+//        FirebaseDatabase.getInstance().getReference().child(uid).child("HabitEvent").updateChildren(map);
+//
 
 
 
