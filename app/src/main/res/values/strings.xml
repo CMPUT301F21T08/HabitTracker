@@ -22,7 +22,7 @@
     <string name="reason">Reason</string>
     <string name="Return">return</string>
     <string name="to_do">To Do Today</string>
-    <string name="done">Done</string>
+    <string name="done">Done(times needed)</string>
     <string name="choose_frequency">choose frequency</string>
     <string name="sunday">Sunday</string>
     <string name="saturday">Saturday</string>
