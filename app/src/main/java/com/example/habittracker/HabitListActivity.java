@@ -40,33 +40,6 @@ public class HabitListActivity extends AppCompatActivity {
     private FirebaseAuth authentication;
     private String uid;
 
-    private ActivityResultLauncher<Intent> activityLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    if (result.getResultCode() == back) {
-                        Intent data = result.getData();
-                        String action = data.getStringExtra("action");
-                        if(action.equals("new")){
-                            habitAdapter.notifyDataSetChanged();
-                        }
-
-                    }
-                    if(result.getResultCode() == delete){
-                        Intent data = result.getData();
-                        int position = Integer.parseInt(data.getStringExtra("position"));
-                        habitList.remove(position);
-                        habitAdapter.notifyDataSetChanged();
-                    }
-                    if(result.getResultCode() == add) {
-                        Intent data = result.getData();
-                        Habit newHabit = (Habit) data.getExtras().getSerializable("habit");
-                        habitList.add(newHabit);
-                        habitAdapter.notifyDataSetChanged();
-                    }
-                }
-            });
 
 
     BottomNavigationView bottomNavigationView;
@@ -121,7 +94,8 @@ public class HabitListActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), HabitEditActivity.class);
                 intent.putExtra("action", "add");
-                activityLauncher.launch(intent);
+                startActivity(intent);
+                finish();
             }
         });
 
@@ -171,6 +145,7 @@ public class HabitListActivity extends AppCompatActivity {
         bundle.putInt("position", position);
         bundle.putSerializable("habit",tapHabit);
         intent.putExtras(bundle);
-        activityLauncher.launch(intent);
+        startActivity(intent);
+        finish();
     }
 }

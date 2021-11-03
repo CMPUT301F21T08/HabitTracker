@@ -73,15 +73,22 @@ public class HabitEditActivity extends AppCompatActivity implements AddWeekDaysF
         confirmBtn = findViewById(R.id.habitEdit_confirm_button);
         initArrayList();
         setView();
+        spinner = findViewById(R.id.frequency_spinner);
+        spinnerAdapter = new ArrayAdapter<String>(HabitEditActivity.this,android.R.layout.simple_spinner_item,frequencyList);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(spinnerAdapter);
+        spinner.setOnTouchListener(spinnerOnTouch);
+        spinner.setSelection(0,false);
         action = getIntent().getStringExtra("action");
         if (action.equals("edit")){
             getSupportActionBar().setTitle("Habit - Edit");
             habit = (Habit) getIntent().getExtras().getSerializable("habit");
             initView(habit);
+            frequencyType = findViewById(R.id.frequency_type);
+
         } else{
             getSupportActionBar().setTitle("Habit - Add");
         }
-
         authentication =FirebaseAuth.getInstance();
         if (authentication.getCurrentUser() != null){
             uid = authentication.getCurrentUser().getUid();
@@ -115,13 +122,11 @@ public class HabitEditActivity extends AppCompatActivity implements AddWeekDaysF
             }
         });
 
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(spinnerAdapter);
-        spinner.setOnTouchListener(spinnerOnTouch);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
                 frequency.setFocusableInTouchMode(false);
+                frequency.setFocusable(false);
                 setFragment(position);
                 frequencyType.setText(frequencyList.get(position));
                 ((TextView)view).setText(null);
@@ -159,6 +164,9 @@ public class HabitEditActivity extends AppCompatActivity implements AddWeekDaysF
                     HashMap<String, Object> map = new HashMap<>();
                     map.put(title.getText().toString(),habit);
                     FirebaseDatabase.getInstance().getReference().child(uid).child("Habit").updateChildren(map);
+                    bundle.putSerializable("habit", habit);
+                    intentConfirm.putExtras(bundle);
+                    setResult(newObject, intentConfirm);
                 } else {
                     String value_of_title = title.getText().toString();
                     String value_of_frequencyType = frequencyType.getText().toString();
@@ -167,11 +175,7 @@ public class HabitEditActivity extends AppCompatActivity implements AddWeekDaysF
                     String value_of_content = content.getText().toString();
                     String value_of_reason = reason.getText().toString();
                     habit = new Habit(value_of_title, value_of_reason, value_of_content, value_of_startDate, value_of_frequency, value_of_frequencyType, value_of_OccurrenceDate);
-//                    bundle.putSerializable("habit", habit);
-//                    intentConfirm.putExtras(bundle);
-//                    setResult(add, intentConfirm);
-
-                        // adding habit into the firebase
+                    // adding habit into the firebase
                     HashMap<String, Object> map = new HashMap<>();
                     map.put(value_of_title,habit);
                     FirebaseDatabase.getInstance().getReference().child(uid).child("Habit").updateChildren(map);
@@ -204,17 +208,16 @@ public class HabitEditActivity extends AppCompatActivity implements AddWeekDaysF
         date = findViewById(R.id.dateInput);
         frequency = findViewById(R.id.frequencyInput);
         frequencyType = findViewById(R.id.frequency_type);
-        spinner = findViewById(R.id.frequency_spinner);
-        spinnerAdapter = new ArrayAdapter<String>(HabitEditActivity.this,android.R.layout.simple_spinner_item,frequencyList);
+
     }
 
     private void initView(Habit habit){
         title.setText(habit.getHabitTitle());
         date.setText(habit.getStartDate());
         frequency.setText(String.valueOf(habit.getFrequency()));
-        frequencyType.setText(habit.getFrequencyType());
         content.setText(habit.getHabitContent());
         reason.setText(habit.getHabitReason());
+        frequencyType.setText(habit.getFrequencyType());
         setView();
     }
 
