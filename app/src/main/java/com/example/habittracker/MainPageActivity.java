@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -34,6 +35,7 @@ public class MainPageActivity extends AppCompatActivity {
     private int weekDay;
     private int day_of_month;
     private ListView toDoListView;
+
 
     BottomNavigationView bottomNavigationView;
 
@@ -87,8 +89,6 @@ public class MainPageActivity extends AppCompatActivity {
         });
 
 
-
-
         bottomNavigationView = findViewById(R.id.bottom_navigation_event);
         bottomNavigationView.setSelectedItemId(R.id.navigation_homePage);
 
@@ -103,6 +103,8 @@ public class MainPageActivity extends AppCompatActivity {
                         return true;
                     case R.id.navigation_habitEvent:
                         Intent intent2 = new Intent(MainPageActivity.this, HabitEventListActivity.class);
+
+
                         intent2.putExtra("StartMode", "normal");
                         startActivity(intent2);
                         finish();

@@ -149,6 +149,11 @@ public class HabitEventEditActivity extends AppCompatActivity  {
         // set return button
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+
+
+
+
+
 //-------------------------------------------------- delete button -------------------------------------------------------------------------------------------------------------
         deleteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -279,6 +284,7 @@ public class HabitEventEditActivity extends AppCompatActivity  {
 
         if (eventIndexInList >= 0) {
             // In this case we are editing an entry in the list
+
             passedEvent = (HabitEvent) data.getParcelable("HabitEventForEdit");
             comment_editText.setText(passedEvent.getComment());
             location_editText.setText(passedEvent.getLocation());
@@ -297,6 +303,9 @@ public class HabitEventEditActivity extends AppCompatActivity  {
             }
         }
         else {
+
+            // disable delete button when first make habit event
+            deleteBtn.setEnabled(false);
             // In this case we are adding a new event, hence no manipulation is needed
             habitName = data.getString("HabitName"); //TODO: use this on the habit side to transfer data
             String date = new SimpleDateFormat("MM-dd-yyyy").format(new Date());

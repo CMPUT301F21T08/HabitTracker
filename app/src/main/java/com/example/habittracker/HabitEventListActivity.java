@@ -74,7 +74,7 @@ public class HabitEventListActivity extends AppCompatActivity {
 //----------------------------------Get some test sample (test only) -----------------------------------------------
 
 
-//        String habitEventName = "habit 1" ;
+//        String habitEventName = "habit 3" ;
 //
 //        newEvent = new HabitEvent(habitEventName, "comment 1", "", "");  // Comment can be empty, hence no error checking
 //
