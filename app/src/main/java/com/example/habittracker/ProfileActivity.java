@@ -7,6 +7,7 @@ import android.renderscript.Sampler;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,9 +29,12 @@ import java.util.Map;
 public class ProfileActivity extends AppCompatActivity {
 
     Button signOut_btn;
+    Button applyChanges_btn;
     BottomNavigationView bottomNavigationView;
-    TextView userName;
+    EditText userName;
     TextView userEmail;
+    EditText userGender;
+    EditText userAge;
     private FirebaseAuth authentication;
     private String uid;
 
@@ -43,19 +47,23 @@ public class ProfileActivity extends AppCompatActivity {
         if (authentication.getCurrentUser() != null){
             uid = authentication.getCurrentUser().getUid();
         }
-        userName = findViewById(R.id.profile_userName_TextView);
+        userName = findViewById(R.id.profile_userName_EditText);
         userEmail = findViewById(R.id.profile_userEmail_TextView);
+        userGender = findViewById(R.id.profile_userGender_EditText);
+        userAge = findViewById(R.id.profile_userAge_EditText);
 
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child(uid).child("Info");
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    Map<String, String> map = (Map) dataSnapshot.getValue();
-                    if (map != null) {
-                        userName.setText(map.get("name"));
-                        userEmail.setText(map.get("email"));
-                    }
+                Personal_info info = (Personal_info) dataSnapshot.getValue(Personal_info.class);
+                if (info != null) {
+                    userName.setText(info.getName());
+                    userEmail.setText(info.getEmail());
+                    userGender.setText(info.getGender());
+                    userAge.setText(Integer.toString(info.getAge()));
+                }
             }
 
             @Override
@@ -72,6 +80,25 @@ public class ProfileActivity extends AppCompatActivity {
                 FirebaseAuth.getInstance().signOut();
                 Toast.makeText(ProfileActivity.this, "Sign Out successful!", Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(ProfileActivity.this, LogInActivity.class));
+            }
+        });
+
+        applyChanges_btn = findViewById(R.id.profile_change_button);
+        applyChanges_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (userGender.getText().toString().trim().compareTo("Male") != 0 && userGender.getText().toString().trim().compareTo("Female") != 0 && userGender.getText().toString().trim().compareTo("Others") != 0){
+                    Toast.makeText(ProfileActivity.this, "Wrong Input for Gender, please enter Male, Female or Others", Toast.LENGTH_SHORT).show();
+                } else if (100<=Integer.parseInt(userAge.getText().toString().trim()) || Integer.parseInt(userAge.getText().toString().trim()) <0 ){
+                    Toast.makeText(ProfileActivity.this, "Wrong Input for Age, please enter an integer between 0 to 100", Toast.LENGTH_SHORT).show();
+                } else{
+                    HashMap<String,Object> map = new HashMap<>();
+                    Personal_info personal_info = new Personal_info(userName.getText().toString().trim(),userEmail.getText().toString(),userGender.getText().toString().trim(),Integer.parseInt(userAge.getText().toString().trim()) );
+                    map.put("Info",personal_info);
+                    FirebaseDatabase.getInstance().getReference().child(uid).updateChildren(map);
+                    Toast.makeText(ProfileActivity.this, "Changes has been made!", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
