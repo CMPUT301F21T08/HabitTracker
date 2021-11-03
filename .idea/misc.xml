@@ -15,6 +15,7 @@
         <entry key="..\:/Users/Alim/Documents/GitHub/HabitTracker/app/src/main/res/layout/activity_to_do.xml" value="0.24375" />
         <entry key="..\:/Users/Alim/Documents/GitHub/HabitTracker/app/src/main/res/layout/bottom_navigation_bar.xml" value="0.24375" />
         <entry key="..\:/Users/Alim/Documents/GitHub/HabitTracker/app/src/main/res/menu/bottom_navigation_menu.xml" value="0.24375" />
+
         <entry key="..\:/Users/ychu3/HabitTracker/app/src/main/res/layout/activity_habit_description.xml" value="0.2848731884057971" />
         <entry key="..\:/Users/ychu3/HabitTracker/app/src/main/res/layout/activity_habit_edit.xml" value="0.375" />
         <entry key="..\:/Users/ychu3/HabitTracker/app/src/main/res/layout/activity_habit_event_edit.xml" value="0.2848731884057971" />
@@ -27,6 +28,9 @@
         <entry key="..\:/Users/ychu3/HabitTracker/app/src/main/res/layout/content_to_do.xml" value="0.165" />
         <entry key="..\:/Users/ychu3/HabitTracker/app/src/main/res/layout/fragment_delete_habit_event_confirm.xml" value="0.27445652173913043" />
         <entry key="..\:/Users/ychu3/HabitTracker/app/src/main/res/layout/fragment_weekly_occurrence_day.xml" value="0.17760416666666667" />
+
+        <entry key="..\:/Users/ychu3/HabitTracker/app/src/main/res/layout/activity_main.xml" value="0.17395833333333333" />
+
         <entry key="app/src/main/res/drawable/ic_manu_habit.xml" value="0.2135" />
         <entry key="app/src/main/res/drawable/ic_menu_following.xml" value="0.2135" />
         <entry key="app/src/main/res/drawable/ic_menu_habit.xml" value="0.2135" />

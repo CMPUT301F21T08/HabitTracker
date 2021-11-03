@@ -1,6 +1,8 @@
 package com.example.habittracker;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,8 +44,13 @@ public class ToDoListAdapter extends ArrayAdapter<Habit>{
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
             {
                 if(isChecked) {
+                    done.setClickable(false);
                     Integer position = (Integer) buttonView.getTag();
-
+                    Intent intent = new Intent(getContext(), HabitEventEditActivity.class);
+                    String title = habitArrayList.get(position).getHabitTitle();
+                    intent.putExtra("title", title);
+                    context.startActivity(intent);
+                    ((MainPageActivity)context).finish();
                 }
             }
 
