@@ -48,7 +48,8 @@ public class ToDoListAdapter extends ArrayAdapter<Habit>{
                     Integer position = (Integer) buttonView.getTag();
                     Intent intent = new Intent(getContext(), HabitEventEditActivity.class);
                     String title = habitArrayList.get(position).getHabitTitle();
-                    intent.putExtra("title", title);
+                    intent.putExtra("EventIndex", -1);
+                    intent.putExtra("HabitName", title);
                     context.startActivity(intent);
                     ((MainPageActivity)context).finish();
                 }

@@ -107,13 +107,11 @@ public class HabitEventEditActivity extends AppCompatActivity  {
     FusedLocationProviderClient fusedLocationProviderClient;
 
     HabitEvent passedEvent;
-    HabitEvent newEvent;
     String habitName;
     String habitEventTitle;
     String imageFilePath; // This always saves the path for the current image shown in photo_imageView
     Uri storageURL;
     int eventIndexInList;
-    int access_granted = 0;
 
     // Storage Permissions
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
@@ -252,10 +250,10 @@ public class HabitEventEditActivity extends AppCompatActivity  {
                     }
 
                     intentReturn.putExtra("EventIndex", eventIndexInList);
-                    intentReturn.putExtra("HabitEventFromEdit", newEvent);
+                    intentReturn.putExtra("HabitEventFromEdit", passedEvent);
 
                     HashMap<String, Object> map = new HashMap<>();
-                    map.put(newEvent.getEventTitle(),newEvent);
+                    map.put(passedEvent.getEventTitle(),passedEvent);
 
                     FirebaseDatabase.getInstance().getReference().child(uid).child("HabitEvent").updateChildren(map);  // update firebase
                 }
@@ -277,6 +275,7 @@ public class HabitEventEditActivity extends AppCompatActivity  {
         // And display information (if any)
         Bundle data = intentGetData.getExtras();
         eventIndexInList = data.getInt("EventIndex");
+        System.out.println("----------------> Event index: " + eventIndexInList);
 
         if (eventIndexInList >= 0) {
             // In this case we are editing an entry in the list

@@ -2,10 +2,8 @@ package com.example.habittracker;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
@@ -151,7 +149,7 @@ public class HabitEditActivity extends AppCompatActivity implements AddWeekDaysF
         confirmBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intentConfirm = new Intent();
+                Intent intentConfirm = new Intent(getApplicationContext(), HabitListActivity.class);
                 Bundle bundle = new Bundle();
                 if(habit != null){
                     habit.setHabitTitle(title.getText().toString());
@@ -180,6 +178,7 @@ public class HabitEditActivity extends AppCompatActivity implements AddWeekDaysF
                     map.put(value_of_title,habit);
                     FirebaseDatabase.getInstance().getReference().child(uid).child("Habit").updateChildren(map);
                 }
+                startActivity(intentConfirm);
                 finish();
             }
         });
