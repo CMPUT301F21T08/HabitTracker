@@ -56,6 +56,7 @@ public class HabitListActivity extends AppCompatActivity {
             uid = authentication.getCurrentUser().getUid();
         }
 
+
         habitList = new ArrayList<Habit>();
         habitAdapter = new HabitListAdapter(this, habitList);
         habitListView.setAdapter(habitAdapter);
