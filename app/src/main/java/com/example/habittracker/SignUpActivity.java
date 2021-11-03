@@ -79,13 +79,10 @@ public class SignUpActivity extends AppCompatActivity {
                     }
 
                     HashMap<String,Object> map = new HashMap<>();
-                    map.put("name",userName);
-                    map.put("email",userEmail);
-
-
-                    FirebaseDatabase.getInstance().getReference().child(uid).child("Info").updateChildren(map);
-
-
+                    Personal_info empty = new Personal_info();
+                    Personal_info personal_info = new Personal_info(userName,userEmail,"null",0);
+                    map.put("Info",personal_info);
+                    FirebaseDatabase.getInstance().getReference().child(uid).updateChildren(map);
 
                     startActivity(new Intent(getApplicationContext(), LogInActivity.class ));
                     finish();

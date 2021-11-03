@@ -5,65 +5,32 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/signUp_header_layout"
-        style="@style/header_style"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
 
-
-
-        <TextView
-            android:id="@+id/signUp_mainHeader_TextView"
-            style="@style/header_textview_style"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="HabitTracker"
-            android:textColor="@color/white"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/signUp_secondHeader_TextView"
-            style="@style/text_style"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Create your own account"
-            android:textColor="@color/white"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-
-            app:layout_constraintTop_toBottomOf="@+id/signUp_mainHeader_TextView" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_begin="20dp" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/empty_profile"
-        app:layout_constraintTop_toBottomOf="@+id/signUp_header_layout"
+        tools:srcCompat="@tools:sample/avatars"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:id="@+id/signUp_profilePic_ImageButton"
+        android:layout_marginTop="152dp"
         android:contentDescription="Choose your profile picture"/>
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline3"
+
+    <TextView
+        android:id="@+id/signUp_TextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_begin="205dp" />
-
+        android:layout_marginTop="24dp"
+        android:fontFamily="sans-serif-black"
+        android:text="Sign Up"
+        android:textSize="34sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/signUp_profilePic_ImageButton"/>
 
     <EditText
         android:id="@+id/signUp_userName_EditView"
@@ -73,90 +40,54 @@
         android:hint="Enter your username"
         android:inputType="text"
         android:textColor="@color/black"
-        app:layout_constraintBaseline_toBaselineOf="@id/signUp_userName_TextView"
-        app:layout_constraintLeft_toLeftOf="@id/guideline3"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/signUp_TextView"
         style="@style/text_style"/>
 
-
-    <TextView
-        android:id="@+id/signUp_userName_TextView"
-        style="@style/text_style"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Username: "
-        android:textColor="@color/black"
-        app:layout_constraintRight_toRightOf="@id/guideline3"
-        app:layout_constraintTop_toBottomOf="@id/signUp_userEmail_TextView"/>
 
     <EditText
         android:id="@+id/signUp_userEmail_EditView"
+        style="@style/text_style"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:autofillHints="emailAddress"
+        android:ems="10"
         android:hint="Enter your email"
         android:inputType="text"
         android:textColor="@color/black"
-        app:layout_constraintBaseline_toBaselineOf="@id/signUp_userEmail_TextView"
-        app:layout_constraintLeft_toLeftOf="@id/guideline3"
-        style="@style/text_style"/>
-
-
-    <TextView
-        android:id="@+id/signUp_userEmail_TextView"
-        style="@style/text_style"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Email: "
-        android:textColor="@color/black"
-        app:layout_constraintRight_toRightOf="@id/guideline3"
-        app:layout_constraintTop_toBottomOf="@id/signUp_profilePic_ImageButton"/>
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/signUp_userName_EditView" />
 
     <EditText
         android:id="@+id/signUp_passWord_EditView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:autofillHints="password"
-        android:hint="Enter a password"
-        android:inputType="textPassword"
-        android:textColor="@color/black"
-        app:layout_constraintBaseline_toBaselineOf="@id/signUp_passWord_TextView"
-        app:layout_constraintLeft_toLeftOf="@id/guideline3"
-        style="@style/text_style"/>
-
-
-    <TextView
-        android:id="@+id/signUp_passWord_TextView"
         style="@style/text_style"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Password "
+        android:autofillHints="password"
+        android:ems="10"
+        android:hint="Enter a password"
+        android:inputType="textPassword"
         android:textColor="@color/black"
-        app:layout_constraintRight_toRightOf="@id/guideline3"
-        app:layout_constraintTop_toBottomOf="@id/signUp_userName_TextView"/>
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/signUp_userEmail_EditView" />
 
 
     <EditText
         android:id="@+id/signUp_confirm_passWord_EditView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:autofillHints="password"
-        android:hint="Enter password again"
-        android:inputType="textPassword"
-        android:textColor="@color/black"
-        app:layout_constraintBaseline_toBaselineOf="@id/signUp_confirm_passWord_TextView"
-        app:layout_constraintLeft_toLeftOf="@id/guideline3"
-        style="@style/text_style"/>
-
-
-    <TextView
-        android:id="@+id/signUp_confirm_passWord_TextView"
         style="@style/text_style"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Password "
+        android:autofillHints="password"
+        android:ems="10"
+        android:hint="Enter password again"
+        android:inputType="textPassword"
         android:textColor="@color/black"
-        app:layout_constraintRight_toRightOf="@id/guideline3"
-        app:layout_constraintTop_toBottomOf="@id/signUp_passWord_TextView"/>
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/signUp_passWord_EditView" />
 
 
     <Button
@@ -166,7 +97,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:text="Create Account"
-        app:layout_constraintTop_toBottomOf="@id/signUp_confirm_passWord_TextView"/>
+        app:layout_constraintTop_toBottomOf="@id/signUp_confirm_passWord_EditView"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
