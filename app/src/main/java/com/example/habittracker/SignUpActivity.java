@@ -20,8 +20,19 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.HashMap;
 
+/**
+ * @author 'adhanani' and 'zwan1'
+ * Allows user to sign up by providing their email, password, confirming the password and name.
+ * Should enter the info and then click the create button.
+ * The requirements for the inputs are:
+ *      <ul>
+ *          <li> The password is at least 6 characters</li>
+ *          <li> All the editTexts are non-empty </li>
+ *          <li> password matches confirm password</li>
+ *      </ul>
+ */
 public class SignUpActivity extends AppCompatActivity {
-
+    //setting the fields
     Button createButton;
     EditText userName;
     EditText userEmail;
@@ -35,13 +46,16 @@ public class SignUpActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
 
+        //connecting to the layout file
         createButton = findViewById(R.id.signUp_createAccount_Button);
         userName = findViewById(R.id.signUp_userName_EditView);
         userEmail = findViewById(R.id.signUp_userEmail_EditView);
         passWord = findViewById(R.id.signUp_passWord_EditView);
         confirmPassWord = findViewById(R.id.signUp_confirm_passWord_EditView);
+        // getting FireBase reference
         authentication =  FirebaseAuth.getInstance();
 
+        // onClickListener to take try signing in; all above mentionned requirements are checked for
         createButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -66,6 +80,13 @@ public class SignUpActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * This method uses the parameters to set up a user on FireBase with the help of a uid.
+     * @param userEmail: user's email address
+     * @param passWord: the confirmed password
+     * @param userName: the user's name
+     * Posts a toast message indicating the success or failure of signing up.
+     */
     private void signUp(String userEmail, String passWord, String userName) {
         authentication.createUserWithEmailAndPassword(userEmail, passWord).addOnCompleteListener(SignUpActivity.this,  new OnCompleteListener<AuthResult>() {
             @Override
@@ -82,11 +103,7 @@ public class SignUpActivity extends AppCompatActivity {
                     map.put("name",userName);
                     map.put("email",userEmail);
 
-
                     FirebaseDatabase.getInstance().getReference().child(uid).child("Info").updateChildren(map);
-
-
-
                     startActivity(new Intent(getApplicationContext(), LogInActivity.class ));
                     finish();
                  } else {
