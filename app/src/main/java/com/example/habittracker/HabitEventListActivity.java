@@ -176,7 +176,6 @@ public class HabitEventListActivity extends AppCompatActivity {
                 HabitEvent tempEvent = habitEventAdapter.getItem(eventIndexInList);
                 tempEvent.setComment(passedEvent.getComment());
                 tempEvent.setLocation(passedEvent.getLocation());
-                tempEvent.setImageFilePath(passedEvent.getImageFilePath());
             }
             else {
                 // add new entry to list
