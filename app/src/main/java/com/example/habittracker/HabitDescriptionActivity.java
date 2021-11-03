@@ -13,6 +13,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 public class HabitDescriptionActivity extends AppCompatActivity implements DeleteConfirmFragment.OnDeleteConfirmFragmentInteractionListener {
     // views in this activity
     private Button returnBtn;
@@ -30,6 +34,10 @@ public class HabitDescriptionActivity extends AppCompatActivity implements Delet
     private int position;
     //result code
     private int newObject= 33;
+
+    private FirebaseAuth authentication;
+    private String uid;
+
 
     private ActivityResultLauncher<Intent> activityLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -105,14 +113,23 @@ public class HabitDescriptionActivity extends AppCompatActivity implements Delet
             }
         });
 
+        // firebase connection
+        authentication = FirebaseAuth.getInstance();
+        if (authentication.getCurrentUser() != null){
+            uid = authentication.getCurrentUser().getUid();
+        }
+
     }
 
     // not supported right now with database
     @Override
     public void onConfirmDeletePressed() {
+
+        // remove the value in the firebase database
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child(uid).child("Habit").child(habit.getHabitTitle());
+        reference.removeValue();
+
         Intent intentDelete= new Intent(getApplicationContext(), HabitListActivity.class);
-
-
         startActivity(intentDelete);
         finish();
     }
