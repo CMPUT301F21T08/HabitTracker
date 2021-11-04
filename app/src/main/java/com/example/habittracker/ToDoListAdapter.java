@@ -91,7 +91,12 @@ public class ToDoListAdapter extends ArrayAdapter<Habit>{
 
         });
         habitTitleView.setText(habit.getHabitTitle());
-        done.setText(String.valueOf(habit.getFrequency() - habit.getDoneTime()));
+        if(habit.getFrequencyType().equals("per day")){
+            done.setText(String.valueOf(habit.getFrequency() - habit.getDoneTime()));
+        } else {
+            done.setText(String.valueOf(1));
+        }
+
 
         return view;
     }
