@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -98,6 +100,14 @@ public class MainPageActivity extends AppCompatActivity {
             }
         });
 
+        toDoListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Habit tapHabit = toDoList.get(i);
+                goToHabitDescriptionActivity(i, tapHabit);
+
+            }
+        });
 
         bottomNavigationView = findViewById(R.id.bottom_navigation_event);
         bottomNavigationView.setSelectedItemId(R.id.navigation_homePage);
@@ -135,5 +145,15 @@ public class MainPageActivity extends AppCompatActivity {
                 return false;
             }
         });
+    }
+
+    private void goToHabitDescriptionActivity(int position, Habit tapHabit){
+        Intent intent = new Intent(this, HabitDescriptionActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putInt("position", position);
+        bundle.putSerializable("habit",tapHabit);
+        intent.putExtras(bundle);
+        startActivity(intent);
+        finish();
     }
 }
