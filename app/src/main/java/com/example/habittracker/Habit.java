@@ -31,7 +31,6 @@ public class Habit implements Serializable {
     }
 
     public Habit(){
-
     }
 
     public void refresh(String currentDate){
@@ -66,6 +65,8 @@ public class Habit implements Serializable {
             }
         }
     }
+
+
     public String getHabitTitle() {
         return habitTitle;
     }
@@ -111,6 +112,17 @@ public class Habit implements Serializable {
     }
 
     public void setFrequencyType(String frequencyType) {
+        if(frequencyType.equals("per week") || frequencyType.equals("per month")){
+            if(this.doneTime >= 1){
+                this.notDone = false;
+            }
+        } else {
+            if(this.doneTime >= this.frequency){
+                this.notDone = false;
+            } else {
+                this.notDone = true;
+            }
+        }
         this.frequencyType = frequencyType;
     }
 

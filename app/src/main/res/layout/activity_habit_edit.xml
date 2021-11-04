@@ -90,7 +90,7 @@
                     android:ems="10"
                     android:focusable="false"
                     android:gravity="center"
-                    android:hint="number"
+                    android:hint="choose frequency first"
                     android:inputType="number"
                     android:textColor="#000000" />
 
