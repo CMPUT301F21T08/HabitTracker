@@ -13,6 +13,7 @@ public class HabitEvent implements Parcelable {
     private String comment;
     private String location;
     private String downloadUrl;
+    private String uuid;
 
     public static final Parcelable.Creator<HabitEvent> CREATOR = new Parcelable.Creator<HabitEvent>() {
 
@@ -27,12 +28,13 @@ public class HabitEvent implements Parcelable {
         }
     };
 
-    public HabitEvent(String habitName, String comment, String location) {
+    public HabitEvent(String habitName, String comment, String location, String uuid) {
         String date = new SimpleDateFormat("MM-dd-yyyy").format(new Date());
         this.eventTitle = habitName +": "+ date; // create unique event name
         this.comment = comment;
         this.location = location;
         this.downloadUrl = null;
+        this.uuid = uuid;
     }
 
     public HabitEvent(Parcel in) {
@@ -40,6 +42,7 @@ public class HabitEvent implements Parcelable {
         this.comment = in.readString();
         this.location = in.readString();
         this.downloadUrl = in.readString();
+        this.uuid = in.readString();
     }
     public HabitEvent(){
     }
@@ -75,6 +78,14 @@ public class HabitEvent implements Parcelable {
         this.downloadUrl = downloadUrl;
     }
 
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -86,5 +97,6 @@ public class HabitEvent implements Parcelable {
         parcel.writeString(this.comment);
         parcel.writeString(this.location);
         parcel.writeString(this.downloadUrl);
+        parcel.writeString(this.uuid);
     }
 }

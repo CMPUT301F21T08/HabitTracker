@@ -16,6 +16,8 @@ public class Habit implements Serializable {
     private int number_of_completion;
     private int doneTime;
 
+    private ArrayList<String> eventList = new ArrayList<>();
+
     public Habit(String habitTitle, String habitReason, String habitContent, String startDate, int frequency, String frequencyType, ArrayList<Integer> occurrenceDay){
         this.habitTitle = habitTitle;
         this.habitReason = habitReason;
@@ -149,4 +151,17 @@ public class Habit implements Serializable {
     public int getDoneTime() {
         return doneTime;
     }
+
+    public ArrayList<String> getEventList() {
+        return eventList;
+    }
+
+    public void setEventList(ArrayList<String> eventList) {
+        this.eventList = eventList;
+    }
+
+    public void addEvent(String eventName) {
+        this.eventList.add(eventName);
+    }
+
 }

@@ -189,6 +189,7 @@ public class HabitEditActivity extends AppCompatActivity implements AddWeekDaysF
                         habit.setHabitContent(content.getText().toString());
                         habit.setHabitReason(reason.getText().toString());
                         habit.setOccurrenceDay(value_of_OccurrenceDate);
+
                         HashMap<String, Object> map = new HashMap<>();
                         map.put(title.getText().toString(),habit);
                         FirebaseDatabase.getInstance().getReference().child(uid).child("Habit").updateChildren(map);

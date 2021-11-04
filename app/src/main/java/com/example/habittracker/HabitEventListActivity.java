@@ -193,13 +193,15 @@ public class HabitEventListActivity extends AppCompatActivity {
         setIntent(intent);
     }
 
+    /**
+     * This method is used to shift to event edit activity from event list activity
+     * @param index the index of pressed event in the event list
+     */
     public void goToEventEditActivity(int index) {
         Intent intent = new Intent(this, HabitEventEditActivity.class);
         intent.putExtra("HabitEventForEdit", habitEventAdapter.getItem(index));
         intent.putExtra("EventIndex", index);
         startActivity(intent);
     }
-
-
 
 }

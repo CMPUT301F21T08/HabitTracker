@@ -63,9 +63,12 @@ import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -110,6 +113,7 @@ public class HabitEventEditActivity extends AppCompatActivity  {
     String habitName;
     String habitEventTitle;
     String imageFilePath; // This always saves the path for the current image shown in photo_imageView
+    String habitEventUUID;
     Uri storageURL;
     int eventIndexInList;
 
@@ -168,30 +172,30 @@ public class HabitEventEditActivity extends AppCompatActivity  {
                                 intentReturn.putExtra("StartMode", "Delete");
                                 intentReturn.putExtra("EventIndex", eventIndexInList);
 
+                                FirebaseDatabase.getInstance().getReference().child(uid).child("HabitEvent").child(habitEventUUID).removeValue();
 
-                                HashMap<String, Object> map = new HashMap<>();
-                                map.put(passedEvent.getEventTitle(),passedEvent);
-                                FirebaseDatabase.getInstance().getReference().child(uid).child("HabitEvent").child(habitEventTitle).removeValue();
+                                if (passedEvent.getDownloadUrl() != null) {
+                                    // delete firebase storage image
+                                    StorageReference reference = FirebaseStorage.getInstance().getReferenceFromUrl(passedEvent.getDownloadUrl());
+                                    reference.delete()
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void unused) {
+    //                                                Toast.makeText(HabitEventEditActivity.this,"image is deleted",Toast.LENGTH_SHORT).show();
+                                                    System.out.println("------------------> Image successfully deleted!");
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Toast.makeText(HabitEventEditActivity.this,"Error in removing image",Toast.LENGTH_SHORT).show();
 
-                                // delete firebase storage image
-                                StorageReference reference = FirebaseStorage.getInstance().getReferenceFromUrl(passedEvent.getDownloadUrl());
-                                reference.delete()
-                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void unused) {
-//                                                Toast.makeText(HabitEventEditActivity.this,"image is deleted",Toast.LENGTH_SHORT).show();
-                                                System.out.println("------------------> Image successfully deleted!");
-                                            }
-                                        })
-                                        .addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                Toast.makeText(HabitEventEditActivity.this,"Error in removing image",Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+                                }
 
-                                            }
-                                        });
+                                deleteEventFromHabit(habitName, passedEvent.getUuid());
 
-                                //
                                 startActivity(intentReturn);
                                 finish(); // finish current activity
 
@@ -235,7 +239,7 @@ public class HabitEventEditActivity extends AppCompatActivity  {
 
                     // Upload information to real time database
                     HashMap<String, Object> map = new HashMap<>();
-                    map.put(passedEvent.getEventTitle(),passedEvent);
+                    map.put(passedEvent.getUuid(), passedEvent);
                     FirebaseDatabase.getInstance().getReference().child(uid).child("HabitEvent").updateChildren(map);
 
 
@@ -244,7 +248,6 @@ public class HabitEventEditActivity extends AppCompatActivity  {
                 }
                 else {
                     // create new entry
-//                    newEvent = new HabitEvent(habitName, comment, location, imageFilePath);  // Comment can be empty, hence no error checking
                     passedEvent.setComment(comment);
                     passedEvent.setLocation(location);
 
@@ -258,7 +261,7 @@ public class HabitEventEditActivity extends AppCompatActivity  {
                     intentReturn.putExtra("HabitEventFromEdit", passedEvent);
 
                     HashMap<String, Object> map = new HashMap<>();
-                    map.put(passedEvent.getEventTitle(),passedEvent);
+                    map.put(passedEvent.getUuid(), passedEvent);
 
                     FirebaseDatabase.getInstance().getReference().child(uid).child("HabitEvent").updateChildren(map);  // update firebase
                 }
@@ -289,8 +292,13 @@ public class HabitEventEditActivity extends AppCompatActivity  {
             comment_editText.setText(passedEvent.getComment());
             location_editText.setText(passedEvent.getLocation());
 
-            // load image from image file path
             habitEventTitle = passedEvent.getEventTitle();
+            habitEventUUID = passedEvent.getUuid();
+
+            // save habit name
+            int habitNameIndex = habitEventTitle.indexOf(":");
+            habitName = habitEventTitle.substring(0, habitNameIndex);
+            System.out.println("-----------------> Habit name: "+habitName);
 
             String storageUrlString = passedEvent.getDownloadUrl();
             if (storageUrlString != null) {
@@ -303,14 +311,19 @@ public class HabitEventEditActivity extends AppCompatActivity  {
             }
         }
         else {
+            // Since the user is required to add a event every time he finishes a habit
+            // We hide the return button when adding new event to force user to add event, even a event that is completely empty
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
             // disable delete button when first make habit event
             deleteBtn.setEnabled(false);
             // In this case we are adding a new event, hence no manipulation is needed
             habitName = data.getString("HabitName"); //TODO: use this on the habit side to transfer data
+            habitEventUUID = data.getString("UniqueID");
+
             String date = new SimpleDateFormat("MM-dd-yyyy").format(new Date());
             habitEventTitle = habitName +": "+ date;
-            passedEvent = new HabitEvent(habitName, "", "");
+            passedEvent = new HabitEvent(habitName, "", "", habitEventUUID);
         }
 
 
@@ -557,7 +570,7 @@ public class HabitEventEditActivity extends AppCompatActivity  {
 
         verifyStoragePermissions(this); // First always verify permission
 
-        String imageName = habitEventTitle+".jpg"; // Generate image name: habit_event_name.jpg
+        String imageName = habitEventUUID+".jpg"; // Generate image name: habit_event_name.jpg
 
         Uri uri = Uri.fromFile(new File(imagePath));
 
@@ -575,7 +588,7 @@ public class HabitEventEditActivity extends AppCompatActivity  {
 
                         // Upload information to real time database
                         HashMap<String, Object> map = new HashMap<>();
-                        map.put(passedEvent.getEventTitle(),passedEvent);
+                        map.put(passedEvent.getUuid(),passedEvent);
                         FirebaseDatabase.getInstance().getReference().child(uid).child("HabitEvent").updateChildren(map);
 
                         // shift back to list activity
@@ -615,5 +628,37 @@ public class HabitEventEditActivity extends AppCompatActivity  {
         Glide.with(this).load(uri).into(photo_imageView);
     }
 
+    /**
+     * This function is used to delete the habit event from the list stored in corresponding habit
+     * @param habitName
+     * @param eventName
+     */
+    public void deleteEventFromHabit(String habitName, String eventName) {
+        DatabaseReference habitRef = FirebaseDatabase.getInstance().getReference().child(uid).child("Habit");
+        habitRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()){
+                    Habit habitE = (Habit) dataSnapshot.getValue(Habit.class);
+                    // Determine whether we are processing the right habit
+                    if (habitE.getHabitTitle().equals(habitName)) {
+                        ArrayList<String> habitEventNameList = habitE.getEventList();
+                        habitEventNameList.remove(eventName);
+                        habitE.setEventList(habitEventNameList);
+
+                        HashMap<String, Object> map = new HashMap<>();
+                        map.put(habitE.getHabitTitle(),habitE);
+                        FirebaseDatabase.getInstance().getReference().child(uid).child("Habit").updateChildren(map);
+                    }
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
 
 }

@@ -16,8 +16,11 @@ import androidx.annotation.Nullable;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.UUID;
 
 public class ToDoListAdapter extends ArrayAdapter<Habit>{
     private ArrayList<Habit> habitArrayList;
@@ -57,12 +60,23 @@ public class ToDoListAdapter extends ArrayAdapter<Habit>{
                     Intent intent = new Intent(getContext(), HabitEventEditActivity.class);
                     Habit tappedHabit = habitArrayList.get(position);
                     if(tappedHabit.setDoneTime()){
-                        HashMap<String, Object> map = new HashMap<>();
-                        map.put(tappedHabit.getHabitTitle(),tappedHabit);
-                        FirebaseDatabase.getInstance().getReference().child(uid).child("Habit").updateChildren(map);
                         String title = tappedHabit.getHabitTitle();
+                        String date = new SimpleDateFormat("MM-dd-yyyy").format(new Date());
+
+                        //Generate a unique id
+                        String uniqueID = UUID.randomUUID().toString();
+
+//                        tappedHabit.addEvent(title+": "+ date);
+                        tappedHabit.addEvent(uniqueID);
+
+                        HashMap<String, Object> map = new HashMap<>();
+                        map.put(title,tappedHabit);
+                        FirebaseDatabase.getInstance().getReference().child(uid).child("Habit").updateChildren(map);
+
                         intent.putExtra("EventIndex", -1);
                         intent.putExtra("HabitName", title);
+                        intent.putExtra("UniqueID", uniqueID);
+
                         context.startActivity(intent);
                         ((MainPageActivity)context).finish();
                     } else {
