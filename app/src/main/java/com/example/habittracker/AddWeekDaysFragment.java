@@ -70,6 +70,7 @@ public class AddWeekDaysFragment extends DialogFragment {
         return builder
                 .setView(view)
                 .setTitle("Choose Weekly Occurrence date")
+                .setNegativeButton("return", null)
                 // create "Ok" button
                 .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                     @Override
