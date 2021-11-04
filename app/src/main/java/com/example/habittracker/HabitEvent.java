@@ -44,8 +44,10 @@ public class HabitEvent implements Parcelable {
         this.downloadUrl = in.readString();
         this.uuid = in.readString();
     }
+
     public HabitEvent(){
     }
+
     public String getEventTitle() {
         return eventTitle;
     }
