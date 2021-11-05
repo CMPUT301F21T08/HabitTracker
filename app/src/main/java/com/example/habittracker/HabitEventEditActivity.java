@@ -198,7 +198,6 @@ public class HabitEventEditActivity extends AppCompatActivity  {
                                 }
 
                                 deleteEventFromHabit(habitName, passedEvent.getUuid());  // When deleting an event, we also need to remove its record from the stored list in corresponding habit
-
                                 startActivity(intentReturn);
                                 finish(); // finish current activity
 
@@ -207,8 +206,6 @@ public class HabitEventEditActivity extends AppCompatActivity  {
 
                 AlertDialog alert = builder.create();
                 alert.show();
-
-
             }
         });
 
@@ -302,6 +299,8 @@ public class HabitEventEditActivity extends AppCompatActivity  {
             int habitNameIndex = habitEventTitle.indexOf(":");
             habitName = habitEventTitle.substring(0, habitNameIndex);
             System.out.println("-----------------> Habit name: "+habitName);
+            System.out.println("-----------------> Habit uuid: "+habitEventUUID);
+            System.out.println("-----------------> User uid: "+uid);
 
             String storageUrlString = passedEvent.getDownloadUrl();
             if (storageUrlString != null) {
