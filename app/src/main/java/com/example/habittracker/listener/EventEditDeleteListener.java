@@ -68,7 +68,7 @@ public class EventEditDeleteListener implements DialogInterface.OnClickListener 
                     });
         }
 
-        HabitEventEditActivity.deleteEventFromHabit(passedEvent.getHabitName(), passedEvent.getUuid(), uid);  // When deleting an event, we also need to remove its record from the stored list in corresponding habit
+        HabitEventEditActivity.deleteEventFromHabit(passedEvent.getHabitName(), passedEvent.getUuid(), uid, passedEvent.getHabitUUID());  // When deleting an event, we also need to remove its record from the stored list in corresponding habit
         activity.startActivity(intentReturn);
         activity.finish(); // finish current activity
     }

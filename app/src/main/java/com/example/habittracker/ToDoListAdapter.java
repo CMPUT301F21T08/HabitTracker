@@ -88,7 +88,6 @@ public class ToDoListAdapter extends ArrayAdapter<Habit>{
                     // if the habit is finished today, then allow user to add a habit event
                     if(tappedHabit.setDoneTime()){
                         String title = tappedHabit.getHabitTitle();
-                        String date = new SimpleDateFormat("MM-dd-yyyy").format(new Date());
 
                         //Generate a unique id for habit event
                         String uniqueID = UUID.randomUUID().toString();
@@ -99,12 +98,13 @@ public class ToDoListAdapter extends ArrayAdapter<Habit>{
 
                         // upload the habit to the data base, so the change of doneTime can be saved
                         HashMap<String, Object> map = new HashMap<>();
-                        map.put(title,tappedHabit);
+                        map.put(tappedHabit.getUUID(),tappedHabit);
                         FirebaseDatabase.getInstance().getReference().child(uid).child("Habit").updateChildren(map);
 
                         // go to the habit event page to allow user add an habit event
                         intent.putExtra("EventIndex", -1);
                         intent.putExtra("HabitName", title);
+                        intent.putExtra("HabitUUID", tappedHabit.getUUID());
                         intent.putExtra("UniqueID", uniqueID);
 
                         context.startActivity(intent);
@@ -112,7 +112,7 @@ public class ToDoListAdapter extends ArrayAdapter<Habit>{
                     } else {
                         // upload the habit to the data base, so the change of doneTime can be saved
                         HashMap<String, Object> map = new HashMap<>();
-                        map.put(tappedHabit.getHabitTitle(),tappedHabit);
+                        map.put(tappedHabit.getUUID(),tappedHabit);
                         FirebaseDatabase.getInstance().getReference().child(uid).child("Habit").updateChildren(map);
                         done.setChecked(false);
                     }
