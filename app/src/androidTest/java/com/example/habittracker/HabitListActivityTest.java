@@ -104,6 +104,11 @@ public class HabitListActivityTest{
 
 
     @Test
+    /**
+     * Edit Habit Functionality works when you do it on your own.
+     * However, when automated, there is some concurrency error.
+     * We get an extra Habit rather than edited.
+     */
     public void editDailyHabit(){
         //assert we are in the correct page
         solo.assertCurrentActivity("Wrong Activity", HabitListActivity.class);
