@@ -5,6 +5,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+//import androidx.test.rule.ActivityTestRule;
+
 import com.example.habittracker.listener.CurrentLocationListener;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -20,6 +22,8 @@ public class HabitEventEditTest {
 
     @BeforeEach
     public void setUp() {
+//        ActivityTestRule<HabitEventEditActivity>
+
         activity = new HabitEventEditActivity();
         context = activity.getApplicationContext();
 
