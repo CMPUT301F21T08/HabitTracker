@@ -32,7 +32,7 @@ public class HabitDescriptionActivityTest {
 
     @Before
     public void setUp() throws Exception{
-        solo = new Solo(InstrumentationRegistry.getInstrumentation().rule.getActivity());
+        solo = new Solo(InstrumentationRegistry.getInstrumentation(), rule.getActivity());
     }
 
     /**
@@ -44,26 +44,6 @@ public class HabitDescriptionActivityTest {
     public void start() throws Exception{
         Activity activity = rule.getActivity();
 
-    }
-    /**
-     * Test for the navigation bar
-     */
-    @Test
-    public void NavigationBar(){
-        Point deviceSize = new Point();
-        new HabitDescriptionActivity().getWindowManager().getDefaultDispaly.getSize(deviceSize);
-        //solo.clickOnScreen(float x, float y);
-        float screenWidth = deviceSize.x;
-        int screenHeight = deviceSize.y;
-        int fromX = 0;
-        //int toX = screenWidth / 2;
-        int fromY = screenHeight / 2;
-       // int toY = fromY;
-        solo.clickOnScreen(float x, float y);
-        listView listView = (ListView) solo.getView(R.id.navigation_Description);
-
-
-        //this.drag(fromX, toX, fromY, toY, 1);
     }
 
     /**
@@ -94,7 +74,7 @@ public class HabitDescriptionActivityTest {
         //check the dialog
         solo.clickOnButton("Delete");
 
-        solo.clickOnView(solo.getView(R.id.tv_delete_confirm);
+        solo.clickOnView(solo.getView(R.id.tv_delete_confirm));
 
         //if user click on edit button
         // it goes to HabitEditActivity

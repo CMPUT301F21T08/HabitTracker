@@ -3,6 +3,7 @@ package com.example.habittracker;
 import android.app.Activity;
 import android.widget.EditText;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
 import com.robotium.solo.Solo;
@@ -11,11 +12,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * Test class for Habit Event List Activity
  */
-
+@RunWith(AndroidJUnit4.class)
 public class HabitEventListActivityTest {
     private Solo solo;
 
@@ -30,7 +32,7 @@ public class HabitEventListActivityTest {
 
     @Before
     public void setUp() throws Exception{
-        solo = new Solo(InstrumentationRegistry.getInstrumentation().rule.getActivity());
+        solo = new Solo(InstrumentationRegistry.getInstrumentation(), rule.getActivity());
     }
 
     /**
@@ -68,7 +70,7 @@ public class HabitEventListActivityTest {
         //check the dialog
 
         solo.clickOnButton("Delete");
-        solo.clickOnView(solo.getView(R.id.tv_delete_confirm);
+        solo.clickOnView(solo.getView(R.id.tv_delete_confirm));
 
 
     }
