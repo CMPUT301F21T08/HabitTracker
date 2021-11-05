@@ -51,6 +51,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.habittracker.listener.EventEditConfirmListener;
 import com.example.habittracker.listener.EventEditDeleteListener;
+import com.example.habittracker.listener.LocationEditTextListener;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -216,9 +217,6 @@ public class HabitEventEditActivity extends AppCompatActivity  {
             confirmBtn.setOnClickListener(confirmBtnOnclickListener);
         }
 
-
-
-
 //-------------------------------------------------- delete button -------------------------------------------------------------------------------------------------------------
         DialogInterface.OnClickListener deleteOnclickListener = new EventEditDeleteListener(uid, passedEvent, eventIndexInList, getApplicationContext(), this);
         deleteBtn.setOnClickListener(new View.OnClickListener() {
@@ -362,24 +360,8 @@ public class HabitEventEditActivity extends AppCompatActivity  {
 
         // set edit text non focusable
         location_editText.setFocusable(false);
-        location_editText.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                // initialize place field list
-                List<Place.Field> fieldList = Arrays.asList(Place.Field.ADDRESS,Place.Field.LAT_LNG,Place.Field.NAME);
-
-                try{
-                    // Create intent
-                    Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN,fieldList).build(HabitEventEditActivity.this);
-                    activityResultLauncher.launch(intent);
-                } catch (Exception e) {
-                    // TODO: Handle the error.
-                    Log.e("error", e.getMessage());
-                    e.printStackTrace();
-                }
-            }
-        });
-
+        View.OnClickListener locationEditTextListener = new LocationEditTextListener(this, activityResultLauncher);
+        location_editText.setOnClickListener(locationEditTextListener);
     }
 
     /**
