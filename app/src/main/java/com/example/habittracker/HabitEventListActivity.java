@@ -16,6 +16,8 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import com.example.habittracker.listener.EventListClickListener;
+import com.example.habittracker.listener.NavigationBarClickListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -91,12 +93,18 @@ public class HabitEventListActivity extends AppCompatActivity {
 
 //--------------------------------------------- Process List View-----------------------------------------------------------------------------------------------------
 
-        habitEventListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                goToEventEditActivity(i);
-            }
-        });
+
+//  /*-------
+        AdapterView.OnItemClickListener habitEventListListener = new EventListClickListener(getApplicationContext(),this,habitEventAdapter);
+        habitEventListView.setOnItemClickListener(habitEventListListener);
+//-------------------*/
+
+//        habitEventListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+//                goToEventEditActivity(i);
+//            }
+//        });
 
 
 
@@ -104,35 +112,42 @@ public class HabitEventListActivity extends AppCompatActivity {
         bottomNavigationView = findViewById(R.id.bottom_navigation_event);
         bottomNavigationView.setSelectedItemId(R.id.navigation_habitEvent);
 
-        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.navigation_habit:
-                        Intent intent1 = new Intent(HabitEventListActivity.this, HabitListActivity.class);
-                        startActivity(intent1);
-                        finish();
-                        return true;
-                    case R.id.navigation_homePage:
-                        Intent intent2 = new Intent(HabitEventListActivity.this, MainPageActivity.class);
-                        intent2.putExtra("StartMode", "normal");
-                        startActivity(intent2);
-                        finish();
-                        return true;
-                    case R.id.navigation_following:
-                        Intent intent3 = new Intent(HabitEventListActivity.this, FollowingActivity.class);
-                        startActivity(intent3);
-                        finish();
-                        return true;
-                    case R.id.navigation_settings:
-                        Intent intent4 = new Intent(HabitEventListActivity.this, ProfileActivity.class);
-                        startActivity(intent4);
-                        finish();
-                        return true;
-                }
-                return false;
-            }
-        });
+//  /*-------
+        NavigationBarView.OnItemSelectedListener bottomNavigationViewOnItemSelectedListener = new NavigationBarClickListener(getApplicationContext(),this);
+        bottomNavigationView.setOnItemSelectedListener(bottomNavigationViewOnItemSelectedListener);
+//-------------------*/
+
+
+
+//        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+//            @Override
+//            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+//                switch (item.getItemId()) {
+//                    case R.id.navigation_habit:
+//                        Intent intent1 = new Intent(HabitEventListActivity.this, HabitListActivity.class);
+//                        startActivity(intent1);
+//                        finish();
+//                        return true;
+//                    case R.id.navigation_homePage:
+//                        Intent intent2 = new Intent(HabitEventListActivity.this, MainPageActivity.class);
+//                        intent2.putExtra("StartMode", "normal");
+//                        startActivity(intent2);
+//                        finish();
+//                        return true;
+//                    case R.id.navigation_following:
+//                        Intent intent3 = new Intent(HabitEventListActivity.this, FollowingActivity.class);
+//                        startActivity(intent3);
+//                        finish();
+//                        return true;
+//                    case R.id.navigation_settings:
+//                        Intent intent4 = new Intent(HabitEventListActivity.this, ProfileActivity.class);
+//                        startActivity(intent4);
+//                        finish();
+//                        return true;
+//                }
+//                return false;
+//            }
+//        });
 
 
     }
@@ -159,15 +174,17 @@ public class HabitEventListActivity extends AppCompatActivity {
         setIntent(intent);
     }
 
-    /**
-     * This method is used to shift to event edit activity from event list activity
-     * @param index the index of pressed event in the event list
-     */
-    public void goToEventEditActivity(int index) {
-        Intent intent = new Intent(this, HabitEventEditActivity.class);
-        intent.putExtra("HabitEventForEdit", habitEventAdapter.getItem(index));
-        intent.putExtra("EventIndex", index);
-        startActivity(intent);
-    }
+
+
+//    /**
+//     * This method is used to shift to event edit activity from event list activity
+//     * @param index the index of pressed event in the event list
+//     */
+//    public void goToEventEditActivity(int index) {
+//        Intent intent = new Intent(this, HabitEventEditActivity.class);
+//        intent.putExtra("HabitEventForEdit", habitEventAdapter.getItem(index));
+//        intent.putExtra("EventIndex", index);
+//        startActivity(intent);
+//    }
 
 }
