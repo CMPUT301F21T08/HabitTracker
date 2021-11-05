@@ -15,9 +15,10 @@ public class EventListClickListener implements AdapterView.OnItemClickListener{
     Context context;
     Activity activity;
 
-    public EventListClickListener(Context context, Activity activity){
+    public EventListClickListener(Context context, Activity activity,ArrayAdapter<HabitEvent> habitEventAdapter){
         this.context = context;
         this.activity = activity;
+        this.habitEventAdapter = habitEventAdapter;
 
     }
 

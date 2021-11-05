@@ -95,7 +95,7 @@ public class HabitEventListActivity extends AppCompatActivity {
 
 
 //  /*-------
-        AdapterView.OnItemClickListener habitEventListListener = new EventListClickListener(getApplicationContext(),this);
+        AdapterView.OnItemClickListener habitEventListListener = new EventListClickListener(getApplicationContext(),this,habitEventAdapter);
         habitEventListView.setOnItemClickListener(habitEventListListener);
 //-------------------*/
 
