@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class HabitEventListActivity extends AppCompatActivity {
-
+    // UI view objects
     ListView habitEventListView;
     ArrayAdapter<HabitEvent> habitEventAdapter;
     ArrayList<HabitEvent> habitEventList;
@@ -39,11 +39,7 @@ public class HabitEventListActivity extends AppCompatActivity {
     HabitEvent passedEvent;
 
     private FirebaseAuth authentication;
-    private String uid;
-
-    // test
-    HabitEvent newEvent;
-
+    private String uid; // unique id for each user
 
 
     @Override
@@ -51,6 +47,7 @@ public class HabitEventListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_habit_event_list);
 
+//----------------------------UI Setup----------------------------------------------------------------------
         getSupportActionBar().setTitle("Habit Events");
 
         habitEventListView = findViewById(R.id.lv_habit_event);
@@ -71,18 +68,6 @@ public class HabitEventListActivity extends AppCompatActivity {
         }
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child(uid).child("HabitEvent");
 
-//----------------------------------Get some test sample (test only) -----------------------------------------------
-
-
-//        String habitEventName = "habit 3" ;
-//
-//        newEvent = new HabitEvent(habitEventName, "comment 1", "", "");  // Comment can be empty, hence no error checking
-//
-//        HashMap<String, Object> map = new HashMap<>();
-//        map.put(newEvent.getEventTitle(),newEvent);
-//
-//        FirebaseDatabase.getInstance().getReference().child(uid).child("HabitEvent").updateChildren(map);
-//
 
 //----------------------------------update listView -----------------------------------------------
 
@@ -186,7 +171,10 @@ public class HabitEventListActivity extends AppCompatActivity {
 
     }
 
-    // This method is used to ensure the getIntent() method always returns the latest intent
+    /**
+     * This method is used to ensure the getIntent() method always returns the latest intent
+     * @param intent
+     */
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);

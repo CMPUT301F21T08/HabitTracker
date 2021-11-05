@@ -7,14 +7,20 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
-// Here we use Parcelable interface to achieve passing event object between activities
+/**
+ * The habit event class
+ * Here we use Parcelable interface to achieve passing event object between activities
+ */
 public class HabitEvent implements Parcelable {
     private String eventTitle;
     private String comment;
     private String location;
-    private String downloadUrl;
+    private String downloadUrl; // This stores the url directing to the photo stored in firebase, not set by any constructor
     private String uuid;
 
+    /**
+     * this creates a parcel creator, which is used to pass data between events
+     */
     public static final Parcelable.Creator<HabitEvent> CREATOR = new Parcelable.Creator<HabitEvent>() {
 
         @Override
@@ -28,6 +34,13 @@ public class HabitEvent implements Parcelable {
         }
     };
 
+    /**
+     * Habit Event Constructor
+     * @param habitName name of the related habit
+     * @param comment comment for the habit event
+     * @param location location for the habit event
+     * @param uuid unique id for each event, generated on the habit side
+     */
     public HabitEvent(String habitName, String comment, String location, String uuid) {
         String date = new SimpleDateFormat("MM-dd-yyyy").format(new Date());
         this.eventTitle = habitName +": "+ date; // create unique event name
@@ -37,6 +50,10 @@ public class HabitEvent implements Parcelable {
         this.uuid = uuid;
     }
 
+    /**
+     * Parcel procesisng function
+     * @param in
+     */
     public HabitEvent(Parcel in) {
         this.eventTitle = in.readString();
         this.comment = in.readString();
@@ -44,44 +61,89 @@ public class HabitEvent implements Parcelable {
         this.downloadUrl = in.readString();
         this.uuid = in.readString();
     }
+
+    /**
+     * Null constructor (never used)
+     */
     public HabitEvent(){
     }
+
+    /**
+     * Getter for event title
+     * @return
+     */
     public String getEventTitle() {
         return eventTitle;
     }
 
+    /**
+     * Setter for event title
+     * @param eventTitle
+     */
     public void setEventTitle(String eventTitle) {
         this.eventTitle = eventTitle;
     }
 
+    /**
+     * Getter for comment
+     * @return
+     */
     public String getComment() {
         return comment;
     }
 
+    /**
+     * Setter for comment
+     * @param comment
+     */
     public void setComment(String comment) {
         this.comment = comment;
     }
 
+    /**
+     * Getter for location
+     * @return
+     */
     public String getLocation() {
         return location;
     }
 
+    /**
+     * Setter for location
+     * @param location
+     */
     public void setLocation(String location) {
         this.location = location;
     }
 
+    /**
+     * Getter for url
+     * @return
+     */
     public String getDownloadUrl() {
         return downloadUrl;
     }
 
+    /**
+     * Setter for url
+     * @param downloadUrl
+     */
     public void setDownloadUrl(String downloadUrl) {
         this.downloadUrl = downloadUrl;
     }
 
+    /**
+     * Getter for uuid
+     * @return
+     */
     public String getUuid() {
         return uuid;
     }
 
+    /**
+     * Setter for uuid
+     * @param uuid
+     */
     public void setUuid(String uuid) {
         this.uuid = uuid;
     }
@@ -91,6 +153,11 @@ public class HabitEvent implements Parcelable {
         return 0;
     }
 
+    /**
+     * Parcel processing functions
+     * @param parcel
+     * @param i
+     */
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(this.eventTitle);
