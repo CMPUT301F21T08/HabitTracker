@@ -16,6 +16,10 @@ import android.widget.TextView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import java.util.ArrayList;
 
 public class HabitDescriptionActivity extends AppCompatActivity implements DeleteConfirmFragment.OnDeleteConfirmFragmentInteractionListener {
     // views in this activity
@@ -143,6 +147,7 @@ public class HabitDescriptionActivity extends AppCompatActivity implements Delet
         // remove the value in the firebase database
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child(uid).child("Habit").child(habit.getHabitTitle());
         reference.removeValue();
+        removeAllRelatedEvent(habit.getEventList());
 
         Intent intentDelete= new Intent(getApplicationContext(), HabitListActivity.class);
         startActivity(intentDelete);
@@ -169,5 +174,24 @@ public class HabitDescriptionActivity extends AppCompatActivity implements Delet
         content.setText(habit.getHabitContent());
         reason.setText(habit.getHabitReason());
         setView();
+    }
+
+    /**
+     * The function removes all habit event related to the current habit
+     * @param eventList the list of habit event stored in the current habit
+     */
+    public void removeAllRelatedEvent(ArrayList<String> eventList) {
+        for (int i = 0; i < eventList.size(); i++) {
+            FirebaseDatabase.getInstance().getReference().child(uid).child("HabitEvent").child(eventList.get(i)).removeValue();
+            String pictureName = eventList.get(i)+".jpg";
+
+            // Try to delete the picture
+            try {
+                StorageReference imageRef = FirebaseStorage.getInstance().getReference().child("images/users/"+uid+"/"+pictureName);
+                imageRef.delete();
+            } catch(Exception e){
+                System.out.println(e);
+            }
+        }
     }
 }
