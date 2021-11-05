@@ -65,7 +65,10 @@ public class ToDoListAdapter extends ArrayAdapter<Habit>{
 
                         //Generate a unique id for habit event
                         String uniqueID = UUID.randomUUID().toString();
-                        tappedHabit.addEvent(uniqueID); // record this event in the event list
+
+
+//                      tappedHabit.addEvent(title+": "+ date);
+                        tappedHabit.addEvent(uniqueID);
 
                         HashMap<String, Object> map = new HashMap<>();
                         map.put(title,tappedHabit);

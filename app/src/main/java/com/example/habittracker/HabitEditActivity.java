@@ -23,6 +23,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -161,11 +162,18 @@ public class HabitEditActivity extends AppCompatActivity implements AddWeekDaysF
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intentReturn = new Intent();
-                action = "original";
-                intentReturn.putExtra("action", action);
-                setResult(original, intentReturn);
-                finish();
+                if(getIntent().getStringExtra("action").equals("add")){
+                    Intent intentReturn = new Intent(HabitEditActivity.this, HabitListActivity.class);
+                    startActivity(intentReturn);
+                    finish();
+                } else {
+                    Intent intentReturn = new Intent();
+                    action = "original";
+                    intentReturn.putExtra("action", action);
+                    setResult(original, intentReturn);
+                    finish();
+                }
+
             }
         });
 
@@ -320,6 +328,4 @@ public class HabitEditActivity extends AppCompatActivity implements AddWeekDaysF
         }
         return validInput;
     }
-
-
 }
