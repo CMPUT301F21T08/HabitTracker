@@ -4,12 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:descendantFocusability="blocksDescendants"
     tools:context=".HabitListActivity">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:descendantFocusability="blocksDescendants"
         android:orientation="vertical">
         <RelativeLayout
             android:id="@+id/RelativeLayout01"
@@ -49,9 +47,7 @@
         <ListView
             android:id="@+id/allHabits_habitList_listView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:enabled="true">
+            android:layout_height="wrap_content">
         </ListView>
     </LinearLayout>
 
