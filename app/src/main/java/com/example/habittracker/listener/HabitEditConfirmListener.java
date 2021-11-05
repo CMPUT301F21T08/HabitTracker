@@ -12,12 +12,20 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
 import com.example.habittracker.Habit;
 import com.example.habittracker.HabitEditActivity;
+import com.example.habittracker.HabitEvent;
 import com.example.habittracker.HabitListActivity;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -69,12 +77,12 @@ public class HabitEditConfirmListener implements View.OnClickListener{
                 // if the user change the title of the habit, we need to remove the habit from the database first
                 // and then upload the habit with the new title
 
-//                if(!habit.getHabitTitle().equals(title.getText().toString())){
-//                    // remove the value in the firebase database
-//                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child(uid).child("Habit").child(habit.getHabitTitle());
-//                    reference.removeValue();
-//                    habit.setHabitTitle(title.getText().toString());
-//                }
+                // If the user has modified the title for a habit, we need to change the title for all its corresponding habit events
+                if(!habit.getHabitTitle().equals(title.getText().toString())){
+                    for (int i = 0; i < habit.getEventList().size(); i++) {
+                        changeTitleOfAllEvents(title.getText().toString(), habit.getEventList().get(i));
+                    }
+                }
 
                 // use setter method of the attributes to renew the habit
                 habit.setHabitTitle(title.getText().toString());
@@ -123,6 +131,36 @@ public class HabitEditConfirmListener implements View.OnClickListener{
                     .setNegativeButton("return", null).create();
             alert.show();
         }
+    }
+
+    /**
+     * This method changed all the titles of the events in the provided event list
+     * @param newHabitTitle
+     * @param eventUUID
+     */
+    private void changeTitleOfAllEvents(String newHabitTitle, String eventUUID) {
+        DatabaseReference dataRef = FirebaseDatabase.getInstance().getReference().child(uid).child("HabitEvent");
+        dataRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()){
+                    HabitEvent habitEvent = (HabitEvent) dataSnapshot.getValue(HabitEvent.class);
+
+                    if (habitEvent.getUuid().equals(eventUUID)) {
+                        habitEvent.setHabitName(newHabitTitle);
+
+                        HashMap<String, Object> map = new HashMap<>();
+                        map.put(habitEvent.getUuid(),habitEvent);
+                        FirebaseDatabase.getInstance().getReference().child(uid).child("HabitEvent").updateChildren(map);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     // function used to check whether all required information is received
