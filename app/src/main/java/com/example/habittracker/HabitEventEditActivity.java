@@ -49,6 +49,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.habittracker.listeners.ConfirmListener;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -214,67 +215,6 @@ public class HabitEventEditActivity extends AppCompatActivity  {
 
 //-------------------------------------------------- Confirm button-------------------------------------------------------------------------------------------------------------
         // This onclick listener processed the information we have in each input space, and edit the corresponding habit event accordingly
-        confirmBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // First create a progress dialogue showing that we are currently processing this habit event
-                editEventProgressDialog.setMessage("Processing");
-                editEventProgressDialog.show();
-
-                // Create intent that is used to return to event list view
-                Intent intentReturn = new Intent(getApplicationContext(), HabitEventListActivity.class); // Return to the habit event list page
-
-                intentReturn.putExtra("StartMode", "Edit");
-
-                String comment = comment_editText.getText().toString();
-                String location = location_editText.getText().toString();
-
-                if (eventIndexInList >= 0) {
-                    // modify current entry, put necessary information and pass them to list activity
-                    passedEvent.setComment(comment);
-                    passedEvent.setLocation(location);
-
-                    // If the user selected photo from phone, we upload this photo and finish the rest of the process there
-                    if (addedPhoto) {
-                        uploadImage(imageFilePath); // The following functions of the confirm button will be realized in this function to ensure process synchronization
-                        return;
-                    }
-
-                    // Upload information to real time database
-                    HashMap<String, Object> map = new HashMap<>();
-                    map.put(passedEvent.getUuid(), passedEvent);  // habit events are stored in the database under their uuid
-                    FirebaseDatabase.getInstance().getReference().child(uid).child("HabitEvent").updateChildren(map);
-
-                    // These to are required when we return to the main activity
-                    intentReturn.putExtra("EventIndex", eventIndexInList);
-                    intentReturn.putExtra("HabitEventFromEdit", passedEvent);
-                }
-                else {
-                    // create new entry
-                    passedEvent.setComment(comment);
-                    passedEvent.setLocation(location);
-
-                    // If the user selected photo from phone, we upload this photo and finish the rest of the process there
-                    if (addedPhoto) {
-                        uploadImage(imageFilePath);
-                        return;
-                    }
-
-                    intentReturn.putExtra("EventIndex", eventIndexInList);
-                    intentReturn.putExtra("HabitEventFromEdit", passedEvent);
-
-                    HashMap<String, Object> map = new HashMap<>();
-                    map.put(passedEvent.getUuid(), passedEvent);
-
-                    FirebaseDatabase.getInstance().getReference().child(uid).child("HabitEvent").updateChildren(map);  // update firebase
-                }
-
-                editEventProgressDialog.dismiss();
-
-                startActivity(intentReturn);
-                finish(); // finish current activity
-            }
-        });
 
 
 
@@ -312,6 +252,11 @@ public class HabitEventEditActivity extends AppCompatActivity  {
             else{
                 System.out.println("-------------------------> Image file path is null!");
             }
+
+            View.OnClickListener confirmListenerExisting = new ConfirmListener(editEventProgressDialog, location_editText, comment_editText, passedEvent,
+                    eventIndexInList, addedPhoto, uid, imageFilePath, getApplicationContext(), this);
+            confirmBtn.setOnClickListener(confirmListenerExisting);
+
         }
         else {
             // Since the user is required to add a event every time he finishes a habit
@@ -327,6 +272,11 @@ public class HabitEventEditActivity extends AppCompatActivity  {
             String date = new SimpleDateFormat("MM-dd-yyyy").format(new Date());
             habitEventTitle = habitName +": "+ date;
             passedEvent = new HabitEvent(habitName, "", "", habitEventUUID);
+
+            View.OnClickListener confirmListenerNew = new ConfirmListener(editEventProgressDialog, location_editText, comment_editText, passedEvent,
+                    eventIndexInList, addedPhoto, uid, imageFilePath, getApplicationContext(), this);
+            confirmBtn.setOnClickListener(confirmListenerNew);
+
         }
 
 
@@ -416,6 +366,7 @@ public class HabitEventEditActivity extends AppCompatActivity  {
                                             location.getLatitude(),location.getLongitude(),1
 
                                     );
+
                                     location_editText.setText(Html.fromHtml(addresses.get(0).getAddressLine(0)));
                                 } catch(IOException e1){
                                     e1.printStackTrace();
@@ -423,6 +374,7 @@ public class HabitEventEditActivity extends AppCompatActivity  {
                             }
                         }
                     });
+
                 }
                 else{
                     // when permission denied
