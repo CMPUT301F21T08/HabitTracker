@@ -19,6 +19,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.habittracker.listener.HabitDescriptionEditListener;
+import com.example.habittracker.listener.HabitDescriptionReturnListener;
+import com.example.habittracker.listener.HabitDescriptionToEventListener;
+import com.example.habittracker.listener.HabitListAddListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -112,45 +116,17 @@ public class HabitDescriptionActivity extends AppCompatActivity implements Delet
         });
 
         // set up the onClickListener for the returnBtn button
-        returnBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // go back to the HabitListActivity
-                Intent intentReturn = new Intent(HabitDescriptionActivity.this, HabitListActivity.class);
-                startActivity(intentReturn);
-                finish();//return to the HabitListActivity
-            }
-        });
+        View.OnClickListener returnBtnOnclickListener = new HabitDescriptionReturnListener(getApplicationContext(), this);
+        returnBtn.setOnClickListener(returnBtnOnclickListener);
+
 
         // set up the onClickListener for the editBtn button
-        editBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // set the current habit to HabitEditActivity
-                action = "new";
-                Intent intentEdit = new Intent(getApplicationContext(), HabitEditActivity.class);
-                intentEdit.putExtra("action", "edit");
-                Bundle bundle= new Bundle();
-                bundle.putSerializable("habit", habit);
-                intentEdit.putExtras(bundle);
-                // ask for a result return from HabitEditActivity
-                activityLauncher.launch(intentEdit);
-            }
-        });
+        View.OnClickListener editBtnOnclickListener = new HabitDescriptionEditListener(getApplicationContext(), activityLauncher, habit);
+        editBtn.setOnClickListener(editBtnOnclickListener);
 
         // set up the onClickListener for the toEventBtn button
-        toEventBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // go to the HabitEventsOfHabitActivity to see all the habit events related to current event
-                Intent intentEvent = new Intent(HabitDescriptionActivity.this, HabitEventsOfHabitActivity.class);
-                Bundle bundleEvent = new Bundle();
-                bundleEvent.putSerializable("habit", habit);
-                intentEvent.putExtras(bundleEvent);
-                startActivity(intentEvent);
-                finish();
-            }
-        });
+        View.OnClickListener toEventBtnOnclickListener = new HabitDescriptionToEventListener(getApplicationContext(), this, habit);
+        toEventBtn.setOnClickListener(toEventBtnOnclickListener);
 
         // firebase connection
         authentication = FirebaseAuth.getInstance();

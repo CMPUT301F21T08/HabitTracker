@@ -24,6 +24,9 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.example.habittracker.listener.HabitEditBackListener;
+import com.example.habittracker.listener.HabitEditConfirmListener;
+import com.example.habittracker.listener.HabitListAddListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -36,9 +39,10 @@ import java.util.Calendar;
 import java.util.HashMap;
 
 public class HabitEditActivity extends AppCompatActivity implements AddWeekDaysFragment.OnFragmentInteractionListener {
+    // a public variable use to send the occurrence day of habit to HabitEditConfirmListener
+    public static ArrayList<Integer> value_of_OccurrenceDate;
     // variable that storing the Habit object
     private Habit habit;
-    private ArrayList<Integer> value_of_OccurrenceDate;
     // variable of views
     private Button addDate;
     private Button backBtn;
@@ -182,90 +186,13 @@ public class HabitEditActivity extends AppCompatActivity implements AddWeekDaysF
         });
 
         // set up the backBtn to allow user to go back to the previous activity
-        backBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // this for statement will determine what is the last activity by comparing the action string from the last activity with "add"
-                if(getIntent().getStringExtra("action").equals("add")){
-                    // go back to HabitListActivity
-                    Intent intentReturn = new Intent(HabitEditActivity.this, HabitListActivity.class);
-                    startActivity(intentReturn);
-                    finish();
-                } else {
-                    // go back to HabitDescriptionActivity with the modified habit
-                    Intent intentReturn = new Intent();
-                    action = "original";
-                    intentReturn.putExtra("action", action);
-                    setResult(original, intentReturn);
-                    finish();
-                }
-
-            }
-        });
+        String message = getIntent().getStringExtra("action");
+        View.OnClickListener backBtnOnclickListener = new HabitEditBackListener(getApplicationContext(), this, action, original, message);
+        backBtn.setOnClickListener(backBtnOnclickListener);
 
         // set up the backBtn to upload the habit to the database
-        confirmBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // call this function to check whether all data has been input and all data is legal
-                if(isValidInput()){
-                    // if the habit is not null, that means this page is used to edit a habit
-                    if(habit != null){
-                        // if the user change the title of the habit, we need to remove the habit from the database first
-                        // and then upload the habit with the new title
-                        if(!habit.getHabitTitle().equals(title.getText().toString())){
-                            // remove the value in the firebase database
-                            DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child(uid).child("Habit").child(habit.getHabitTitle());
-                            reference.removeValue();
-                            habit.setHabitTitle(title.getText().toString());
-                        }
-                        // use setter method of the attributes to renew the habit
-                        habit.setHabitTitle(title.getText().toString());
-                        habit.setFrequency(Integer.parseInt(frequency.getText().toString()));
-                        habit.setFrequencyType(frequencyType.getText().toString());
-                        habit.setStartDate(date.getText().toString());
-                        habit.setHabitContent(content.getText().toString());
-                        habit.setHabitReason(reason.getText().toString());
-                        habit.setOccurrenceDay(value_of_OccurrenceDate);
-                        // upload the habit to the database
-                        HashMap<String, Object> map = new HashMap<>();
-                        map.put(title.getText().toString(),habit);
-                        FirebaseDatabase.getInstance().getReference().child(uid).child("Habit").updateChildren(map);
-                        // send back the habit to HabitDescription page
-                        Intent intentDes = new Intent();
-                        Bundle bundle = new Bundle();
-                        bundle.putSerializable("habit", habit);
-                        intentDes.putExtras(bundle);
-                        setResult(newObject, intentDes);
-                        finish();
-                    } else {
-                        // create a new habit with information user input and go back to HabitList activity
-                        Intent intentConfirm = new Intent(getApplicationContext(), HabitListActivity.class);
-                        String value_of_title = title.getText().toString();
-                        String value_of_frequencyType = frequencyType.getText().toString();
-                        int value_of_frequency = Integer.parseInt(frequency.getText().toString());
-                        String value_of_startDate = date.getText().toString();
-                        String value_of_content = content.getText().toString();
-                        String value_of_reason = reason.getText().toString();
-                        habit = new Habit(value_of_title, value_of_reason, value_of_content, value_of_startDate, value_of_frequency, value_of_frequencyType, value_of_OccurrenceDate);
-                        // adding habit into the firebase
-                        HashMap<String, Object> map = new HashMap<>();
-                        map.put(value_of_title,habit);
-                        FirebaseDatabase.getInstance().getReference().child(uid).child("Habit").updateChildren(map);
-                        startActivity(intentConfirm);
-                        finish();
-                    }
-                } else {
-                    // if the user does not input all required information, call a dialog to notice them
-                    AlertDialog alert;
-                    alert = builder
-                            .setTitle("Warning:")
-                            .setMessage("Please enter all required information.")
-                            .setNegativeButton("return", null).create();
-                    alert.show();
-                }
-            }
-        });
+        View.OnClickListener confirmBtnOnclickListener = new HabitEditConfirmListener(getApplicationContext(), this, title, content, reason, date, frequency, frequencyType, habit,authentication, uid, newObject);
+        confirmBtn.setOnClickListener(confirmBtnOnclickListener);
     }
 
     /* method that will create a correct format string that represent the date that selected in the
@@ -353,26 +280,5 @@ public class HabitEditActivity extends AppCompatActivity implements AddWeekDaysF
             frequency.setText(text);
             frequency = findViewById(R.id.frequencyInput);
         }
-    }
-
-    // function used to check wheter all required information is received
-    private boolean isValidInput(){
-        boolean validInput = true;
-        if(title.getText().toString().trim().length()==0){
-            validInput = false;
-        }
-        if(reason.getText().toString().trim().length()==0){
-            validInput = false;
-        }
-        if(content.getText().toString().trim().length()==0){
-            validInput = false;
-        }
-        if(frequency.getText().toString().trim().length()==0){
-            validInput = false;
-        }
-        if(date.getText().toString().trim().length()==0){
-            validInput = false;
-        }
-        return validInput;
     }
 }

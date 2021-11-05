@@ -17,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
+import com.example.habittracker.listener.NavigationBarClickListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -141,10 +142,14 @@ public class MainPageActivity extends AppCompatActivity {
             }
         });
 
+        // Process Navigation Bar
         bottomNavigationView = findViewById(R.id.bottom_navigation_event);
         bottomNavigationView.setSelectedItemId(R.id.navigation_homePage);
 
-        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+        NavigationBarView.OnItemSelectedListener bottomNavigationViewOnItemSelectedListener = new NavigationBarClickListener(getApplicationContext(),this);
+        bottomNavigationView.setOnItemSelectedListener(bottomNavigationViewOnItemSelectedListener);
+
+        /*bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
@@ -176,7 +181,7 @@ public class MainPageActivity extends AppCompatActivity {
                 }
                 return false;
             }
-        });
+        });*/
     }
 
     // function used to go to the Habit description page

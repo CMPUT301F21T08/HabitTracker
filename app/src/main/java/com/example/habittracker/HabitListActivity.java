@@ -6,21 +6,19 @@
 
 package com.example.habittracker;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.example.habittracker.listener.EventEditConfirmListener;
+import com.example.habittracker.listener.HabitListAddListener;
+import com.example.habittracker.listener.NavigationBarClickListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationBarView;
@@ -98,15 +96,8 @@ public class HabitListActivity extends AppCompatActivity {
         });
 
         // set up the OnClickListener to allow user to add a new habit
-        addButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), HabitEditActivity.class);
-                intent.putExtra("action", "add");
-                startActivity(intent);
-                finish();
-            }
-        });
+        View.OnClickListener addBtnOnclickListener = new HabitListAddListener(getApplicationContext(), this);
+        addButton.setOnClickListener(addBtnOnclickListener);
 
 
 
@@ -115,7 +106,10 @@ public class HabitListActivity extends AppCompatActivity {
         bottomNavigationView = findViewById(R.id.bottom_navigation_event);
         bottomNavigationView.setSelectedItemId(R.id.navigation_habit);
 
-        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+        NavigationBarView.OnItemSelectedListener bottomNavigationViewOnItemSelectedListener = new NavigationBarClickListener(getApplicationContext(),this);
+        bottomNavigationView.setOnItemSelectedListener(bottomNavigationViewOnItemSelectedListener);
+
+        /*bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
@@ -145,7 +139,7 @@ public class HabitListActivity extends AppCompatActivity {
                 }
                 return false;
             }
-        });
+        });*/
     }
 
     // a function used to go to the habit description page with the tapped habit

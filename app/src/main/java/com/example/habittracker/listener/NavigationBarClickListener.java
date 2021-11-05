@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 
 import com.example.habittracker.FollowingActivity;
 
+import com.example.habittracker.HabitEventListActivity;
 import com.example.habittracker.HabitListActivity;
 import com.example.habittracker.MainPageActivity;
 import com.example.habittracker.ProfileActivity;
@@ -35,20 +36,25 @@ public class NavigationBarClickListener implements NavigationBarView.OnItemSelec
                 activity.startActivity(intent1);
                 activity.finish();
                 return true;
-            case R.id.navigation_homePage:
-                Intent intent2 = new Intent(context, MainPageActivity.class);
+            case R.id.navigation_habitEvent:
+                Intent intent2 = new Intent(context, HabitEventListActivity.class);
                 intent2.putExtra("StartMode", "normal");
                 activity.startActivity(intent2);
                 activity.finish();
                 return true;
-            case R.id.navigation_following:
-                Intent intent3 = new Intent(context, FollowingActivity.class);
+            case R.id.navigation_homePage:
+                Intent intent3 = new Intent(context, MainPageActivity.class);
                 activity.startActivity(intent3);
                 activity.finish();
                 return true;
-            case R.id.navigation_settings:
-                Intent intent4 = new Intent(context, ProfileActivity.class);
+            case R.id.navigation_following:
+                Intent intent4 = new Intent(context, FollowingActivity.class);
                 activity.startActivity(intent4);
+                activity.finish();
+                return true;
+            case R.id.navigation_settings:
+                Intent intent5 = new Intent(context, ProfileActivity.class);
+                activity.startActivity(intent5);
                 activity.finish();
                 return true;
         }
