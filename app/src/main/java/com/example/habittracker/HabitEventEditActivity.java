@@ -49,6 +49,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.habittracker.listener.EventEditConfirmListener;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -156,10 +157,68 @@ public class HabitEventEditActivity extends AppCompatActivity  {
         // set return button
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+//-------------------------------------------------Get passed habit event object from other events------------------------------------------------------------------------------------------------
+        Intent intentGetData = getIntent();
 
+        verifyStoragePermissions(this);  // Ask for permission to access storage for later use
 
+        // And display information (if any)
+        Bundle data = intentGetData.getExtras();
+        eventIndexInList = data.getInt("EventIndex");
+        System.out.println("----------------> Event index: " + eventIndexInList);
 
+        if (eventIndexInList >= 0) {
+            // In this case we are editing an entry in the list
+            passedEvent = (HabitEvent) data.getParcelable("HabitEventForEdit");
+            comment_editText.setText(passedEvent.getComment());
+            location_editText.setText(passedEvent.getLocation());
 
+            habitEventTitle = passedEvent.getEventTitle();
+            habitEventUUID = passedEvent.getUuid();
+
+            // save habit name
+            int habitNameIndex = habitEventTitle.indexOf(":");
+            habitName = habitEventTitle.substring(0, habitNameIndex);
+            System.out.println("-----------------> Habit name: "+habitName);
+            System.out.println("-----------------> Habit uuid: "+habitEventUUID);
+            System.out.println("-----------------> User uid: "+uid);
+
+            String storageUrlString = passedEvent.getDownloadUrl();
+            if (storageUrlString != null) {
+                storageURL = Uri.parse(storageUrlString);
+                System.out.println("-------------------------> Obtained uri is: " + storageURL.toString());
+                loadUrlImageToImageView(storageURL);
+            }
+            else{
+                System.out.println("-------------------------> Image file path is null!");
+            }
+            View.OnClickListener confirmBtnOnclickListener = new EventEditConfirmListener(getApplicationContext(), this, editEventProgressDialog, comment_editText, location_editText, eventIndexInList, passedEvent, addedPhoto, imageFilePath, uid);
+            confirmBtn.setOnClickListener(confirmBtnOnclickListener);
+        }
+        else {
+            // Since the user is required to add a event every time he finishes a habit
+            // We hide the return button when adding new event to force user to add event, even a event that is completely empty
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+
+            // disable delete button when first make habit event
+            deleteBtn.setEnabled(false);
+            // In this case we are adding a new event, hence no manipulation is needed
+            habitName = data.getString("HabitName"); //TODO: use this on the habit side to transfer data
+            habitEventUUID = data.getString("UniqueID");
+
+            String date = new SimpleDateFormat("MM-dd-yyyy").format(new Date());
+            habitEventTitle = habitName +": "+ date;
+            passedEvent = new HabitEvent(habitName, "", "", habitEventUUID);
+            View.OnClickListener confirmBtnOnclickListener = new EventEditConfirmListener(getApplicationContext(), this, editEventProgressDialog, comment_editText, location_editText, eventIndexInList, passedEvent, addedPhoto, imageFilePath, uid);
+            confirmBtn.setOnClickListener(confirmBtnOnclickListener);
+        }
+
+        // Define the onclick listeners
+//        View.OnClickListener confirmBtnOnclickListener = new EventEditConfirmListener(getApplicationContext(), this, editEventProgressDialog, comment_editText, location_editText, eventIndexInList, passedEvent, addedPhoto, imageFilePath, uid);
+//
+////-------------------------------------------------- Confirm button-------------------------------------------------------------------------------------------------------------
+//        // This onclick listener processed the information we have in each input space, and edit the corresponding habit event accordingly
+//        confirmBtn.setOnClickListener(confirmBtnOnclickListener);
 
 //-------------------------------------------------- delete button -------------------------------------------------------------------------------------------------------------
         deleteBtn.setOnClickListener(new View.OnClickListener() {
@@ -208,127 +267,6 @@ public class HabitEventEditActivity extends AppCompatActivity  {
                 alert.show();
             }
         });
-
-//-------------------------------------------------- Confirm button-------------------------------------------------------------------------------------------------------------
-        // This onclick listener processed the information we have in each input space, and edit the corresponding habit event accordingly
-        confirmBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // First create a progress dialogue showing that we are currently processing this habit event
-                editEventProgressDialog.setMessage("Processing");
-                editEventProgressDialog.show();
-
-                // Create intent that is used to return to event list view
-                Intent intentReturn = new Intent(getApplicationContext(), HabitEventListActivity.class); // Return to the habit event list page
-
-                intentReturn.putExtra("StartMode", "Edit");
-
-                String comment = comment_editText.getText().toString();
-                String location = location_editText.getText().toString();
-
-                if (eventIndexInList >= 0) {
-                    // modify current entry, put necessary information and pass them to list activity
-                    passedEvent.setComment(comment);
-                    passedEvent.setLocation(location);
-
-                    // If the user selected photo from phone, we upload this photo and finish the rest of the process there
-                    if (addedPhoto) {
-                        uploadImage(imageFilePath); // The following functions of the confirm button will be realized in this function to ensure process synchronization
-                        return;
-                    }
-
-                    // Upload information to real time database
-                    HashMap<String, Object> map = new HashMap<>();
-                    map.put(passedEvent.getUuid(), passedEvent);  // habit events are stored in the database under their uuid
-                    FirebaseDatabase.getInstance().getReference().child(uid).child("HabitEvent").updateChildren(map);
-
-                    // These to are required when we return to the main activity
-                    intentReturn.putExtra("EventIndex", eventIndexInList);
-                    intentReturn.putExtra("HabitEventFromEdit", passedEvent);
-                }
-                else {
-                    // create new entry
-                    passedEvent.setComment(comment);
-                    passedEvent.setLocation(location);
-
-                    // If the user selected photo from phone, we upload this photo and finish the rest of the process there
-                    if (addedPhoto) {
-                        uploadImage(imageFilePath);
-                        return;
-                    }
-
-                    intentReturn.putExtra("EventIndex", eventIndexInList);
-                    intentReturn.putExtra("HabitEventFromEdit", passedEvent);
-
-                    HashMap<String, Object> map = new HashMap<>();
-                    map.put(passedEvent.getUuid(), passedEvent);
-
-                    FirebaseDatabase.getInstance().getReference().child(uid).child("HabitEvent").updateChildren(map);  // update firebase
-                }
-
-                editEventProgressDialog.dismiss();
-
-                startActivity(intentReturn);
-                finish(); // finish current activity
-            }
-        });
-
-
-
-//-------------------------------------------------Get passed habit event object from other events------------------------------------------------------------------------------------------------
-        Intent intentGetData = getIntent();
-
-        verifyStoragePermissions(this);  // Ask for permission to access storage for later use
-
-        // And display information (if any)
-        Bundle data = intentGetData.getExtras();
-        eventIndexInList = data.getInt("EventIndex");
-        System.out.println("----------------> Event index: " + eventIndexInList);
-
-        if (eventIndexInList >= 0) {
-            // In this case we are editing an entry in the list
-
-            passedEvent = (HabitEvent) data.getParcelable("HabitEventForEdit");
-            comment_editText.setText(passedEvent.getComment());
-            location_editText.setText(passedEvent.getLocation());
-
-            habitEventTitle = passedEvent.getEventTitle();
-            habitEventUUID = passedEvent.getUuid();
-
-            // save habit name
-            int habitNameIndex = habitEventTitle.indexOf(":");
-            habitName = habitEventTitle.substring(0, habitNameIndex);
-            System.out.println("-----------------> Habit name: "+habitName);
-            System.out.println("-----------------> Habit uuid: "+habitEventUUID);
-            System.out.println("-----------------> User uid: "+uid);
-
-            String storageUrlString = passedEvent.getDownloadUrl();
-            if (storageUrlString != null) {
-                storageURL = Uri.parse(storageUrlString);
-                System.out.println("-------------------------> Obtained uri is: " + storageURL.toString());
-                loadUrlImageToImageView(storageURL);
-            }
-            else{
-                System.out.println("-------------------------> Image file path is null!");
-            }
-        }
-        else {
-            // Since the user is required to add a event every time he finishes a habit
-            // We hide the return button when adding new event to force user to add event, even a event that is completely empty
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-
-            // disable delete button when first make habit event
-            deleteBtn.setEnabled(false);
-            // In this case we are adding a new event, hence no manipulation is needed
-            habitName = data.getString("HabitName"); //TODO: use this on the habit side to transfer data
-            habitEventUUID = data.getString("UniqueID");
-
-            String date = new SimpleDateFormat("MM-dd-yyyy").format(new Date());
-            habitEventTitle = habitName +": "+ date;
-            passedEvent = new HabitEvent(habitName, "", "", habitEventUUID);
-        }
-
-
 
 
 //------------------------------------------------------- Upload photo from phone and display in imageView------------------------------------------------------------------------------------------------------------------------------------
@@ -573,65 +511,65 @@ public class HabitEventEditActivity extends AppCompatActivity  {
         }
     }
 
-    /**
-     * This function is used to upload an image to the firebase storage
-     * This can only be called in the onCLickListener of confirm button
-     * If the upload is successful, we get the url of the uploaded image and upload new event imformation to real time storage
-     * This takes care of concurrency problem
-     * @param imagePath
-     */
-    public void uploadImage(String imagePath) {
-
-        verifyStoragePermissions(this); // First always verify permission
-
-        String imageName = habitEventUUID+".jpg"; // Generate image name: habit_event_name.jpg
-
-        Uri uri = Uri.fromFile(new File(imagePath));
-
-        StorageReference storageRef = FirebaseStorage.getInstance().getReference().child("images/users/"+ uid + "/" + imageName); // get storage reference
-        storageRef.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        storageURL = uri;
-                        System.out.println("-----------------> Get photo url success! URL: " + storageURL.toString());
-
-                        passedEvent.setDownloadUrl(storageURL.toString()); // Add photo url to the habit event for further use in retrieval
-
-                        // Upload information to real time database
-                        HashMap<String, Object> map = new HashMap<>();
-                        map.put(passedEvent.getUuid(),passedEvent);
-                        FirebaseDatabase.getInstance().getReference().child(uid).child("HabitEvent").updateChildren(map);
-
-                        // shift back to list activity
-                        Intent intentReturn = new Intent(getApplicationContext(), HabitEventListActivity.class); // Return to the habit event list page
-                        intentReturn.putExtra("StartMode", "Edit");
-                        intentReturn.putExtra("EventIndex", eventIndexInList);
-                        intentReturn.putExtra("HabitEventFromEdit", passedEvent);
-
-                        startActivity(intentReturn);
-                        editEventProgressDialog.dismiss();
-                        finish(); // finish current activity
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        System.out.println("-----------------> Get photo url failed!");
-                        editEventProgressDialog.dismiss();
-                    }
-                });
-
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                System.out.println("-----------------> upload photo failed!");
-                editEventProgressDialog.dismiss();
-            }
-        });
-    }
+//    /**
+//     * This function is used to upload an image to the firebase storage
+//     * This can only be called in the onCLickListener of confirm button
+//     * If the upload is successful, we get the url of the uploaded image and upload new event imformation to real time storage
+//     * This takes care of concurrency problem
+//     * @param imagePath
+//     */
+//    public void uploadImage(String imagePath) {
+//
+//        verifyStoragePermissions(this); // First always verify permission
+//
+//        String imageName = habitEventUUID+".jpg"; // Generate image name: habit_event_name.jpg
+//
+//        Uri uri = Uri.fromFile(new File(imagePath));
+//
+//        StorageReference storageRef = FirebaseStorage.getInstance().getReference().child("images/users/"+ uid + "/" + imageName); // get storage reference
+//        storageRef.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+//            @Override
+//            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//                storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+//                    @Override
+//                    public void onSuccess(Uri uri) {
+//                        storageURL = uri;
+//                        System.out.println("-----------------> Get photo url success! URL: " + storageURL.toString());
+//
+//                        passedEvent.setDownloadUrl(storageURL.toString()); // Add photo url to the habit event for further use in retrieval
+//
+//                        // Upload information to real time database
+//                        HashMap<String, Object> map = new HashMap<>();
+//                        map.put(passedEvent.getUuid(),passedEvent);
+//                        FirebaseDatabase.getInstance().getReference().child(uid).child("HabitEvent").updateChildren(map);
+//
+//                        // shift back to list activity
+//                        Intent intentReturn = new Intent(getApplicationContext(), HabitEventListActivity.class); // Return to the habit event list page
+//                        intentReturn.putExtra("StartMode", "Edit");
+//                        intentReturn.putExtra("EventIndex", eventIndexInList);
+//                        intentReturn.putExtra("HabitEventFromEdit", passedEvent);
+//
+//                        startActivity(intentReturn);
+//                        editEventProgressDialog.dismiss();
+//                        finish(); // finish current activity
+//                    }
+//                }).addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        System.out.println("-----------------> Get photo url failed!");
+//                        editEventProgressDialog.dismiss();
+//                    }
+//                });
+//
+//            }
+//        }).addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//                System.out.println("-----------------> upload photo failed!");
+//                editEventProgressDialog.dismiss();
+//            }
+//        });
+//    }
 
     /**
      * This function is used to load an image to photo_imageView using the image's url
