@@ -56,6 +56,7 @@ public class HabitDescriptionActivityTest {
     /**
      * Helper function to add Habit
      */
+
     private void helperAddHabit(){
         FloatingActionButton floatingActionButton = (FloatingActionButton) solo.getView(R.id.allHabits_addButton_button);
         solo.clickOnView(floatingActionButton);
@@ -67,6 +68,7 @@ public class HabitDescriptionActivityTest {
         solo.enterText((EditText) solo.getView(R.id.contentInput), "This is a test");
         solo.enterText((EditText) solo.getView(R.id.reasonInput), "Started for testing");
         solo.clickOnButton("Confirm");
+
     }
     /**
      * Check to see if the description of an activity is correct
@@ -94,6 +96,9 @@ public class HabitDescriptionActivityTest {
         assertEquals(solo.getText(R.id.contentInput),"This is a test");
         assertEquals(solo.getText(R.id.reasonInput),"Started for testing");
         // done
+
+    }
+
     }
     /**
      * Closes the activity after each test
