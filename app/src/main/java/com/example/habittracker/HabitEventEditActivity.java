@@ -296,7 +296,6 @@ public class HabitEventEditActivity extends AppCompatActivity  {
         PlacesClient placesClient = Places.createClient(this);
 
         // get current location https://www.youtube.com/watch?v=Ak1O9Gip-pg
-//        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         currentLocation_button = findViewById(R.id.habitEvent_currentLocation_button);
         View.OnClickListener currentLocationListener = new CurrentLocationListener(this, location_editText);
         currentLocation_button.setOnClickListener(currentLocationListener);
