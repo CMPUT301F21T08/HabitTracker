@@ -15,6 +15,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+
+// We created user with info userName 'Test', email 'test@gmail.com', password '123456'
 /**
  * Test class for Habit Event List Activity
  */
@@ -62,6 +64,7 @@ public class HabitEventListActivityTest {
         ListView listView = activity.findViewById(R.id.lv_habit_event);
         HabitEvent newHabE = (HabitEvent) listView.getItemAtPosition(0);// only habit in the one
         // check that the habit Event is correctly listed
+        // this habitEvent is same as listed in the firebase
         if ((!newHabE.getEventTitle().equals("New: 11-05-2021"))) throw new AssertionError();
     }
 
