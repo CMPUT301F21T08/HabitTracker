@@ -72,7 +72,14 @@ public class Habit implements Serializable {
     public Habit(){
     }
 
+    /**
+     * This method will take the current date time as parameter to compare with the date that have already been store
+     * in the lastDate attribute to determine whether the current date has ended or not. And it will refresh the
+     * notDone and doneTime attribute when the current date has ended.
+     * @param currentDate
+     */
     public void refresh(String currentDate){
+        // if this two date is different, we will refresh the attributes
         if(!currentDate.equals(this.lastDate)){
             this.notDone = true;
             this.doneTime = 0;
@@ -80,13 +87,25 @@ public class Habit implements Serializable {
         }
     }
 
+
+    /**
+     * This method will be invoked when the habit is being checked in the to do list(main page).This method will return
+     * true to denote that the habit has been done today; and will return false to denote that the habit has not yet been
+     * finished today.
+     *
+     */
     public boolean setDoneTime(){
+        // "per week" and "per month" frequency only need to be done one time per day, so it will return true when this function
+        // is called
         if(this.frequencyType.equals("per week") || this.frequencyType.equals("per month")){
             doneTime++;
             number_of_completion++;
             notDone = false;
             return true;
+        // for the "per day" frequency habit, we need to compare the done time with the frequency to determine whether it is finished
+        // or not
         } else {
+            // if the frequency is 1, then it will return true since only need to be done for one time
             if(this.frequency == 1){
                 doneTime++;
                 number_of_completion++;
@@ -95,6 +114,7 @@ public class Habit implements Serializable {
             } else {
                 doneTime++;
                 number_of_completion++;
+                // compare the doneTime with the frequency
                 if(doneTime == this.frequency){
                     notDone = false;
                     return true;
@@ -198,11 +218,16 @@ public class Habit implements Serializable {
      * @param frequencyType
      */
     public void setFrequencyType(String frequencyType) {
+    // this if statement will update the notDone attribute when user modifies the frequency and frequency type of the habit
+        // when the new frequency type is "per week" or "per month", if user have already done more than once for the habit,
+        // then set the habit as done since these two types of frequency can only occur one time per day
         if(frequencyType.equals("per week") || frequencyType.equals("per month")){
             if(this.doneTime >= 1){
                 this.notDone = false;
             }
         } else {
+            // if the new frequency type is "per day", then comparing the doneTime and the frequency to determine whether the
+            // habit is done today
             if(this.doneTime >= this.frequency){
                 this.notDone = false;
             } else {
@@ -276,8 +301,28 @@ public class Habit implements Serializable {
         this.eventList = eventList;
     }
 
+    /**
+     * adding a new event to eventList attributes of habit
+     * @param eventName
+     */
     public void addEvent(String eventName) {
         this.eventList.add(eventName);
     }
 
+
+    /**
+     * Setter for lastDate of habit
+     * @param lastDate
+     */
+    public void setLastDate(String lastDate) {
+        this.lastDate = lastDate;
+    }
+
+    /**
+     * Setter for notDone of habit
+     * @param notDone
+     */
+    public void setNotDone(boolean notDone) {
+        this.notDone = notDone;
+    }
 }

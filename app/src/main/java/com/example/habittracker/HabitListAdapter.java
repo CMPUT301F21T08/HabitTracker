@@ -1,3 +1,7 @@
+/**
+ * @author 'yhu19' and 'ingabire'
+ *
+ */
 package com.example.habittracker;
 
 import android.content.Context;
@@ -22,6 +26,9 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * The customized adapter for habit list
+ */
 public class HabitListAdapter extends ArrayAdapter<Habit> {
     private ArrayList<Habit> habitArrayList;
     private Context context;
@@ -29,12 +36,22 @@ public class HabitListAdapter extends ArrayAdapter<Habit> {
     private FirebaseAuth authentication;
     private String uid;
 
+    /**
+     * constructor of this HabitListAdapter
+     */
     public HabitListAdapter(Context context, ArrayList<Habit> habits) {
         super(context, 0, habits);
         this.habitArrayList = habits;
         this.context = context;
     }
 
+    /**
+     * Process the view for each list element for habit event list
+     * @param position
+     * @param convertView
+     * @param parent
+     * @return
+     */
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {

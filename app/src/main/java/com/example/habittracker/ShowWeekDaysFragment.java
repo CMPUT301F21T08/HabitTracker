@@ -17,7 +17,9 @@ import android.widget.CheckBox;
 
 import java.util.ArrayList;
 
-
+/**
+ * a fragment allows user to see weekly occurrence day of habit
+ */
 public class ShowWeekDaysFragment extends DialogFragment {
     //private ShowWeekDaysFragment.OnFragmentInteractionListener listener;
     private ArrayList<Integer> days;
@@ -30,11 +32,10 @@ public class ShowWeekDaysFragment extends DialogFragment {
     private CheckBox Sunday;
     private Habit habit;
 
-
-
-    // TODO: Rename and change types of parameters
-
-
+    /**
+     * Constructor that takes in the customized warning text
+     * @param habit the habit of the weekly occurrence days that the user want to check
+     */
     public ShowWeekDaysFragment(Habit habit) {
         super();
         this.habit = habit;
@@ -51,8 +52,8 @@ public class ShowWeekDaysFragment extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        // set up the views of the fragment
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_weekly_occurrence_day, null);
-
         Monday = view.findViewById(R.id.checkbox_monday);
         Tuesday = view.findViewById(R.id.checkbox_tuesday);
         Wednesday = view.findViewById(R.id.checkbox_wednesday);
@@ -60,6 +61,7 @@ public class ShowWeekDaysFragment extends DialogFragment {
         Friday = view.findViewById(R.id.checkbox_friday);
         Saturday = view.findViewById(R.id.checkbox_saturday);
         Sunday = view.findViewById(R.id.checkbox_sunday);
+        // set all the corresponding checkbox of week day in the occurrence day list to be checked
         setCheckBox(habit);
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
