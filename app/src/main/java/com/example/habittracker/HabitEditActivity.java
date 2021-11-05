@@ -2,9 +2,12 @@ package com.example.habittracker;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -16,6 +19,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 
@@ -38,6 +42,7 @@ public class HabitEditActivity extends AppCompatActivity implements AddWeekDaysF
     private EditText frequency;
     private TextView frequencyType;
     private Spinner spinner;
+    private AlertDialog.Builder builder;
 
 
     private FirebaseAuth authentication;
@@ -58,7 +63,6 @@ public class HabitEditActivity extends AppCompatActivity implements AddWeekDaysF
     private String action;
     final Calendar myCalendar = Calendar.getInstance();
     // result code
-    private int add = 55;
     private int original= 44;
     private int newObject= 33;
     
@@ -66,6 +70,7 @@ public class HabitEditActivity extends AppCompatActivity implements AddWeekDaysF
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_habit_edit);
+        builder = new AlertDialog.Builder(HabitEditActivity.this);
         addDate = findViewById(R.id.addDate_button);
         backBtn = findViewById(R.id.habitEdit_return_button);
         confirmBtn = findViewById(R.id.habitEdit_confirm_button);
@@ -93,6 +98,24 @@ public class HabitEditActivity extends AppCompatActivity implements AddWeekDaysF
         }
 
 
+        frequency.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.toString().startsWith("0")) {
+                    s.clear();
+                }
+            }
+        });
 
         // set up a DatePickerDialog
         DatePickerDialog.OnDateSetListener time = new DatePickerDialog.OnDateSetListener() {
@@ -138,11 +161,18 @@ public class HabitEditActivity extends AppCompatActivity implements AddWeekDaysF
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intentReturn = new Intent();
-                action = "original";
-                intentReturn.putExtra("action", action);
-                setResult(original, intentReturn);
-                finish();
+                if(getIntent().getStringExtra("action").equals("add")){
+                    Intent intentReturn = new Intent(HabitEditActivity.this, HabitListActivity.class);
+                    startActivity(intentReturn);
+                    finish();
+                } else {
+                    Intent intentReturn = new Intent();
+                    action = "original";
+                    intentReturn.putExtra("action", action);
+                    setResult(original, intentReturn);
+                    finish();
+                }
+
             }
         });
 
@@ -151,43 +181,53 @@ public class HabitEditActivity extends AppCompatActivity implements AddWeekDaysF
             public void onClick(View view) {
                 Intent intentConfirm = new Intent(getApplicationContext(), HabitListActivity.class);
                 Bundle bundle = new Bundle();
-                if(habit != null){
-                    habit.setHabitTitle(title.getText().toString());
-                    habit.setFrequencyType(frequencyType.getText().toString());
-                    habit.setFrequency(Integer.parseInt(frequency.getText().toString()));
-                    habit.setStartDate(date.getText().toString());
-                    habit.setHabitContent(content.getText().toString());
-                    habit.setHabitReason(reason.getText().toString());
-                    habit.setOccurrenceDay(value_of_OccurrenceDate);
-                    HashMap<String, Object> map = new HashMap<>();
-                    map.put(title.getText().toString(),habit);
-                    FirebaseDatabase.getInstance().getReference().child(uid).child("Habit").updateChildren(map);
-                    bundle.putSerializable("habit", habit);
-                    intentConfirm.putExtras(bundle);
-                    setResult(newObject, intentConfirm);
+                if(isValidInput()){
+                    if(habit != null){
+                        if(!habit.getHabitTitle().equals(title.getText().toString())){
+                            // remove the value in the firebase database
+                            DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child(uid).child("Habit").child(habit.getHabitTitle());
+                            reference.removeValue();
+                            habit.setHabitTitle(title.getText().toString());
+                        }
+                        habit.setHabitTitle(title.getText().toString());
+                        habit.setFrequency(Integer.parseInt(frequency.getText().toString()));
+                        habit.setFrequencyType(frequencyType.getText().toString());
+                        habit.setStartDate(date.getText().toString());
+                        habit.setHabitContent(content.getText().toString());
+                        habit.setHabitReason(reason.getText().toString());
+                        habit.setOccurrenceDay(value_of_OccurrenceDate);
+
+                        HashMap<String, Object> map = new HashMap<>();
+                        map.put(title.getText().toString(),habit);
+                        FirebaseDatabase.getInstance().getReference().child(uid).child("Habit").updateChildren(map);
+                        bundle.putSerializable("habit", habit);
+                        intentConfirm.putExtras(bundle);
+                        setResult(newObject, intentConfirm);
+                    } else {
+                        String value_of_title = title.getText().toString();
+                        String value_of_frequencyType = frequencyType.getText().toString();
+                        int value_of_frequency = Integer.parseInt(frequency.getText().toString());
+                        String value_of_startDate = date.getText().toString();
+                        String value_of_content = content.getText().toString();
+                        String value_of_reason = reason.getText().toString();
+                        habit = new Habit(value_of_title, value_of_reason, value_of_content, value_of_startDate, value_of_frequency, value_of_frequencyType, value_of_OccurrenceDate);
+                        // adding habit into the firebase
+                        HashMap<String, Object> map = new HashMap<>();
+                        map.put(value_of_title,habit);
+                        FirebaseDatabase.getInstance().getReference().child(uid).child("Habit").updateChildren(map);
+                    }
+                    startActivity(intentConfirm);
+                    finish();
                 } else {
-                    String value_of_title = title.getText().toString();
-                    String value_of_frequencyType = frequencyType.getText().toString();
-                    int value_of_frequency = Integer.parseInt(frequency.getText().toString());
-                    String value_of_startDate = date.getText().toString();
-                    String value_of_content = content.getText().toString();
-                    String value_of_reason = reason.getText().toString();
-                    habit = new Habit(value_of_title, value_of_reason, value_of_content, value_of_startDate, value_of_frequency, value_of_frequencyType, value_of_OccurrenceDate);
-                    // adding habit into the firebase
-                    HashMap<String, Object> map = new HashMap<>();
-                    map.put(value_of_title,habit);
-                    FirebaseDatabase.getInstance().getReference().child(uid).child("Habit").updateChildren(map);
+                    AlertDialog alert;
+                    alert = builder
+                            .setTitle("Warning:")
+                            .setMessage("Please enter all required information.")
+                            .setNegativeButton("return", null).create();
+                    alert.show();
                 }
-                startActivity(intentConfirm);
-                finish();
             }
         });
-
-
-
-
-
-
     }
 
     /* method that will create a correct format string that represent the date that selected in the
@@ -236,16 +276,55 @@ public class HabitEditActivity extends AppCompatActivity implements AddWeekDaysF
                 break;
             case 2:
                 new AddWeekDaysFragment().show(getSupportFragmentManager(),"CHOOSE_OCCURRENCE_DATE");
+                break;
             case 3:
-                // to do later
+                // to do later and send notification message
+                AlertDialog alert;
+                alert = builder
+                        .setTitle("Message:")
+                        .setMessage("Please choose another frequency, monthly frequency type is currently unsupported. Sorry!")
+                        .setNegativeButton("return", null).create();
+                alert.show();
+                frequency.setText("");
+                spinner.setSelection(0);
                 break;
         }
     }
 
     public void onConfirmPressed(ArrayList<Integer> days, int valueOfFrequency){
-        value_of_OccurrenceDate = days;
-        String text = "" + valueOfFrequency;
-        frequency.setText(text);
-        frequency = findViewById(R.id.frequencyInput);
+        if(valueOfFrequency == 0){
+            AlertDialog alert;
+            alert = builder
+                    .setTitle("Warning")
+                    .setMessage("Frequency can not be zero, please choose again.")
+                    .setNegativeButton("return", null).create();
+            alert.show();
+            spinner.setSelection(0);
+        } else {
+            value_of_OccurrenceDate = days;
+            String text = "" + valueOfFrequency;
+            frequency.setText(text);
+            frequency = findViewById(R.id.frequencyInput);
+        }
+    }
+
+    private boolean isValidInput(){
+        boolean validInput = true;
+        if(title.getText().toString().trim().length()==0){
+            validInput = false;
+        }
+        if(reason.getText().toString().trim().length()==0){
+            validInput = false;
+        }
+        if(content.getText().toString().trim().length()==0){
+            validInput = false;
+        }
+        if(frequency.getText().toString().trim().length()==0){
+            validInput = false;
+        }
+        if(date.getText().toString().trim().length()==0){
+            validInput = false;
+        }
+        return validInput;
     }
 }

@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class HabitEventListActivity extends AppCompatActivity {
-
+    // UI view objects
     ListView habitEventListView;
     ArrayAdapter<HabitEvent> habitEventAdapter;
     ArrayList<HabitEvent> habitEventList;
@@ -39,11 +39,7 @@ public class HabitEventListActivity extends AppCompatActivity {
     HabitEvent passedEvent;
 
     private FirebaseAuth authentication;
-    private String uid;
-
-    // test
-    HabitEvent newEvent;
-
+    private String uid; // unique id for each user
 
 
     @Override
@@ -51,6 +47,7 @@ public class HabitEventListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_habit_event_list);
 
+//----------------------------UI Setup----------------------------------------------------------------------
         getSupportActionBar().setTitle("Habit Events");
 
         habitEventListView = findViewById(R.id.lv_habit_event);
@@ -71,18 +68,6 @@ public class HabitEventListActivity extends AppCompatActivity {
         }
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child(uid).child("HabitEvent");
 
-//----------------------------------Get some test sample (test only) -----------------------------------------------
-
-
-//        String habitEventName = "habit 3" ;
-//
-//        newEvent = new HabitEvent(habitEventName, "comment 1", "", "");  // Comment can be empty, hence no error checking
-//
-//        HashMap<String, Object> map = new HashMap<>();
-//        map.put(newEvent.getEventTitle(),newEvent);
-//
-//        FirebaseDatabase.getInstance().getReference().child(uid).child("HabitEvent").updateChildren(map);
-//
 
 //----------------------------------update listView -----------------------------------------------
 
@@ -162,44 +147,27 @@ public class HabitEventListActivity extends AppCompatActivity {
         // Get passed-in data-----------------------------------------------------------------------------------------------------
         Intent intent = getIntent();
         Bundle data = intent.getExtras();
-        String startMode = data.getString("StartMode");
-
-        // This is used to enter this activity without editing the list
-        // in another word: since data won;t be passed if we just want to enter this activity and see contents, we use a StartMode to identify different entry method
-        // we only fetch data when it's needed
-        if (startMode.equals("Edit")) {
-            int eventIndexInList = data.getInt("EventIndex");
-            passedEvent = (HabitEvent) data.getParcelable("HabitEventFromEdit");
-
-            if (eventIndexInList >= 0) {
-                // update existing entry
-                HabitEvent tempEvent = habitEventAdapter.getItem(eventIndexInList);
-                tempEvent.setComment(passedEvent.getComment());
-                tempEvent.setLocation(passedEvent.getLocation());
-            }
-            else {
-                // add new entry to list
-                habitEventAdapter.add(passedEvent);
-            }
-            habitEventAdapter.notifyDataSetChanged();
-        }
-
     }
 
-    // This method is used to ensure the getIntent() method always returns the latest intent
+    /**
+     * This method is used to ensure the getIntent() method always returns the latest intent
+     * @param intent
+     */
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         setIntent(intent);
     }
 
+    /**
+     * This method is used to shift to event edit activity from event list activity
+     * @param index the index of pressed event in the event list
+     */
     public void goToEventEditActivity(int index) {
         Intent intent = new Intent(this, HabitEventEditActivity.class);
         intent.putExtra("HabitEventForEdit", habitEventAdapter.getItem(index));
         intent.putExtra("EventIndex", index);
         startActivity(intent);
     }
-
-
 
 }

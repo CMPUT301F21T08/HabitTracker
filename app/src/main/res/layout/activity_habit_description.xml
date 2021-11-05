@@ -1,125 +1,146 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
+    android:id="@+id/linearLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <TextView
-        android:id="@+id/description_habitTitle_textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:padding="30dp"
-        android:text="Habit Title"
-        android:textColor="@color/black"
-        android:textStyle="bold"
-        android:textSize="25sp">
-    </TextView>
 
-    <TextView
+
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:text="Start Date:"
-        android:textSize="20sp"/>
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="1dp"
+        tools:layout_editor_absoluteY="1dp">
 
-    <TextView
-        android:id="@+id/description_startDate_textView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="yyyy-mm-dd"
-        android:textSize="20sp"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:text="Frequency:"
-        android:textSize="20sp"/>
-
-    <RelativeLayout
-        android:id="@+id/RelativeLayout01"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:padding="10dp">
-
-        <TextView
-            android:id="@+id/description_frequency_textView"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/description_frequencyType_button"
-            android:layout_alignBottom="@+id/description_frequencyType_button"
-            android:layout_toLeftOf="@+id/description_frequencyType_button"
-            android:gravity="center"
-            android:text="Number"
-            android:textSize="20sp" />
+            android:orientation="vertical">
 
-        <Button
-            android:id="@+id/description_frequencyType_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:text="times per day" />
-    </RelativeLayout>
+            <TextView
+                android:id="@+id/description_habitTitle_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:padding="30dp"
+                android:text="Habit Title"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:textSize="25sp">
+            </TextView>
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:text="Start Date:"
+                android:textSize="20sp"/>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:text="Content:"
-        android:textSize="20sp"/>
+            <TextView
+                android:id="@+id/description_startDate_textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="yyyy-mm-dd"
+                android:textSize="20sp"/>
 
-    <TextView
-        android:id="@+id/description_content_textView"
-        android:layout_width="match_parent"
-        android:layout_height="132dp"
-        android:text="Briefly describe the content of the Habit"
-        android:textSize="16sp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:text="Frequency:"
+                android:textSize="20sp"/>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:text="Reason:"
-        android:textSize="20sp"/>
+            <RelativeLayout
+                android:id="@+id/RelativeLayout01"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp">
 
-    <TextView
-        android:id="@+id/description_reason_textView"
-        android:layout_width="match_parent"
-        android:layout_height="132dp"
-        android:text="Briefly describe the reason about why the Habit Occurs"
-        android:textSize="16sp"/>
+                <TextView
+                    android:id="@+id/description_frequency_textView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@+id/description_frequencyType_button"
+                    android:layout_alignBottom="@+id/description_frequencyType_button"
+                    android:layout_toLeftOf="@+id/description_frequencyType_button"
+                    android:gravity="center"
+                    android:text="Number"
+                    android:textSize="20sp" />
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <Button
-            android:id="@+id/description_return_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start"
-            android:layout_marginStart="10dp"
-            android:text="Return" />
-
-        <Button
-            android:id="@+id/description_delete_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="Delete" />
-
-        <Button
-            android:id="@+id/description_edit_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_marginEnd="10dp"
-            android:text="Edit" />
-    </FrameLayout>
+                <Button
+                    android:id="@+id/description_frequencyType_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:text="times per day" />
+            </RelativeLayout>
 
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:text="Content:"
+                android:textSize="20sp"/>
 
-</LinearLayout>
+            <TextView
+                android:id="@+id/description_content_textView"
+                android:layout_width="match_parent"
+                android:layout_height="132dp"
+                android:text="Briefly describe the content of the Habit"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:text="Reason:"
+                android:textSize="20sp"/>
+
+            <TextView
+                android:id="@+id/description_reason_textView"
+                android:layout_width="match_parent"
+                android:layout_height="132dp"
+                android:text="Briefly describe the reason about why the Habit Occurs"
+                android:textSize="16sp"/>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:id="@+id/description_return_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layout_marginStart="10dp"
+                    android:text="Return" />
+
+                <Button
+                    android:id="@+id/description_delete_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="Delete" />
+
+                <Button
+                    android:id="@+id/description_edit_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginEnd="10dp"
+                    android:text="Edit" />
+            </FrameLayout>
+
+            <Button
+                android:id="@+id/description_habitEvent_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:text="Habit Events" />
+
+        </LinearLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

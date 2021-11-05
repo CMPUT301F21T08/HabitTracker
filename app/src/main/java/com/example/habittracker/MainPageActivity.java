@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -22,12 +24,12 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 
 public class MainPageActivity extends AppCompatActivity {
     private FirebaseAuth authentication;
     private String uid;
-    private ArrayList<Habit> habitList;
     private Calendar calendar = Calendar.getInstance();
     private ArrayAdapter<Habit> toDoAdapter;
     private ArrayList<Habit> toDoList;
@@ -35,6 +37,8 @@ public class MainPageActivity extends AppCompatActivity {
     private int weekDay;
     private int day_of_month;
     private ListView toDoListView;
+    private int month;
+    private String currentDate;
 
 
     BottomNavigationView bottomNavigationView;
@@ -49,7 +53,8 @@ public class MainPageActivity extends AppCompatActivity {
         calendar.setTime(date);
         weekDay = calendar.get(Calendar.DAY_OF_WEEK);
         day_of_month = calendar.get(Calendar.DAY_OF_MONTH);
-        System.out.println(weekDay);
+        month = calendar.get(Calendar.MONTH) + 1;
+        currentDate = String.valueOf(month) + "-" + String.valueOf(day_of_month);
         authentication = FirebaseAuth.getInstance();
         if (authentication.getCurrentUser() != null){
             uid = authentication.getCurrentUser().getUid();
@@ -61,24 +66,31 @@ public class MainPageActivity extends AppCompatActivity {
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                toDoList.clear();
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()){
                     Habit habit = (Habit) dataSnapshot.getValue(Habit.class);
+                    habit.refresh(currentDate);
                     ArrayList<Integer> occurrenceDay = habit.getOccurrenceDay();
                     switch (habit.getFrequencyType()){
                         case "per day":
-                            toDoList.add(habit);
+                            if(habit.isNotDone()) {
+                                toDoList.add(habit);
+                            }
                             break;
                         case "per week":
-                            if(occurrenceDay.contains(weekDay)){
+                            if(occurrenceDay.contains(weekDay) && habit.isNotDone()){
                                 toDoList.add(habit);
                             }
                             break;
                         case "per month":
-                            if(occurrenceDay.contains(day_of_month)){
+                            if(occurrenceDay.contains(day_of_month) && habit.isNotDone()){
                                 toDoList.add(habit);
                             }
                             break;
                     }
+                    HashMap<String, Object> map = new HashMap<>();
+                    map.put(habit.getHabitTitle(),habit);
+                    FirebaseDatabase.getInstance().getReference().child(uid).child("Habit").updateChildren(map);
                 }
                 toDoAdapter.notifyDataSetChanged();
             }
@@ -88,6 +100,14 @@ public class MainPageActivity extends AppCompatActivity {
             }
         });
 
+        toDoListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Habit tapHabit = toDoList.get(i);
+                goToHabitDescriptionActivity(i, tapHabit);
+
+            }
+        });
 
         bottomNavigationView = findViewById(R.id.bottom_navigation_event);
         bottomNavigationView.setSelectedItemId(R.id.navigation_homePage);
@@ -125,12 +145,15 @@ public class MainPageActivity extends AppCompatActivity {
                 return false;
             }
         });
-
-
-
-
     }
 
-
-
+    private void goToHabitDescriptionActivity(int position, Habit tapHabit){
+        Intent intent = new Intent(this, HabitDescriptionActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putInt("position", position);
+        bundle.putSerializable("habit",tapHabit);
+        intent.putExtras(bundle);
+        startActivity(intent);
+        finish();
+    }
 }

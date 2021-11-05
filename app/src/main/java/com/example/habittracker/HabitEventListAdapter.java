@@ -28,6 +28,13 @@ public class HabitEventListAdapter extends ArrayAdapter<HabitEvent> {
         this.context = context;
     }
 
+    /**
+     * Process the view for each list element for habit event list
+     * @param position
+     * @param convertView
+     * @param parent
+     * @return
+     */
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {

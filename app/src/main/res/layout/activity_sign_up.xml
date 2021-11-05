@@ -6,11 +6,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
-
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:srcCompat="@tools:sample/avatars"
+        tools:srcCompat="@drawable/login_avatar"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
