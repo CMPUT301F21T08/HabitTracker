@@ -32,23 +32,23 @@ public class NavigationBarClickListener implements NavigationBarView.OnItemSelec
         switch (item.getItemId()) {
             case R.id.navigation_habit:
                 Intent intent1 = new Intent(context, HabitListActivity.class);
-                context.startActivity(intent1);
+                activity.startActivity(intent1);
                 activity.finish();
                 return true;
             case R.id.navigation_homePage:
                 Intent intent2 = new Intent(context, MainPageActivity.class);
                 intent2.putExtra("StartMode", "normal");
-                context.startActivity(intent2);
+                activity.startActivity(intent2);
                 activity.finish();
                 return true;
             case R.id.navigation_following:
                 Intent intent3 = new Intent(context, FollowingActivity.class);
-                context.startActivity(intent3);
+                activity.startActivity(intent3);
                 activity.finish();
                 return true;
             case R.id.navigation_settings:
                 Intent intent4 = new Intent(context, ProfileActivity.class);
-                context.startActivity(intent4);
+                activity.startActivity(intent4);
                 activity.finish();
                 return true;
         }
