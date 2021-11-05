@@ -88,7 +88,6 @@ public class ToDoListAdapter extends ArrayAdapter<Habit>{
                     // if the habit is finished today, then allow user to add a habit event
                     if(tappedHabit.setDoneTime()){
                         String title = tappedHabit.getHabitTitle();
-                        String date = new SimpleDateFormat("MM-dd-yyyy").format(new Date());
 
                         //Generate a unique id for habit event
                         String uniqueID = UUID.randomUUID().toString();

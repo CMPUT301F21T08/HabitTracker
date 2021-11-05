@@ -91,6 +91,9 @@ public class MainPageActivity extends AppCompatActivity {
                 toDoList.clear();
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()){
                     Habit habit = (Habit) dataSnapshot.getValue(Habit.class);
+                    if (habit.getDoneTime() == habit.getFrequency()) {
+                        habit.setNotDone(false);
+                    }
 
                     // refresh all the information related to done time of habit if the date is changed
                     habit.refresh(currentDate);
