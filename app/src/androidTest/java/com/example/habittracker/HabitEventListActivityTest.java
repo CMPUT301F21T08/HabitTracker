@@ -68,7 +68,7 @@ public class HabitEventListActivityTest {
         //check the dialog
 
         solo.clickOnButton("Delete");
-        solo.clickOnView(solo.getView(R.id.tv_delete_confirm);
+        solo.clickOnView(solo.getView(R.id.tv_delete_confirm));
 
 
     }
