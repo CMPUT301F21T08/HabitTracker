@@ -17,6 +17,7 @@ public class HabitEvent implements Parcelable {
     private String location;
     private String downloadUrl; // This stores the url directing to the photo stored in firebase, not set by any constructor
     private String uuid;
+    private String localImagePath;
 
     /**
      * this creates a parcel creator, which is used to pass data between events
@@ -47,6 +48,7 @@ public class HabitEvent implements Parcelable {
         this.comment = comment;
         this.location = location;
         this.downloadUrl = null;
+        this.localImagePath = null;
         this.uuid = uuid;
     }
 
@@ -147,6 +149,23 @@ public class HabitEvent implements Parcelable {
     public void setUuid(String uuid) {
         this.uuid = uuid;
     }
+
+    /**
+     * Getter for local image path
+     * @return
+     */
+    public String getLocalImagePath() {
+        return localImagePath;
+    }
+
+    /**
+     * Setter for local image path
+     * @param localImagePath
+     */
+    public void setLocalImagePath(String localImagePath) {
+        this.localImagePath = localImagePath;
+    }
+
 
     @Override
     public int describeContents() {
