@@ -142,7 +142,7 @@ public class HabitDescriptionActivity extends AppCompatActivity implements Delet
     public void onConfirmDeletePressed() {
 
         // remove the value in the firebase database
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child(uid).child("Habit").child(habit.getHabitTitle());
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child(uid).child("Habit").child(habit.getUUID());
         reference.removeValue();
         removeAllRelatedEvent(habit.getEventList());
 

@@ -20,7 +20,7 @@ public class HabitEventTest {
      */
     @BeforeEach
     public void constructEvent() {
-        testEvent = new HabitEvent("Run", "I've finished running", "Edmonton", "1234-5678");
+        testEvent = new HabitEvent("Run", "I've finished running", "Edmonton", "1234-5678", "1111-2222");
         date = new SimpleDateFormat("MM-dd-yyyy").format(new Date());
     }
 

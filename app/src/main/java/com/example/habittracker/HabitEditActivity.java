@@ -191,7 +191,7 @@ public class HabitEditActivity extends AppCompatActivity implements AddWeekDaysF
         backBtn.setOnClickListener(backBtnOnclickListener);
 
         // set up the backBtn to upload the habit to the database
-        View.OnClickListener confirmBtnOnclickListener = new HabitEditConfirmListener(getApplicationContext(), this, title, content, reason, date, frequency, frequencyType, habit,authentication, uid, newObject);
+        View.OnClickListener confirmBtnOnclickListener = new HabitEditConfirmListener(getApplicationContext(), this, title, content, reason, date, frequency, frequencyType, habit, authentication, uid, newObject);
         confirmBtn.setOnClickListener(confirmBtnOnclickListener);
     }
 

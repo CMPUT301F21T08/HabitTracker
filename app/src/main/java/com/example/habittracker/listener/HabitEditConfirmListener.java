@@ -21,6 +21,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.UUID;
 
 public class HabitEditConfirmListener implements View.OnClickListener{
     // attributes related to view
@@ -67,12 +68,14 @@ public class HabitEditConfirmListener implements View.OnClickListener{
             if(habit != null){
                 // if the user change the title of the habit, we need to remove the habit from the database first
                 // and then upload the habit with the new title
-                if(!habit.getHabitTitle().equals(title.getText().toString())){
-                    // remove the value in the firebase database
-                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child(uid).child("Habit").child(habit.getHabitTitle());
-                    reference.removeValue();
-                    habit.setHabitTitle(title.getText().toString());
-                }
+
+//                if(!habit.getHabitTitle().equals(title.getText().toString())){
+//                    // remove the value in the firebase database
+//                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child(uid).child("Habit").child(habit.getHabitTitle());
+//                    reference.removeValue();
+//                    habit.setHabitTitle(title.getText().toString());
+//                }
+
                 // use setter method of the attributes to renew the habit
                 habit.setHabitTitle(title.getText().toString());
                 habit.setFrequency(Integer.parseInt(frequency.getText().toString()));
@@ -81,9 +84,10 @@ public class HabitEditConfirmListener implements View.OnClickListener{
                 habit.setHabitContent(content.getText().toString());
                 habit.setHabitReason(reason.getText().toString());
                 habit.setOccurrenceDay(value_of_OccurrenceDate);
+
                 // upload the habit to the database
                 HashMap<String, Object> map = new HashMap<>();
-                map.put(title.getText().toString(),habit);
+                map.put(habit.getUUID(), habit);
                 FirebaseDatabase.getInstance().getReference().child(uid).child("Habit").updateChildren(map);
                 // send back the habit to HabitDescription page
                 Intent intentDes = new Intent();
@@ -101,10 +105,11 @@ public class HabitEditConfirmListener implements View.OnClickListener{
                 String value_of_content = content.getText().toString();
                 String value_of_reason = reason.getText().toString();
                 // vlaue_of_occurrence is a global variable
-                habit = new Habit(value_of_title, value_of_reason, value_of_content, value_of_startDate, value_of_frequency, value_of_frequencyType, value_of_OccurrenceDate);
+                String uuid = UUID.randomUUID().toString(); // Generate the unique uuid for each habit
+                habit = new Habit(value_of_title, value_of_reason, value_of_content, value_of_startDate, value_of_frequency, value_of_frequencyType, value_of_OccurrenceDate, uuid);
                 // adding habit into the firebase
                 HashMap<String, Object> map = new HashMap<>();
-                map.put(value_of_title,habit);
+                map.put(habit.getUUID(),habit);
                 FirebaseDatabase.getInstance().getReference().child(uid).child("Habit").updateChildren(map);
                 activity.startActivity(intentConfirm);
             }
