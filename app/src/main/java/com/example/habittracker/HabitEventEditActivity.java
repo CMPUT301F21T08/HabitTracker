@@ -209,14 +209,13 @@ public class HabitEventEditActivity extends AppCompatActivity  {
             String date = new SimpleDateFormat("MM-dd-yyyy").format(new Date());
             habitEventTitle = habitName +": "+ date;
             passedEvent = new HabitEvent(habitName, "", "", habitEventUUID);
+
+            // Set the onClickListener for confirm button
             View.OnClickListener confirmBtnOnclickListener = new EventEditConfirmListener(getApplicationContext(), this, editEventProgressDialog, comment_editText, location_editText, eventIndexInList, passedEvent, photo_imageView, uid);
             confirmBtn.setOnClickListener(confirmBtnOnclickListener);
         }
 
 
-//-------------------------------------------------- Confirm button-------------------------------------------------------------------------------------------------------------
-        // This onclick listener processed the information we have in each input space, and edit the corresponding habit event accordingly
-        // Define the onclick listeners
 
 
 //-------------------------------------------------- delete button -------------------------------------------------------------------------------------------------------------
