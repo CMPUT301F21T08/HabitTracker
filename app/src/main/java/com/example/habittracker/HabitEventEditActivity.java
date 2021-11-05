@@ -49,6 +49,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.habittracker.listener.CurrentLocationListener;
 import com.example.habittracker.listener.EventEditConfirmListener;
 import com.example.habittracker.listener.EventEditDeleteListener;
 import com.example.habittracker.listener.LocationEditTextListener;
@@ -295,43 +296,10 @@ public class HabitEventEditActivity extends AppCompatActivity  {
         PlacesClient placesClient = Places.createClient(this);
 
         // get current location https://www.youtube.com/watch?v=Ak1O9Gip-pg
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+//        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         currentLocation_button = findViewById(R.id.habitEvent_currentLocation_button);
-        currentLocation_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // check permission
-                if(ActivityCompat.checkSelfPermission(HabitEventEditActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)== PackageManager.PERMISSION_GRANTED) {
-                    // when permission granted
-
-                    fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Location> task) {
-                            // initialize location
-                            Location location = task.getResult();
-                            if(location != null){
-                                try{
-                                    // initialize getCoder
-                                    Geocoder geocoder = new Geocoder(HabitEventEditActivity.this, Locale.getDefault());
-                                    // initialize address list
-                                    List<Address> addresses = geocoder.getFromLocation(
-                                            location.getLatitude(),location.getLongitude(),1
-
-                                    );
-                                    location_editText.setText(Html.fromHtml(addresses.get(0).getAddressLine(0)));
-                                } catch(IOException e1){
-                                    e1.printStackTrace();
-                                }
-                            }
-                        }
-                    });
-                }
-                else{
-                    // when permission denied
-                    ActivityCompat.requestPermissions(HabitEventEditActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);
-                }
-            }
-        });
+        View.OnClickListener currentLocationListener = new CurrentLocationListener(this, location_editText);
+        currentLocation_button.setOnClickListener(currentLocationListener);
 
 
         activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
