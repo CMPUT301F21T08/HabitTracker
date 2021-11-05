@@ -19,6 +19,7 @@ public class HabitEvent implements Parcelable {
     private String uuid;
     private String localImagePath;
     private String habitName;
+    private String date;
 
     /**
      * this creates a parcel creator, which is used to pass data between events
@@ -44,7 +45,7 @@ public class HabitEvent implements Parcelable {
      * @param uuid unique id for each event, generated on the habit side
      */
     public HabitEvent(String habitName, String comment, String location, String uuid) {
-        String date = new SimpleDateFormat("MM-dd-yyyy").format(new Date());
+        this.date = new SimpleDateFormat("MM-dd-yyyy").format(new Date());
         this.habitName = habitName;
         this.eventTitle = habitName +": "+ date; // create unique event name
         this.comment = comment;
@@ -184,6 +185,9 @@ public class HabitEvent implements Parcelable {
      */
     public void setHabitName(String habitName) {
         this.habitName = habitName;
+        // If we change the name of the related habit, the name of the habit event should also change
+        // The only thing that won't change is the date
+        setEventTitle(this.habitName +": "+ this.date);
     }
 
 
