@@ -192,7 +192,7 @@ public class HabitEventEditActivity extends AppCompatActivity  {
             else{
                 System.out.println("-------------------------> Image file path is null!");
             }
-            View.OnClickListener confirmBtnOnclickListener = new EventEditConfirmListener(getApplicationContext(), this, editEventProgressDialog, comment_editText, location_editText, eventIndexInList, passedEvent, addedPhoto, imageFilePath, uid);
+            View.OnClickListener confirmBtnOnclickListener = new EventEditConfirmListener(getApplicationContext(), this, editEventProgressDialog, comment_editText, location_editText, eventIndexInList, passedEvent, photo_imageView, uid);
             confirmBtn.setOnClickListener(confirmBtnOnclickListener);
         }
         else {
@@ -209,16 +209,15 @@ public class HabitEventEditActivity extends AppCompatActivity  {
             String date = new SimpleDateFormat("MM-dd-yyyy").format(new Date());
             habitEventTitle = habitName +": "+ date;
             passedEvent = new HabitEvent(habitName, "", "", habitEventUUID);
-            View.OnClickListener confirmBtnOnclickListener = new EventEditConfirmListener(getApplicationContext(), this, editEventProgressDialog, comment_editText, location_editText, eventIndexInList, passedEvent, addedPhoto, imageFilePath, uid);
+            View.OnClickListener confirmBtnOnclickListener = new EventEditConfirmListener(getApplicationContext(), this, editEventProgressDialog, comment_editText, location_editText, eventIndexInList, passedEvent, photo_imageView, uid);
             confirmBtn.setOnClickListener(confirmBtnOnclickListener);
         }
 
+
+//-------------------------------------------------- Confirm button-------------------------------------------------------------------------------------------------------------
+        // This onclick listener processed the information we have in each input space, and edit the corresponding habit event accordingly
         // Define the onclick listeners
-//        View.OnClickListener confirmBtnOnclickListener = new EventEditConfirmListener(getApplicationContext(), this, editEventProgressDialog, comment_editText, location_editText, eventIndexInList, passedEvent, addedPhoto, imageFilePath, uid);
-//
-////-------------------------------------------------- Confirm button-------------------------------------------------------------------------------------------------------------
-//        // This onclick listener processed the information we have in each input space, and edit the corresponding habit event accordingly
-//        confirmBtn.setOnClickListener(confirmBtnOnclickListener);
+
 
 //-------------------------------------------------- delete button -------------------------------------------------------------------------------------------------------------
         deleteBtn.setOnClickListener(new View.OnClickListener() {
@@ -294,6 +293,7 @@ public class HabitEventEditActivity extends AppCompatActivity  {
                                 addedPhoto = true;
 
                                 imageFilePath = getPathFromURI(HabitEventEditActivity.this, uri);
+                                passedEvent.setLocalImagePath(imageFilePath);
                             }
                             catch (IOException e){
                                 e.printStackTrace();
@@ -511,65 +511,62 @@ public class HabitEventEditActivity extends AppCompatActivity  {
         }
     }
 
-//    /**
-//     * This function is used to upload an image to the firebase storage
-//     * This can only be called in the onCLickListener of confirm button
-//     * If the upload is successful, we get the url of the uploaded image and upload new event imformation to real time storage
-//     * This takes care of concurrency problem
-//     * @param imagePath
-//     */
-//    public void uploadImage(String imagePath) {
-//
-//        verifyStoragePermissions(this); // First always verify permission
-//
-//        String imageName = habitEventUUID+".jpg"; // Generate image name: habit_event_name.jpg
-//
-//        Uri uri = Uri.fromFile(new File(imagePath));
-//
-//        StorageReference storageRef = FirebaseStorage.getInstance().getReference().child("images/users/"+ uid + "/" + imageName); // get storage reference
-//        storageRef.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-//            @Override
-//            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//                storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-//                    @Override
-//                    public void onSuccess(Uri uri) {
-//                        storageURL = uri;
-//                        System.out.println("-----------------> Get photo url success! URL: " + storageURL.toString());
-//
-//                        passedEvent.setDownloadUrl(storageURL.toString()); // Add photo url to the habit event for further use in retrieval
-//
-//                        // Upload information to real time database
-//                        HashMap<String, Object> map = new HashMap<>();
-//                        map.put(passedEvent.getUuid(),passedEvent);
-//                        FirebaseDatabase.getInstance().getReference().child(uid).child("HabitEvent").updateChildren(map);
-//
-//                        // shift back to list activity
-//                        Intent intentReturn = new Intent(getApplicationContext(), HabitEventListActivity.class); // Return to the habit event list page
-//                        intentReturn.putExtra("StartMode", "Edit");
-//                        intentReturn.putExtra("EventIndex", eventIndexInList);
-//                        intentReturn.putExtra("HabitEventFromEdit", passedEvent);
-//
-//                        startActivity(intentReturn);
-//                        editEventProgressDialog.dismiss();
-//                        finish(); // finish current activity
-//                    }
-//                }).addOnFailureListener(new OnFailureListener() {
-//                    @Override
-//                    public void onFailure(@NonNull Exception e) {
-//                        System.out.println("-----------------> Get photo url failed!");
-//                        editEventProgressDialog.dismiss();
-//                    }
-//                });
-//
-//            }
-//        }).addOnFailureListener(new OnFailureListener() {
-//            @Override
-//            public void onFailure(@NonNull Exception e) {
-//                System.out.println("-----------------> upload photo failed!");
-//                editEventProgressDialog.dismiss();
-//            }
-//        });
-//    }
+    /**
+     * This function is used to upload an image to the firebase storage
+     * This can only be called in the onCLickListener of confirm button
+     * If the upload is successful, we get the url of the uploaded image and upload new event imformation to real time storage
+     * This takes care of concurrency problem
+     * @param imagePath
+     */
+    public static void uploadImage(String imagePath, String habitEventUUID, HabitEvent passedEvent, int eventIndexInList, ProgressDialog editEventProgressDialog, Activity activity, Context context, String uid) {
+
+        String imageName = habitEventUUID+".jpg"; // Generate image name: habit_event_name.jpg
+
+        Uri uri = Uri.fromFile(new File(imagePath));
+
+        StorageReference storageRef = FirebaseStorage.getInstance().getReference().child("images/users/"+ uid + "/" + imageName); // get storage reference
+        storageRef.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        System.out.println("-----------------> Get photo url success! URL: " + uri.toString());
+
+                        passedEvent.setDownloadUrl(uri.toString()); // Add photo url to the habit event for further use in retrieval
+
+                        // Upload information to real time database
+                        HashMap<String, Object> map = new HashMap<>();
+                        map.put(passedEvent.getUuid(),passedEvent);
+                        FirebaseDatabase.getInstance().getReference().child(uid).child("HabitEvent").updateChildren(map);
+
+                        // shift back to list activity
+                        Intent intentReturn = new Intent(context, HabitEventListActivity.class); // Return to the habit event list page
+                        intentReturn.putExtra("StartMode", "Edit");
+                        intentReturn.putExtra("EventIndex", eventIndexInList);
+                        intentReturn.putExtra("HabitEventFromEdit", passedEvent);
+
+                        activity.startActivity(intentReturn);
+                        editEventProgressDialog.dismiss();
+                        activity.finish(); // finish current activity
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        System.out.println("-----------------> Get photo url failed!");
+                        editEventProgressDialog.dismiss();
+                    }
+                });
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                System.out.println("-----------------> upload photo failed!");
+                editEventProgressDialog.dismiss();
+            }
+        });
+    }
 
     /**
      * This function is used to load an image to photo_imageView using the image's url
