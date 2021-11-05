@@ -320,6 +320,4 @@ public class HabitEditActivity extends AppCompatActivity implements AddWeekDaysF
         }
         return validInput;
     }
-
-
 }
