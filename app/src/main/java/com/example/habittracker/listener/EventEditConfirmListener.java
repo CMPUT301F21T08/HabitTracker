@@ -39,7 +39,6 @@ public class EventEditConfirmListener implements View.OnClickListener{
     int eventIndexInList;
     HabitEvent passedEvent;
     String uid;
-    Uri storageURL;
 
     public EventEditConfirmListener(Context context, Activity activity, ProgressDialog editEventProgressDialog, EditText comment_editText,
                                     EditText location_editText, int eventIndexInList, HabitEvent passedEvent, ImageView photo_imageView, String uid) {
@@ -52,10 +51,6 @@ public class EventEditConfirmListener implements View.OnClickListener{
         this.passedEvent = passedEvent;
         this.photo_imageView = photo_imageView;
         this.uid = uid;
-        if (this.passedEvent.getDownloadUrl() != null) {
-            storageURL = Uri.parse(this.passedEvent.getDownloadUrl());
-        }
-
     }
 
     @Override
