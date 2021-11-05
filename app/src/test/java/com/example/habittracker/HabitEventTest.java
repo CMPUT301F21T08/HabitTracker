@@ -109,4 +109,35 @@ public class HabitEventTest {
         testEvent.setDownloadUrl("www.google.com");
         assertEquals("www.google.com", testEvent.getDownloadUrl());
     }
+
+    /**
+     * Test getter for local image path
+     */
+    @Test
+    public void testGetLocalImagePath() {
+        assertEquals(null, testEvent.getLocalImagePath());
+    }
+
+    /**
+     * Test setter for local image path
+     */
+    @Test
+    public void testSetLocalImagePath() {
+        testEvent.setLocalImagePath("saved/image.jpg");
+        assertEquals("saved/image.jpg", testEvent.getLocalImagePath());
+    }
+
+    /**
+     * Test getter for habit name
+     */
+    @Test
+    public void testGetHabitName() {
+        assertEquals("Run", testEvent.getHabitName());
+    }
+
+    @Test
+    public void testSetHabitName() {
+        testEvent.setHabitName("Drink water");
+        assertEquals("Drink water", testEvent.getHabitName());
+    }
 }
