@@ -24,13 +24,13 @@ import androidx.test.rule.ActivityTestRule;
 public class MainPageActivityTest{
     private Solo solo;
 
-    final float NAVIGATION_X_HABIT = 0;
-    final float NAVIGATION_X_HABITEVENT = 216;
-    final float NAVIGATION_X_HOME = 432;
-    final float NAVIGATION_X_FOLLOWING = 648;
-    final float NAVIGATION_X_SETTINGS = 864;
+    public static final float NAVIGATION_X_HABIT = 0;
+    public static final float NAVIGATION_X_HABITEVENT = 216;
+    public static final float NAVIGATION_X_HOME = 432;
+    public static final float NAVIGATION_X_FOLLOWING = 648;
+    public static final float NAVIGATION_X_SETTINGS = 864;
 
-    final float NAVIGATION_Y = 1994;
+    public static final float NAVIGATION_Y = 1994;
 
     // We created user with info userName 'Test', email 'test@gmail.com', password '123456'
 
@@ -101,8 +101,21 @@ public class MainPageActivityTest{
         solo.assertCurrentActivity("Wrong Activity", ProfileActivity.class);
     }
 
-
-
+    private void addDailyHabit(){
+        // now we click on the button
+        FloatingActionButton floatingActionButton = (FloatingActionButton) solo.getView(R.id.allHabits_addButton_button);
+        solo.clickOnView(floatingActionButton);
+        solo.assertCurrentActivity("Wrong Activity", HabitEditActivity.class);
+        solo.enterText((EditText) solo.getView(R.id.TitleInput), "Habit1");//habit title
+        solo.enterText((EditText) solo.getView(R.id.dateInput), "2021-11-06");// startDate
+        solo.pressSpinnerItem(0, 1);// for daily
+        solo.enterText((EditText) solo.getView(R.id.frequencyInput), "2");//times per day
+        solo.enterText((EditText) solo.getView(R.id.contentInput), "This is a test");
+        solo.enterText((EditText) solo.getView(R.id.reasonInput), "Started for testing");
+        solo.clickOnButton("Confirm");
+        solo.assertCurrentActivity("Wrong Activity", HabitListActivity.class);
+        // now we are back to HabitList Activity. We should also see the habit listed.
+    }
 
     @Test
     /**
@@ -110,43 +123,26 @@ public class MainPageActivityTest{
      * We will test a habit with daily freq
      */
     public void checkListAdded() throws AssertionError{
-        //we need to start at the LogInActivity because its user specific
-        // same code as that used for checkLoggingIn() in LogInTest.java
-//        solo.assertCurrentActivity("Wrong Activity", LogInActivity.class);
-//        solo.enterText((EditText) solo.getView(R.id.login_useremail_editText), "test@gmail.com");
-//        solo.enterText((EditText) solo.getView(R.id.login_password_editText), "123456");
-//        solo.clickOnButton("Sign In");
-        //check that we are in our MainPageActivity
         solo.assertCurrentActivity("Wrong Activity", MainPageActivity.class);
 
-        // now we need to add Habit1
+        // go to HabitListActivity
         solo.clickOnScreen(NAVIGATION_X_HABIT, NAVIGATION_Y);
         solo.assertCurrentActivity("Wrong Activity", HabitListActivity.class);
-        // now we click on the button
 
-        FloatingActionButton floatingActionButton = (FloatingActionButton) solo.getView(R.id.allHabits_addButton_button);
-        solo.clickOnView(floatingActionButton);
-
-        solo.assertCurrentActivity("Wrong Activity", HabitEditActivity.class);
-        solo.enterText((EditText) solo.getView(R.id.TitleInput), "Habit1");//habit title
-        solo.enterText((EditText) solo.getView(R.id.dateInput), "2021-11-06");// startdate
-
-        solo.pressSpinnerItem(0, 1);// for daily
-        solo.enterText((EditText) solo.getView(R.id.frequencyInput), "2");//times per day
-
-
-        solo.enterText((EditText) solo.getView(R.id.contentInput), "This is a test");
-        solo.enterText((EditText) solo.getView(R.id.reasonInput), "Started for testing");
-        solo.clickOnButton("Confirm");
-        solo.assertCurrentActivity("Wrong Activity", HabitListActivity.class);
-        // now we are back to HabitList Activity. We should also see the habit listed.
+        // now we need to add a Habit. Done by the helper method. Has title "Habit1"
+        addDailyHabit();
+        // return to Main Activity
         solo.clickOnScreen(NAVIGATION_X_HOME, NAVIGATION_Y);
+        // wait until the activity is loaded
         solo.waitForActivity("MainPageActivity");
+        //wait until the ListView is loaded
         solo.waitForView(R.id.habitToDo_listView);
         solo.assertCurrentActivity("Wrong Activity", MainPageActivity.class);
         MainPageActivity activity = (MainPageActivity) solo.getCurrentActivity();
+        //get listView
         ListView listView = activity.findViewById(R.id.habitToDo_listView);
         Habit newHabit = (Habit) listView.getItemAtPosition(0);// only habit in the one
+        //check that the Habit is the same as entered.
         if ((!newHabit.getHabitTitle().equals("Habit1"))) throw new AssertionError();
     }
 
