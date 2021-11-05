@@ -33,7 +33,11 @@ public class HabitEventsOfHabitActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_habit_habit_event_list);
+
+        getSupportActionBar().setTitle("Habit Event - Inside Habit");
+
         habitEventListView = findViewById(R.id.habit_habitEvent_list);
+
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         habit = (Habit) bundle.getSerializable("habit");
@@ -41,7 +45,6 @@ public class HabitEventsOfHabitActivity extends AppCompatActivity {
         if (authentication.getCurrentUser() != null){
             uid = authentication.getCurrentUser().getUid();
         }
-        getSupportActionBar().setTitle("Habit Event - Inside Habit");
 
         uuid = habit.getEventList();
         habitEventTitle = new ArrayList<>();
@@ -54,9 +57,11 @@ public class HabitEventsOfHabitActivity extends AppCompatActivity {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     HabitEvent habE = (HabitEvent) snapshot.getValue(HabitEvent.class);
-                    habitEventsList.add(habE);
-                    habitEventTitle.add(habE.getEventTitle());
-                    habitEventAdapter.notifyDataSetChanged();
+                    if (habE != null) {
+                        habitEventsList.add(habE);
+                        habitEventTitle.add(habE.getEventTitle());
+                        habitEventAdapter.notifyDataSetChanged();
+                    }
                 }
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {

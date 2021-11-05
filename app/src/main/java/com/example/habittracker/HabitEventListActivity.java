@@ -147,28 +147,6 @@ public class HabitEventListActivity extends AppCompatActivity {
         // Get passed-in data-----------------------------------------------------------------------------------------------------
         Intent intent = getIntent();
         Bundle data = intent.getExtras();
-        String startMode = data.getString("StartMode");
-
-        // This is used to enter this activity without editing the list
-        // in another word: since data won;t be passed if we just want to enter this activity and see contents, we use a StartMode to identify different entry method
-        // we only fetch data when it's needed
-        if (startMode.equals("Edit")) {
-            int eventIndexInList = data.getInt("EventIndex");
-            passedEvent = (HabitEvent) data.getParcelable("HabitEventFromEdit");
-
-            if (eventIndexInList >= 0) {
-                // update existing entry
-                HabitEvent tempEvent = habitEventAdapter.getItem(eventIndexInList);
-                tempEvent.setComment(passedEvent.getComment());
-                tempEvent.setLocation(passedEvent.getLocation());
-            }
-            else {
-                // add new entry to list
-                habitEventAdapter.add(passedEvent);
-            }
-            habitEventAdapter.notifyDataSetChanged();
-        }
-
     }
 
     /**
