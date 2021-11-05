@@ -62,13 +62,11 @@ public class LogInTest{
     public void goingToSignUp(){
         //checking that its the correct activty
         solo.assertCurrentActivity("Wrong Activity", LogInActivity.class);
-        solo.enterText((EditText) solo.getView(R.id.login_useremail_editText), "test@gmail.com");
-        solo.enterText((EditText) solo.getView(R.id.login_password_editText), "123456");
-        solo.clickOnButton("Sign In");
-        //check that we are in our MainPageActivity
-        solo.assertCurrentActivity("Wrong Activity", MainPageActivity.class);
-    }
 
+        solo.clickOnButton("Sign Up");
+        //check that we are in our MainPageActivity
+        solo.assertCurrentActivity("Wrong Activity", SignUpActivity.class);
+    }
     /**
      * Closes the activity after each test
      * @throws Exception
