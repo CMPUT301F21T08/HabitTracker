@@ -50,6 +50,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.habittracker.listener.EventEditConfirmListener;
+import com.example.habittracker.listener.EventEditDeleteListener;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -175,10 +176,8 @@ public class HabitEventEditActivity extends AppCompatActivity  {
 
             habitEventTitle = passedEvent.getEventTitle();
             habitEventUUID = passedEvent.getUuid();
+            habitName = passedEvent.getHabitName();
 
-            // save habit name
-            int habitNameIndex = habitEventTitle.indexOf(":");
-            habitName = habitEventTitle.substring(0, habitNameIndex);
             System.out.println("-----------------> Habit name: "+habitName);
             System.out.println("-----------------> Habit uuid: "+habitEventUUID);
             System.out.println("-----------------> User uid: "+uid);
@@ -192,6 +191,8 @@ public class HabitEventEditActivity extends AppCompatActivity  {
             else{
                 System.out.println("-------------------------> Image file path is null!");
             }
+
+            // Set the onClickListener for confirm button
             View.OnClickListener confirmBtnOnclickListener = new EventEditConfirmListener(getApplicationContext(), this, editEventProgressDialog, comment_editText, location_editText, eventIndexInList, passedEvent, photo_imageView, uid);
             confirmBtn.setOnClickListener(confirmBtnOnclickListener);
         }
@@ -219,47 +220,14 @@ public class HabitEventEditActivity extends AppCompatActivity  {
 
 
 //-------------------------------------------------- delete button -------------------------------------------------------------------------------------------------------------
+        DialogInterface.OnClickListener deleteOnclickListener = new EventEditDeleteListener(uid, passedEvent, eventIndexInList, getApplicationContext(), this);
         deleteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(HabitEventEditActivity.this);
                 builder.setMessage("Are you sure you want to delete?")
-                        .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                Intent intentReturn = new Intent(getApplicationContext(), HabitEventListActivity.class); // Return to the habit event list page
-
-                                intentReturn.putExtra("StartMode", "Delete");
-                                intentReturn.putExtra("EventIndex", eventIndexInList);
-
-                                FirebaseDatabase.getInstance().getReference().child(uid).child("HabitEvent").child(habitEventUUID).removeValue();  // Delete the record in realtime database
-
-                                // If the current event has photo uploaded, we delete that photo as well
-                                if (passedEvent.getDownloadUrl() != null) {
-                                    // delete firebase storage image
-                                    StorageReference reference = FirebaseStorage.getInstance().getReferenceFromUrl(passedEvent.getDownloadUrl());
-                                    reference.delete()
-                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void unused) {
-                                                    System.out.println("------------------> Image successfully deleted!");
-                                                }
-                                            })
-                                            .addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    Toast.makeText(HabitEventEditActivity.this,"Error in removing image",Toast.LENGTH_SHORT).show();
-
-                                                }
-                                            });
-                                }
-
-                                deleteEventFromHabit(habitName, passedEvent.getUuid());  // When deleting an event, we also need to remove its record from the stored list in corresponding habit
-                                startActivity(intentReturn);
-                                finish(); // finish current activity
-
-                            }
-                        }).setNegativeButton("Cancel",null);
+                        .setPositiveButton("Confirm", deleteOnclickListener)
+                        .setNegativeButton("Cancel",null);
 
                 AlertDialog alert = builder.create();
                 alert.show();
@@ -579,9 +547,9 @@ public class HabitEventEditActivity extends AppCompatActivity  {
     /**
      * This function is used to delete the habit event from the list stored in corresponding habit
      * @param habitName
-     * @param eventName
+     * @param eventUUID
      */
-    public void deleteEventFromHabit(String habitName, String eventName) {
+    public static void deleteEventFromHabit(String habitName, String eventUUID, String uid) {
         DatabaseReference habitRef = FirebaseDatabase.getInstance().getReference().child(uid).child("Habit");
         habitRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -591,7 +559,7 @@ public class HabitEventEditActivity extends AppCompatActivity  {
                     // Determine whether we are processing the right habit
                     if (habitE.getHabitTitle().equals(habitName)) {
                         ArrayList<String> habitEventNameList = habitE.getEventList();
-                        habitEventNameList.remove(eventName);
+                        habitEventNameList.remove(eventUUID);
                         habitE.setEventList(habitEventNameList);
 
                         HashMap<String, Object> map = new HashMap<>();

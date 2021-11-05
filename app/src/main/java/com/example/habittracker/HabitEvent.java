@@ -18,6 +18,7 @@ public class HabitEvent implements Parcelable {
     private String downloadUrl; // This stores the url directing to the photo stored in firebase, not set by any constructor
     private String uuid;
     private String localImagePath;
+    private String habitName;
 
     /**
      * this creates a parcel creator, which is used to pass data between events
@@ -44,6 +45,7 @@ public class HabitEvent implements Parcelable {
      */
     public HabitEvent(String habitName, String comment, String location, String uuid) {
         String date = new SimpleDateFormat("MM-dd-yyyy").format(new Date());
+        this.habitName = habitName;
         this.eventTitle = habitName +": "+ date; // create unique event name
         this.comment = comment;
         this.location = location;
@@ -62,6 +64,8 @@ public class HabitEvent implements Parcelable {
         this.location = in.readString();
         this.downloadUrl = in.readString();
         this.uuid = in.readString();
+        this.habitName = in.readString();
+        this.localImagePath = in.readString();
     }
 
     /**
@@ -166,6 +170,22 @@ public class HabitEvent implements Parcelable {
         this.localImagePath = localImagePath;
     }
 
+    /**
+     * Getter for habit name
+     * @return
+     */
+    public String getHabitName() {
+        return habitName;
+    }
+
+    /**
+     * Setter for habit name
+     * @param habitName
+     */
+    public void setHabitName(String habitName) {
+        this.habitName = habitName;
+    }
+
 
     @Override
     public int describeContents() {
@@ -184,5 +204,7 @@ public class HabitEvent implements Parcelable {
         parcel.writeString(this.location);
         parcel.writeString(this.downloadUrl);
         parcel.writeString(this.uuid);
+        parcel.writeString(this.habitName);
+        parcel.writeString(this.localImagePath);
     }
 }

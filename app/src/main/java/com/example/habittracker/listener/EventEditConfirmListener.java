@@ -78,7 +78,7 @@ public class EventEditConfirmListener implements View.OnClickListener{
             passedEvent.setLocation(location);
 
             // If the user selected photo from phone, we upload this photo and finish the rest of the process there
-            if (photo_imageView.getDrawable() != null) {
+            if (passedEvent.getLocalImagePath() != null) {
                 HabitEventEditActivity.uploadImage(passedEvent.getLocalImagePath(), passedEvent.getUuid(), passedEvent, eventIndexInList, editEventProgressDialog, activity, context, uid);
                 return;
             }
@@ -98,7 +98,7 @@ public class EventEditConfirmListener implements View.OnClickListener{
             passedEvent.setLocation(location);
 
             // If the user selected photo from phone, we upload this photo and finish the rest of the process there
-            if (photo_imageView.getDrawable() != null) {
+            if (passedEvent.getLocalImagePath() != null) {
                 HabitEventEditActivity.uploadImage(passedEvent.getLocalImagePath(), passedEvent.getUuid(), passedEvent, eventIndexInList, editEventProgressDialog, activity, context, uid);
                 return;
             }
