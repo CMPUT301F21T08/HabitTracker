@@ -38,7 +38,7 @@ public class EventListClickListener implements AdapterView.OnItemClickListener{
         Intent intent = new Intent(context, HabitEventEditActivity.class);
         intent.putExtra("HabitEventForEdit", habitEventAdapter.getItem(index));
         intent.putExtra("EventIndex", index);
-        context.startActivity(intent);
+        activity.startActivity(intent);
     }
 
 }
