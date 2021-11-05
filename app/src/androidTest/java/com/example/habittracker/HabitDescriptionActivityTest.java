@@ -1,29 +1,35 @@
 package com.example.habittracker;
 
 import android.app.Activity;
-import android.graphics.Point;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import androidx.test.platform.app.InstrumentationRegistry;
-import androidx.test.rule.ActivityTestRule;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.robotium.solo.Solo;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.platform.app.InstrumentationRegistry;
+import androidx.test.rule.ActivityTestRule;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Test for HabitDescriptionActivity
+ * We start from HabitList because initially, its empty
  */
-
+@RunWith(AndroidJUnit4.class)
 public class HabitDescriptionActivityTest {
     private  Solo solo;
 
     @Rule
-    public ActivityTestRule<HabitDescriptionActivity> rule =
-            new ActivityTestRule<>(HabitDescriptionActivity.class, true, true);
+    public ActivityTestRule<HabitListActivity> rule =
+            new ActivityTestRule<>(HabitListActivity.class, true, true);
 
     /**
      * Runs before all tests and creates solo instance.
@@ -32,7 +38,7 @@ public class HabitDescriptionActivityTest {
 
     @Before
     public void setUp() throws Exception{
-        solo = new Solo(InstrumentationRegistry.getInstrumentation(),rule.getActivity());
+        solo = new Solo(InstrumentationRegistry.getInstrumentation(), rule.getActivity());
     }
 
     /**
@@ -45,63 +51,53 @@ public class HabitDescriptionActivityTest {
         Activity activity = rule.getActivity();
 
     }
+
+
     /**
-     * Test for the navigation bar
+     * Helper function to add Habit
      */
-    @Test
-    public void NavigationBar(){
-        Point deviceSize = new Point();
-        new HabitDescriptionActivity().getWindowManager().getDefaultDispaly().getSize(deviceSize);
-        //solo.clickOnScreen(float x, float y);
-        float screenWidth = deviceSize.x;
-        int screenHeight = deviceSize.y;
-        int fromX = 0;
-        //int toX = screenWidth / 2;
-        int fromY = screenHeight / 2;
-       // int toY = fromY;
-        solo.clickOnScreen(float x, float y);
-        listView listView = (ListView) solo.getView(R.id.navigation_Description);
 
+    private void helperAddHabit(){
+        FloatingActionButton floatingActionButton = (FloatingActionButton) solo.getView(R.id.allHabits_addButton_button);
+        solo.clickOnView(floatingActionButton);
+        solo.assertCurrentActivity("Wrong Activity", HabitEditActivity.class);
+        solo.enterText((EditText) solo.getView(R.id.TitleInput), "Habit1");//habit title
+        solo.enterText((EditText) solo.getView(R.id.dateInput), "2021-11-06");// startDate
+        solo.pressSpinnerItem(0, 1);// for daily
+        solo.enterText((EditText) solo.getView(R.id.frequencyInput), "2");//times per day
+        solo.enterText((EditText) solo.getView(R.id.contentInput), "This is a test");
+        solo.enterText((EditText) solo.getView(R.id.reasonInput), "Started for testing");
+        solo.clickOnButton("Confirm");
 
-        //this.drag(fromX, toX, fromY, toY, 1);
     }
-
     /**
-     * Check to see the description of an activity
+     * Check to see if the description of an activity is correct
      */
-
     @Test
-    public void checkHabit(){
-        //Asserts that current activity is the LogInActivity
-        // because that is where we start
-        solo.assertCurrentActivity("Wrong Activity", LogInActivity.class);
-        solo.enterText((EditText) solo.getView(R.id.login_useremail_editText), "test@gmail.com");
-        solo.enterText((EditText) solo.getView(R.id.login_password_editText), "123456");
-        solo.clickOnButton("Sign In");
-        //After logIn we go to the Main Page
+    public void checkHabitIsCorrect(){
         //Here we check if we are on the Main Page Activity
-        solo.assertCurrentActivity("Wrong Activity", MainPageActivity.class);
-        //From Main Page, we need to click on Habits
-        // So that we can see all habits listed
-        solo.clickOnButton("Habit");
-        solo.waitForActivity(HabitDescriptionActivity.class);
-        //if user click on return button
-        // return to the HabitListActivity
-        solo.clickOnButton("Return");
-        solo.waitForActivity(HabitListActivity.class);
-        //if user click the delete button
-        //a dialog pops out
-        //check the dialog
-        solo.clickOnButton("Delete");
+        solo.assertCurrentActivity("Wrong Activity", HabitListActivity.class);
+        // add Habit
+        helperAddHabit();
+        // now we are back in HabitList Page
+        //click on the Habit
+        HabitListActivity activity = (HabitListActivity) solo.getCurrentActivity();
+        //get listView
+        ListView listView = activity.findViewById(R.id.allHabits_habitList_listView);
+        // click on the Habit
+        solo.clickInList(0,0);
+        // check information is the same.
+        solo.waitForActivity("HabitDescriptionActivity");
+        // now get info
 
-        solo.clickOnView(solo.getView(R.id.tv_delete_confirm));
+        assertEquals(solo.getText(R.id.TitleInput),"Habit1" );
+        assertEquals(solo.getText(R.id.dateInput),"2021-11-06" );
+        assertEquals(solo.getText(R.id.frequencyInput),"2" );
+        assertEquals(solo.getText(R.id.contentInput),"This is a test");
+        assertEquals(solo.getText(R.id.reasonInput),"Started for testing");
+        // done
 
-        //if user click on edit button
-        // it goes to HabitEditActivity
-        solo.clickOnButton("Edit");
-        solo.waitForActivity(HabitEditActivity.class);
-
-
+    }
 
     }
     /**
