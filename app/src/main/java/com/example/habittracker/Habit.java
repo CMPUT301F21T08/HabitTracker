@@ -1,22 +1,42 @@
+/**
+ * @author 'yhu19'
+ * A class that represents the habits of users.
+ *
+ */
+
 package com.example.habittracker;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 
 public class Habit implements Serializable {
+// attributes of the habit class
+    // title of the habit
     private String habitTitle;
+    // reason of the habit
     private String habitReason;
+    // content of the habit
     private String habitContent;
+    // start date of the habit
     private String startDate;
+    // a
     private String lastDate;
+    // frequency of the habit
     private int frequency;
+    // frequency type of the habit
     private String frequencyType;
+    // an arrayList that stores the occurrence days of the habit
     private ArrayList<Integer> occurrenceDay;
+    // an attribute used to denote whether the habit has been done at specific day
     private boolean notDone;
+    // an attribute used to store the total amount of completion of the habit
     private int number_of_completion;
+    // an attribute used to store the done time of habit at a specific day
     private int doneTime;
-
+    // an arrayList that stores all the habit events related to the habit
     private ArrayList<String> eventList = new ArrayList<>();
+
+
 
     public Habit(String habitTitle, String habitReason, String habitContent, String startDate, int frequency, String frequencyType, ArrayList<Integer> occurrenceDay){
         this.habitTitle = habitTitle;

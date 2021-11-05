@@ -26,6 +26,7 @@ public class HabitDescriptionActivity extends AppCompatActivity implements Delet
     private TextView startDate;
     private TextView frequency;
     private Button frequencyType;
+    private Button toEventBtn;
     private TextView content;
     private TextView reason;
     // variables storing the value from last activity
@@ -72,6 +73,7 @@ public class HabitDescriptionActivity extends AppCompatActivity implements Delet
         returnBtn = findViewById(R.id.description_return_button);
         deleteBtn = findViewById(R.id.description_delete_button);
         editBtn= findViewById(R.id.description_edit_button);
+        toEventBtn = findViewById(R.id.description_habitEvent_button);
 
 
         frequencyType.setOnClickListener(new View.OnClickListener() {
@@ -110,6 +112,19 @@ public class HabitDescriptionActivity extends AppCompatActivity implements Delet
                 bundle.putSerializable("habit", habit);
                 intentEdit.putExtras(bundle);
                 activityLauncher.launch(intentEdit);
+            }
+        });
+
+        toEventBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent intentEvent = new Intent(HabitDescriptionActivity.this, HabitEventsOfHabitActivity.class);
+                Bundle bundleEvent = new Bundle();
+                bundleEvent.putSerializable("habit", habit);
+                intentEvent.putExtras(bundleEvent);
+                startActivity(intentEvent);
+                finish();//return to the HabitListActivity
             }
         });
 

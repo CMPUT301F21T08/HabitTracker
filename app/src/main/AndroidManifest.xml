@@ -21,8 +21,9 @@
 
 
 
-
-
+        <activity
+            android:name=".HabitEventsOfHabitActivity"
+            android:exported='true' />
         <activity
             android:name=".HabitDescriptionActivity"
             android:exported="true" />
