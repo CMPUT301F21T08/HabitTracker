@@ -49,10 +49,10 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.example.habittracker.listener.CurrentLocationListener;
+//import com.example.habittracker.listener.CurrentLocationListener;
 import com.example.habittracker.listener.EventEditConfirmListener;
 import com.example.habittracker.listener.EventEditDeleteListener;
-import com.example.habittracker.listener.LocationEditTextListener;
+//import com.example.habittracker.listener.LocationEditTextListener;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -290,45 +290,63 @@ public class HabitEventEditActivity extends AppCompatActivity  {
         // Implement Autocomplete Place Api
 
         location_editText = findViewById(R.id.habitEvent_enterLocation_editText);
+//
+//        // initialize place
+//        Places.initialize(getApplicationContext(),"AIzaSyCJvvbjw-Qdfxe_fwAnE9HwVFE9SelWUP0");
+//        PlacesClient placesClient = Places.createClient(this);
 
-        // initialize place
-        Places.initialize(getApplicationContext(),"AIzaSyCJvvbjw-Qdfxe_fwAnE9HwVFE9SelWUP0");
-        PlacesClient placesClient = Places.createClient(this);
-
-        // get current location https://www.youtube.com/watch?v=Ak1O9Gip-pg
+//        // get current location https://www.youtube.com/watch?v=Ak1O9Gip-pg
         currentLocation_button = findViewById(R.id.habitEvent_currentLocation_button);
-        View.OnClickListener currentLocationListener = new CurrentLocationListener(this, location_editText);
-        currentLocation_button.setOnClickListener(currentLocationListener);
+//        View.OnClickListener currentLocationListener = new CurrentLocationListener(this, location_editText);
+//        currentLocation_button.setOnClickListener(currentLocationListener);
 
 
-        activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+        currentLocation_button.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onActivityResult(ActivityResult result) {
-                if (result.getResultCode() == RESULT_OK) {
-                    //when success
-                    // initial place
-                    Place place = Autocomplete.getPlaceFromIntent(result.getData());
-                    // set address on edit text
-                    location_editText.setText(place.getAddress());
-                    // set locally name
-                    // location_information.setText(String.format("Location is %s", place.getName()));
-                }
-                else if (result.getResultCode() == AutocompleteActivity.RESULT_ERROR) {
-                    // when have error
-                    // initialize status
-                    Status status = Autocomplete.getStatusFromIntent(result.getData());
-
-                    // display toast
-                    Toast.makeText(getApplicationContext(), status.getStatusMessage(), Toast.LENGTH_SHORT).show();
-                }
+            public void onClick(View view) {
+                startActivity(new Intent(HabitEventEditActivity.this, HabitEventEditMapActivity.class));
             }
         });
 
 
+
+
+//
+//        activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+//            @Override
+//            public void onActivityResult(ActivityResult result) {
+//                if (result.getResultCode() == RESULT_OK) {
+//                    //when success
+//                    // initial place
+//                    Place place = Autocomplete.getPlaceFromIntent(result.getData());
+//                    // set address on edit text
+//                    location_editText.setText(place.getAddress());
+//                    // set locally name
+//                    // location_information.setText(String.format("Location is %s", place.getName()));
+//                }
+//                else if (result.getResultCode() == AutocompleteActivity.RESULT_ERROR) {
+//                    // when have error
+//                    // initialize status
+//                    Status status = Autocomplete.getStatusFromIntent(result.getData());
+//
+//                    // display toast
+//                    Toast.makeText(getApplicationContext(), status.getStatusMessage(), Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//        });
+
+        location_editText.setFocusable(true);
+//        View.OnClickListener locationEditTextListener = new LocationEditTextListener(this, activityResultLauncher);
+//        location_editText.setOnClickListener(locationEditTextListener);
+
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            String value = extras.getString("Location_Value");
+            location_editText.setText(value);
+        }
         // set edit text non focusable
-        location_editText.setFocusable(false);
-        View.OnClickListener locationEditTextListener = new LocationEditTextListener(this, activityResultLauncher);
-        location_editText.setOnClickListener(locationEditTextListener);
+
     }
 
     /**
