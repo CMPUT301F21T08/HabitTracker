@@ -9,6 +9,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.UUID;
 
 
 public class HabitTest {
@@ -17,7 +18,8 @@ public class HabitTest {
         occurrenceDay.add(1);
         occurrenceDay.add(2);
         occurrenceDay.add(3);
-        return new Habit("Reading", "Good", "reading books three times per week", "2021-11-02", 3, "per week", occurrenceDay);
+        String uniqueID = UUID.randomUUID().toString();
+        return new Habit("Reading", "Good", "reading books three times per week", "2021-11-02", 3, "per week", occurrenceDay, uniqueID);
     }
 
     /**
@@ -288,16 +290,17 @@ public class HabitTest {
     @Test
     void testSetDoneTime(){
         ArrayList<Integer> occurrenceDay = new ArrayList<Integer>();
+        String uniqueID = UUID.randomUUID().toString();
         occurrenceDay.add(1);
         occurrenceDay.add(2);
         occurrenceDay.add(3);
         // create instance of per week or per month habit to test setDoneTime
-        Habit habit = new Habit("Reading", "Good", "reading books three times per week", "2021-11-02", 3, "per week", occurrenceDay);
+        Habit habit = new Habit("Reading", "Good", "reading books three times per week", "2021-11-02", 3, "per week", occurrenceDay, uniqueID);
         assertEquals(true, habit.setDoneTime());
         assertEquals(1, habit.getDoneTime());
         assertEquals(1, habit.getNumber_of_completion());
         assertEquals(false, habit.isNotDone());
-        habit = new Habit("Reading", "Good", "reading books three times per week", "2021-11-02", 3, "per month", occurrenceDay);
+        habit = new Habit("Reading", "Good", "reading books three times per week", "2021-11-02", 3, "per month", occurrenceDay, uniqueID);
         assertEquals(true, habit.setDoneTime());
         assertEquals(1, habit.getDoneTime());
         assertEquals(1, habit.getNumber_of_completion());
@@ -306,14 +309,14 @@ public class HabitTest {
         // test the setDoneTime() when the frequency of per day habit is 1
         occurrenceDay.clear();
         occurrenceDay.add(-1);
-        habit = new Habit("Reading", "Good", "reading books three times per week", "2021-11-02", 1, "per day", occurrenceDay);
+        habit = new Habit("Reading", "Good", "reading books three times per week", "2021-11-02", 1, "per day", occurrenceDay, uniqueID);
         assertEquals(true, habit.setDoneTime());
         assertEquals(1, habit.getDoneTime());
         assertEquals(1, habit.getNumber_of_completion());
         assertEquals(false, habit.isNotDone());
 
         // test the setDoneTime() when the frequency of per day habit is larger than 1
-        habit = new Habit("Reading", "Good", "reading books three times per week", "2021-11-02", 2, "per day", occurrenceDay);
+        habit = new Habit("Reading", "Good", "reading books three times per week", "2021-11-02", 2, "per day", occurrenceDay, uniqueID);
         assertEquals(false, habit.setDoneTime());
         assertEquals(1, habit.getDoneTime());
         assertEquals(1, habit.getNumber_of_completion());

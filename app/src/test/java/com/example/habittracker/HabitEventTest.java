@@ -20,7 +20,7 @@ public class HabitEventTest {
      */
     @BeforeEach
     public void constructEvent() {
-        testEvent = new HabitEvent("Run", "I've finished running", "Edmonton", "1234-5678");
+        testEvent = new HabitEvent("Run", "I've finished running", "Edmonton", "1234-5678", "1111-2222");
         date = new SimpleDateFormat("MM-dd-yyyy").format(new Date());
     }
 
@@ -110,10 +110,10 @@ public class HabitEventTest {
         assertEquals("www.google.com", testEvent.getDownloadUrl());
     }
 
+    @Test
     /**
      * Test getter for local image path
      */
-    @Test
     public void testGetLocalImagePath() {
         assertEquals(null, testEvent.getLocalImagePath());
     }
@@ -135,9 +135,32 @@ public class HabitEventTest {
         assertEquals("Run", testEvent.getHabitName());
     }
 
+
+    /**
+     * Test setter for habit name
+     */
     @Test
     public void testSetHabitName() {
-        testEvent.setHabitName("Drink water");
-        assertEquals("Drink water", testEvent.getHabitName());
+        testEvent.setHabitName("Drink");
+        assertEquals("Drink", testEvent.getHabitName());
+        String eventTitle = "Drink: "+date;
+        assertEquals(eventTitle, testEvent.getEventTitle());
+    }
+
+    /**
+     * Test getter for habit UUID
+     */
+    @Test
+    public void testGetHabitUUID() {
+        assertEquals("1111-2222", testEvent.getHabitUUID());
+    }
+
+    /**
+     * Test setter for habit UUID
+     */
+    @Test
+    public  void testSetHabitUUID() {
+        testEvent.setHabitUUID("2222-1111");
+        assertEquals("2222-1111", testEvent.getHabitUUID());
     }
 }

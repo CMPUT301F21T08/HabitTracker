@@ -40,6 +40,8 @@ public class Habit implements Serializable {
     private int doneTime;
     // an arrayList that stores all the habit events related to the habit
     private ArrayList<String> eventList = new ArrayList<>();
+    // Unique ID for each habit
+    private String UUID;
 
 
     /**
@@ -52,7 +54,7 @@ public class Habit implements Serializable {
      * @param frequencyType the frequency type of the habit
      * @param occurrenceDay the occurrence day of the habit
      */
-    public Habit(String habitTitle, String habitReason, String habitContent, String startDate, int frequency, String frequencyType, ArrayList<Integer> occurrenceDay){
+    public Habit(String habitTitle, String habitReason, String habitContent, String startDate, int frequency, String frequencyType, ArrayList<Integer> occurrenceDay, String uuid){
         this.habitTitle = habitTitle;
         this.habitReason = habitReason;
         this.habitContent = habitContent;
@@ -64,6 +66,7 @@ public class Habit implements Serializable {
         this.notDone = true;
         this.doneTime = 0;
         this.lastDate = "null";
+        this.UUID = uuid;
     }
 
     /**
@@ -324,5 +327,21 @@ public class Habit implements Serializable {
      */
     public void setNotDone(boolean notDone) {
         this.notDone = notDone;
+    }
+
+    /**
+     * Getter for UUID
+     * @return
+     */
+    public String getUUID() {
+        return UUID;
+    }
+
+    /**
+     * Setter for UUID
+     * @param UUID
+     */
+    public void setUUID(String UUID) {
+        this.UUID = UUID;
     }
 }
