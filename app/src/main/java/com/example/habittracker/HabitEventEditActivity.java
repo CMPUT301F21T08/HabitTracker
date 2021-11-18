@@ -92,6 +92,8 @@ import android.widget.ListView;
 
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 
 import android.content.DialogInterface;
 
@@ -123,7 +125,10 @@ public class HabitEventEditActivity extends AppCompatActivity  {
     String imageFilePath; // This always saves the path for the current image shown in photo_imageView
     String habitEventUUID;
     Uri storageURL;
+    Uri capturedPhotoUri;
     int eventIndexInList;
+
+    ActivityResultLauncher<Intent> cameraActivityLauncher;
 
     // Storage Permissions
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
@@ -132,6 +137,11 @@ public class HabitEventEditActivity extends AppCompatActivity  {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
+
+    private static String[] PERMISSIONS_CAMERA = {
+            Manifest.permission.CAMERA
+    };
+    private static final int CAMERA_PERMISSION_CODE = 3;
 
     boolean addedPhoto = false;  // flag that is used to determin whether user has added a photo to the edit page
 
@@ -239,14 +249,22 @@ public class HabitEventEditActivity extends AppCompatActivity  {
 //------------------------------------------------- Camera Button ---------------------------------------------------------------------------------------------------------------
         // Reference: https://stackoverflow.com/questions/62671106/onactivityresult-method-is-deprecated-what-is-the-alternative
         //            https://developer.android.com/training/camera/photobasics
-        ActivityResultLauncher<Intent> cameraActivityLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+        cameraActivityLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
             @Override
             public void onActivityResult(ActivityResult result) {
                 if (result.getResultCode() == Activity.RESULT_OK) {
                     Intent data = result.getData();
-                    Bundle extras = data.getExtras();
-                    Bitmap imageBitmap = (Bitmap) extras.get("data");
-                    photo_imageView.setImageBitmap(imageBitmap);
+                    Bitmap bitmap = null;
+                    if (capturedPhotoUri != null) {
+                        try {
+                            bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), capturedPhotoUri);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        if (bitmap != null) {
+                            photo_imageView.setImageBitmap(bitmap);
+                        }
+                    }
                 }
             }
         });
@@ -254,8 +272,14 @@ public class HabitEventEditActivity extends AppCompatActivity  {
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                cameraActivityLauncher.launch(takePictureIntent);
+
+                // Check permission first
+                if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                    startCameraIntent();
+                }else {
+                    ActivityCompat.requestPermissions(HabitEventEditActivity.this, PERMISSIONS_CAMERA, CAMERA_PERMISSION_CODE);
+                }
+
             }
         });
 
@@ -412,10 +436,20 @@ public class HabitEventEditActivity extends AppCompatActivity  {
                 if (grantResults.length > 0 &&
                         grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     System.out.println("---------------------> access granted!");
-                }  else {
+                }
+                else {
                     System.out.println("---------------------> request access failed!");
                 }
                 return;
+            case CAMERA_PERMISSION_CODE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                    Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//                    cameraActivityLauncher.launch(takePictureIntent);
+                    startCameraIntent();
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), "Request Camera Access Failed!", Toast.LENGTH_LONG).show();
+                }
         }
     }
 
@@ -569,6 +603,50 @@ public class HabitEventEditActivity extends AppCompatActivity  {
 
             }
         });
+    }
+
+    /**
+     * This function saves the photo captured from camera to a file
+     * Reference: https://developer.android.com/training/camera/photobasics
+     * @return
+     * @throws IOException
+     */
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        String currentPhotoPath = image.getAbsolutePath();
+        passedEvent.setLocalImagePath(currentPhotoPath);
+        return image;
+    }
+
+    public void startCameraIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+        File capturedPhoto = null;
+        try {
+            capturedPhoto = createImageFile();
+        } catch (IOException ex) {
+            // Error occurred while creating the File
+            Toast.makeText(getApplicationContext(), "Create photo file error, try again!", Toast.LENGTH_LONG).show();
+        }
+
+        // Continue only if the File was successfully created
+        if (capturedPhoto != null) {
+            capturedPhotoUri = FileProvider.getUriForFile(this,
+                    "com.example.android.fileprovider",
+                    capturedPhoto);
+            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, capturedPhotoUri);
+            cameraActivityLauncher.launch(takePictureIntent);
+        }
     }
 
 }
