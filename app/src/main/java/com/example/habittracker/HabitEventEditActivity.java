@@ -113,6 +113,7 @@ public class HabitEventEditActivity extends AppCompatActivity  {
     Button currentLocation_button;
     Button deleteBtn;
     Button confirmBtn;
+    Button cameraButton;
     FusedLocationProviderClient fusedLocationProviderClient;
 
     // Global attributes used to store habit event a dn habit related information
@@ -126,6 +127,7 @@ public class HabitEventEditActivity extends AppCompatActivity  {
 
     // Storage Permissions
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    static final int REQUEST_IMAGE_CAPTURE = 2;
     private static String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
@@ -153,7 +155,7 @@ public class HabitEventEditActivity extends AppCompatActivity  {
         comment_editText = findViewById(R.id.habitEvent_comment_editText);
         photo_imageView = findViewById(R.id.habitEvent_photo_imageView);
         deleteBtn = findViewById(R.id.habitEvent_delete_button);
-        confirmBtn = findViewById(R.id.habitEvent_confirm_button);
+        cameraButton = findViewById(R.id.habitEvent_camera_button);
         editEventProgressDialog = new ProgressDialog(HabitEventEditActivity.this);
 
         getSupportActionBar().setTitle("Habit Event - Edit");
@@ -232,6 +234,30 @@ public class HabitEventEditActivity extends AppCompatActivity  {
                 alert.show();
             }
         });
+
+//------------------------------------------------- Camera Button ---------------------------------------------------------------------------------------------------------------
+        // Reference: https://stackoverflow.com/questions/62671106/onactivityresult-method-is-deprecated-what-is-the-alternative
+        //            https://developer.android.com/training/camera/photobasics
+        ActivityResultLauncher<Intent> cameraActivityLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+            @Override
+            public void onActivityResult(ActivityResult result) {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    Intent data = result.getData();
+                    Bundle extras = data.getExtras();
+                    Bitmap imageBitmap = (Bitmap) extras.get("data");
+                    photo_imageView.setImageBitmap(imageBitmap);
+                }
+            }
+        });
+
+        cameraButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                cameraActivityLauncher.launch(takePictureIntent);
+            }
+        });
+
 
 
 //------------------------------------------------------- Upload photo from phone and display in imageView------------------------------------------------------------------------------------------------------------------------------------
