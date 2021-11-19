@@ -23,7 +23,7 @@
 <!--            android:value="AIzaSyCJvvbjw-Qdfxe_fwAnE9HwVFE9SelWUP0"/>-->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAmBtiLzRYoM2_uK3ppo0LiiSt0buv2mCA"/>
+            android:value="AIzaSyAj6LG3RRFAidWiUvBGmzDYRGvrNULxPYc"/>
 
 
 
@@ -59,11 +59,6 @@
             </intent-filter>
         </activity>
 
-
-        <activity
-            android:name=".HabitEventEditMapActivity"
-            android:exported="true"
-            android:parentActivityName=".HabitEventEditActivity" />
 
         <activity
             android:name=".HabitEventEditActivity"

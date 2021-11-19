@@ -9,7 +9,7 @@
     <string name="add_or_edit_photo">Add/Edit Photo</string>
     <string name="comment">Comment:</string>
     <string name="location">Location:</string>
-    <string name="add_location">Enter location</string>
+    <string name="add_location">Your location info.</string>
     <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>
     <string name="location_information">Your location information is...</string>
@@ -32,4 +32,6 @@
     <string name="tuesday">Tuesday</string>
     <string name="monday">Monday</string>
     <string name="get_location">get location</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

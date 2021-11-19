@@ -23,6 +23,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.location.Address;
 import android.location.Geocoder;
@@ -42,6 +43,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 
@@ -56,6 +58,11 @@ import com.example.habittracker.listener.EventEditDeleteListener;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -92,11 +99,14 @@ import android.widget.ListView;
 
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.content.DialogInterface;
 
 
-public class HabitEventEditActivity extends AppCompatActivity  {
+public class HabitEventEditActivity extends AppCompatActivity implements MapFragment.MySendValue  {
 
     private FirebaseAuth authentication;  // user authentication reference
     private String uid; // User unique ID
@@ -124,6 +134,11 @@ public class HabitEventEditActivity extends AppCompatActivity  {
     Uri storageURL;
     int eventIndexInList;
 
+
+
+
+
+
     // Storage Permissions
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static String[] PERMISSIONS_STORAGE = {
@@ -131,7 +146,7 @@ public class HabitEventEditActivity extends AppCompatActivity  {
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
 
-    boolean addedPhoto = false;  // flag that is used to determin whether user has added a photo to the edit page
+    boolean addedPhoto = false;  // flag that is used to determine whether user has added a photo to the edit page
 
 
     @Override
@@ -158,6 +173,7 @@ public class HabitEventEditActivity extends AppCompatActivity  {
 
         getSupportActionBar().setTitle("Habit Event - Edit");
         // set return button
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 //-------------------------------------------------Get passed habit event object from other events------------------------------------------------------------------------------------------------
@@ -300,11 +316,27 @@ public class HabitEventEditActivity extends AppCompatActivity  {
 //        View.OnClickListener currentLocationListener = new CurrentLocationListener(this, location_editText);
 //        currentLocation_button.setOnClickListener(currentLocationListener);
 
+        location_editText.setFocusable(false);
 
         currentLocation_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(HabitEventEditActivity.this, HabitEventEditMapActivity.class));
+//                startActivity(new Intent(HabitEventEditActivity.this, HabitEventEditMapActivity.class));
+
+                // initial fragment
+                Fragment fragment = new MapFragment();
+
+                // open fragment
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.habitEventEdit_content,fragment)
+                        .commit();
+
+
+
+
+//
+
             }
         });
 
@@ -334,18 +366,25 @@ public class HabitEventEditActivity extends AppCompatActivity  {
 //                }
 //            }
 //        });
-
-        location_editText.setFocusable(true);
+// set edit text non focusable
+//        location_editText.setFocusable(false);
 //        View.OnClickListener locationEditTextListener = new LocationEditTextListener(this, activityResultLauncher);
 //        location_editText.setOnClickListener(locationEditTextListener);
 
+//
+//        Bundle extras = getIntent().getExtras();
+//        if (extras != null ) {
+//
+//
+//            Boolean click_map_confirm = extras.getBoolean("If_Confirm");
+//
+//            if (click_map_confirm == true) {
+//
+//                String value = extras.getString("Location_Value");
+//                location_editText.setText(value);
+//            }
+//        }
 
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            String value = extras.getString("Location_Value");
-            location_editText.setText(value);
-        }
-        // set edit text non focusable
 
     }
 
@@ -393,8 +432,22 @@ public class HabitEventEditActivity extends AppCompatActivity  {
     }
 
 
+//-----------------------------------------------Location-------------------------------------------------------------------------------------------------------------
+
+    public void set_location(String location){
+        location_editText.setText(location);
+
+    }
 
 
+    @Override
+    public void onBackPressed() {
+        if (getFragmentManager().getBackStackEntryCount() == 0) {
+            this.finish();
+        } else {
+            getFragmentManager().popBackStack();
+        }
+    }
 
 //-----------------------------------------------functional APIs-------------------------------------------------------------------------------------------------------------
 
@@ -542,6 +595,24 @@ public class HabitEventEditActivity extends AppCompatActivity  {
 
             }
         });
+
+
+
+
+
+
+
+
     }
 
+    // location
+
+    @Override
+    public void mySend(String the_value) {
+        location_editText.setText(the_value);
+    }
 }
+
+
+
+
