@@ -19,7 +19,7 @@ public class HabitEvent implements Parcelable {
     private String uuid;
     private String localImagePath;
     private String habitName;
-    private String date;
+    private String habitUUID;
 
     /**
      * this creates a parcel creator, which is used to pass data between events
@@ -44,8 +44,8 @@ public class HabitEvent implements Parcelable {
      * @param location location for the habit event
      * @param uuid unique id for each event, generated on the habit side
      */
-    public HabitEvent(String habitName, String comment, String location, String uuid) {
-        this.date = new SimpleDateFormat("MM-dd-yyyy").format(new Date());
+    public HabitEvent(String habitName, String comment, String location, String uuid, String habitUUID) {
+        String date = new SimpleDateFormat("MM-dd-yyyy").format(new Date());
         this.habitName = habitName;
         this.eventTitle = habitName +": "+ date; // create unique event name
         this.comment = comment;
@@ -53,6 +53,7 @@ public class HabitEvent implements Parcelable {
         this.downloadUrl = null;
         this.localImagePath = null;
         this.uuid = uuid;
+        this.habitUUID = habitUUID;
     }
 
     /**
@@ -67,6 +68,7 @@ public class HabitEvent implements Parcelable {
         this.uuid = in.readString();
         this.habitName = in.readString();
         this.localImagePath = in.readString();
+        this.habitUUID = in.readString();
     }
 
     /**
@@ -185,9 +187,25 @@ public class HabitEvent implements Parcelable {
      */
     public void setHabitName(String habitName) {
         this.habitName = habitName;
-        // If we change the name of the related habit, the name of the habit event should also change
-        // The only thing that won't change is the date
-        setEventTitle(this.habitName +": "+ this.date);
+        int dateStartIndex = eventTitle.indexOf(":");
+        String date = eventTitle.substring(dateStartIndex+2);
+        this.eventTitle = this.habitName+ ": " +date;
+    }
+
+    /**
+     * Getter for habit uuid
+     * @return
+     */
+    public String getHabitUUID() {
+        return habitUUID;
+    }
+
+    /**
+     * Setter for habit uuid
+     * @param habitUUID
+     */
+    public void setHabitUUID(String habitUUID) {
+        this.habitUUID = habitUUID;
     }
 
 
@@ -210,5 +228,6 @@ public class HabitEvent implements Parcelable {
         parcel.writeString(this.uuid);
         parcel.writeString(this.habitName);
         parcel.writeString(this.localImagePath);
+        parcel.writeString(this.habitUUID);
     }
 }

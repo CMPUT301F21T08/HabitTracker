@@ -29,17 +29,30 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>
+
             <Button
                 android:id="@+id/habitEvent_addPhoto_button"
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
-                android:layout_marginTop="5dp"
-                android:text="@string/add_or_edit_photo"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="4dp"
+                android:text="@string/upload_photo"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintHorizontal_bias="0.108"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/habitEvent_photo_imageView" />
 
+            <Button
+                android:id="@+id/habitEvent_camera_button"
+                android:layout_width="155dp"
+                android:layout_height="48dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/camera"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.562"
+                app:layout_constraintStart_toEndOf="@+id/habitEvent_addPhoto_button"
+                app:layout_constraintTop_toBottomOf="@id/habitEvent_photo_imageView" />
 
             <TextView
                 android:id="@+id/habitEvent_comment_textView"
@@ -63,7 +76,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="60dp"
                 android:hint="Add comment"
-                android:maxLength="20"
+                android:maxLength="40"
                 android:minHeight="95dp"
                 android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="parent"
