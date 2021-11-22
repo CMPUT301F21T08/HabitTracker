@@ -67,10 +67,9 @@
         </activity>
 
 
-<!--        <activity-->
-<!--            android:name=".HabitEventEditMapActivity"-->
-<!--            android:exported="true"-->
-<!--            android:parentActivityName=".HabitEventEditActivity" />-->
+        <activity
+            android:name=".HabitEventEditMapActivity"
+            android:exported="true" />
 
         <activity
             android:name=".HabitEventEditActivity"

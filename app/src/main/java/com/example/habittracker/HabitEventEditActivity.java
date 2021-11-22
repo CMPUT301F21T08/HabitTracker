@@ -95,6 +95,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.content.DialogInterface;
 
@@ -337,10 +339,10 @@ public class HabitEventEditActivity extends AppCompatActivity  {
 
 
 //----------------------------------------------Location Information Process---------------------------------------------------------------------------
-
-        // Reference: https://www.youtube.com/watch?v=t8nGh4gN1Q0
-        // and https://www.youtube.com/watch?v=qO3FFuBrT2E for onActivityResult is Deprecated
-        // Implement Autocomplete Place Api
+//
+//        // Reference: https://www.youtube.com/watch?v=t8nGh4gN1Q0
+//        // and https://www.youtube.com/watch?v=qO3FFuBrT2E for onActivityResult is Deprecated
+//        // Implement Autocomplete Place Api
 
         location_editText = findViewById(R.id.habitEvent_enterLocation_editText);
 //
@@ -358,25 +360,54 @@ public class HabitEventEditActivity extends AppCompatActivity  {
         currentLocation_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+//                startActivityForResult(new Intent(HabitEventEditActivity.this, HabitEventEditMapActivity.class));
 //                startActivity(new Intent(HabitEventEditActivity.this, HabitEventEditMapActivity.class));
 
-                // initial fragment
-                Fragment fragment = new MapFragment();
-
-                // open fragment
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.habitEventEdit_content,fragment)
-                        .commit();
+                Intent i = new Intent(HabitEventEditActivity.this, HabitEventEditMapActivity.class);
 
 
+////                startActivity(new Intent(HabitEventEditActivity.this, HabitEventEditMapActivity.class));
+//
+//                Bundle bundle = getIntent().getExtras();
+//                String data_map= bundle.getString("map_data");
+//                location_editText.setText(data_map);
+//
+////                // initial fragment
+////                Fragment fragment = new MapFragment();
+////
+////                // open fragment
+////                getSupportFragmentManager()
+////                        .beginTransaction()
+////                        .replace(R.id.habitEventEdit_content,fragment)
+////                        .commit();
+//
+//
+//
+//                Fragment fragment1 = new MapFragment();
+//                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+//                Bundle bundle1 = new Bundle();
+//                bundle1.putString("output_data_fragment",data_map);
+//                fragment1.setArguments(bundle1);
+//                fragmentTransaction.add(R.id.habitEventEdit_content,fragment1);
+//                fragmentTransaction.commit();
 
 
+//                Bundle extras = getIntent().getExtras();
+//                if (extras != null) {
+//                    String value = extras.getString("Location_Value");
+//                    location_editText.setText(value);
+//                    System.out.println("no dhoeefhouefheofheifheuhisuefhoeufhisuefh");
+//                }
+
+
+                startActivityForResult(i,1);
 //
 
             }
         });
 
+//
 
 
 
@@ -425,8 +456,20 @@ public class HabitEventEditActivity extends AppCompatActivity  {
 
     }
 
-
-
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if(resultCode == RESULT_OK) {
+                String result = data.getStringExtra("Location_Value");
+                location_editText.setText("" + result);
+            }
+            if(resultCode == RESULT_CANCELED) {
+//                String result = data.getStringExtra("Location_Value");
+//                location_editText.setText("" + result);
+            }
+        }
+    }
 
     /**
      * This function makes sure that when returning to habit event list using the arrow in the tool bar, a mode string will be passed
@@ -676,5 +719,6 @@ public class HabitEventEditActivity extends AppCompatActivity  {
             cameraActivityLauncher.launch(takePictureIntent);
         }
     }
+
 
 }
