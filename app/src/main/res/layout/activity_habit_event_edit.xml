@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/habitEventEdit_content">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
     <ScrollView
@@ -132,6 +131,7 @@
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 android:text="@string/get_location"
+
 
                 app:layout_constraintStart_toEndOf="@+id/habitEvent_confirm_button"
                 app:layout_constraintTop_toBottomOf="@+id/habitEvent_enterLocation_editText" />
