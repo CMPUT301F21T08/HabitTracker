@@ -5,15 +5,17 @@ public class Personal_info {
     private String email;
     private String gender;
     private int age;
+    private String uid;
 
 
     public Personal_info(){}
 
-    public Personal_info(String name, String email, String gender, int age) {
+    public Personal_info(String name, String email, String gender, int age, String uid) {
         this.name = name;
         this.email = email;
         this.gender = gender;
         this.age = age;
+        this.uid = uid;
     }
 
     public String getName() {
@@ -47,4 +49,13 @@ public class Personal_info {
     public void setAge(int age) {
         this.age = age;
     }
+
+    public String getUid(){
+        return uid;
+    }
+    public void setUid(String uid){
+        this.uid = uid;
+    }
+
+
 }

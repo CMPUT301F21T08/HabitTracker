@@ -15,7 +15,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:requestLegacyExternalStorage="true"
-        android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        android:theme="@style/Theme.HabitTracker">
 
         <meta-data android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCJvvbjw-Qdfxe_fwAnE9HwVFE9SelWUP0"/>
@@ -37,7 +37,12 @@
             android:exported="true" />
         <activity
             android:name=".FollowingActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+        <activity
+            android:name=".NotificationsActivity"
+            android:exported="true"
+            android:parentActivityName=".FollowingActivity"/>
         <activity
             android:name=".SignUpActivity"
             android:exported="true" />

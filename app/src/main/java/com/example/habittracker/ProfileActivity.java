@@ -110,7 +110,7 @@ public class ProfileActivity extends AppCompatActivity {
                     Toast.makeText(ProfileActivity.this, "Wrong Input for Age, please enter an integer between 0 to 100", Toast.LENGTH_SHORT).show();
                 } else{
                     HashMap<String,Object> map = new HashMap<>();
-                    Personal_info personal_info = new Personal_info(userName.getText().toString().trim(),userEmail.getText().toString(),userGender.getText().toString().trim(),Integer.parseInt(userAge.getText().toString().trim()) );
+                    Personal_info personal_info = new Personal_info(userName.getText().toString().trim(),userEmail.getText().toString(),userGender.getText().toString().trim(),Integer.parseInt(userAge.getText().toString().trim()), uid);
                     map.put("Info",personal_info);
                     FirebaseDatabase.getInstance().getReference().child(uid).updateChildren(map);
                     Toast.makeText(ProfileActivity.this, "Changes has been made!", Toast.LENGTH_SHORT).show();

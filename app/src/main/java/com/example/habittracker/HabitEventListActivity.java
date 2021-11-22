@@ -50,7 +50,7 @@ public class HabitEventListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_habit_event_list);
 
 //----------------------------UI Setup----------------------------------------------------------------------
-        //getSupportActionBar().setTitle("Habit Events");
+        getSupportActionBar().setTitle("Habit Events");
 
         habitEventListView = findViewById(R.id.lv_habit_event);
 

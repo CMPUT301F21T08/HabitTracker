@@ -10,7 +10,7 @@ public class profileTest {
 
     @BeforeEach
     public void setup(){
-        info = new Personal_info("Test","test@gmail.com","Others",1);
+        info = new Personal_info("Test","test@gmail.com","Others",1,"123");
     }
 
     // getters test

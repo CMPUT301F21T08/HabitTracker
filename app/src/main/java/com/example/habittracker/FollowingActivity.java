@@ -2,8 +2,10 @@ package com.example.habittracker;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -11,6 +13,11 @@ import android.widget.Toast;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -19,8 +26,10 @@ import androidx.appcompat.widget.Toolbar;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 
-public class FollowingActivity extends AppCompatActivity{
+public class FollowingActivity extends AppCompatActivity implements SearchFollowingFragment.OnFragmentInteractionListener{
 
     BottomNavigationView bottomNavigationView;
 
@@ -33,6 +42,8 @@ public class FollowingActivity extends AppCompatActivity{
     private ArrayAdapter<String> following_adapter;
     private FirebaseAuth authentication; // user authentication reference
     private String uid; // User unique ID
+    private String email;
+
 
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
@@ -73,9 +84,6 @@ public class FollowingActivity extends AppCompatActivity{
 
 
 
-
-
-
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -113,11 +121,12 @@ public class FollowingActivity extends AppCompatActivity{
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.search:
-                Toast.makeText(FollowingActivity.this, "Searching function", Toast.LENGTH_SHORT).show();
+                new SearchFollowingFragment().show(getSupportFragmentManager(),"Search");
                 return true;
 
             case R.id.notification:
-                Toast.makeText(FollowingActivity.this, "Notification function", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(FollowingActivity.this, NotificationsActivity.class);
+                startActivity(intent);
                 return true;
 
             default:
@@ -127,4 +136,79 @@ public class FollowingActivity extends AppCompatActivity{
 
         }
     }
+
+    public interface MyCallback {
+        void onCallback(String email_toFollow, String uid_toFollow);
+    }
+
+    public void getUidByEmail(String email_toFollow, MyCallback myCallback){
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                // loop the entire firebase to find the corresponding uid with the email
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    Personal_info info = (Personal_info) snapshot.child("Info").getValue(Personal_info.class);
+                    if (info.getEmail().equals(email_toFollow)) {
+                        myCallback.onCallback(email_toFollow, snapshot.getKey());
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError error) {
+                System.out.println("The read failed: " + error.getCode());
+            }
+        });
+
+    }
+
+
+
+    @Override
+    public void onConfirmPressed(String email_toFollow) {
+        authentication = FirebaseAuth.getInstance();
+        getUidByEmail(email_toFollow, new MyCallback() {
+            // as onDataChange was called asynchronous, we created a onCallback method to store the uid_toFollow
+            @Override
+            public void onCallback(String email_toFollow, String uid_toFollow) {
+
+                // put the uid into the Request_To list
+                HashMap<String,Object> map = new HashMap<>();
+                email_toFollow = email_toFollow.replace("@","");
+                email_toFollow = email_toFollow.replace(".","");
+                map.put(email_toFollow,uid_toFollow);
+                FirebaseDatabase.getInstance().getReference().child(uid).child("Requests").child("Request_To").updateChildren(map);
+
+                // put our own uid into the requested uid's request from branch, own email required
+                DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child(uid).child("Info");
+                reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                     @Override
+                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                         String email = dataSnapshot.getValue(Personal_info.class).getEmail();
+                         email = email.replace("@","");
+                         email = email.replace(".","");
+                         HashMap<String,Object> map1 = new HashMap<>();
+                         map1.put(email,uid);
+                         FirebaseDatabase.getInstance().getReference().child(uid_toFollow).child("Requests").child("Request_From").updateChildren(map1);
+                     }
+
+                     @Override
+                     public void onCancelled(@NonNull DatabaseError error) { }
+                 });
+            }
+        });
+    }
+
+
+    @Override
+    public void errorMessage(int i) {
+        if (i == 0){
+            Toast.makeText(FollowingActivity.this, "Invalid Input for Email!", Toast.LENGTH_SHORT).show();
+        }else{
+            Toast.makeText(FollowingActivity.this, "User does not exist with this email!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
 }

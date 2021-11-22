@@ -94,11 +94,11 @@ public class SignUpActivity extends AppCompatActivity {
                         System.out.println(uid);
                     }
                     
-                    // if successful, push the personal infomation of the user onto the firebase with uid as branch
+                    // if successful, push the personal information of the user onto the firebase with uid as branch
                     // Push the Personal_info class directly to the firebase, with gender set to "null" and age set to 0
                     HashMap<String,Object> map = new HashMap<>();
                     Personal_info empty = new Personal_info();
-                    Personal_info personal_info = new Personal_info(userName,userEmail,"null",0);
+                    Personal_info personal_info = new Personal_info(userName,userEmail,"null",0, uid);
                     map.put("Info",personal_info);
                     FirebaseDatabase.getInstance().getReference().child(uid).updateChildren(map);
 

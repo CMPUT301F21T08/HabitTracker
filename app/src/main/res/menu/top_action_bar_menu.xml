@@ -11,7 +11,7 @@
         android:enabled="true" />
 
     <item android:id="@+id/notification"
-        android:icon="@drawable/ic_launcher_background"
+        android:icon="@drawable/ic_notification"
         android:title="Notification"
         app:showAsAction="always"
         android:enabled="true" />

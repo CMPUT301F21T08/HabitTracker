@@ -49,7 +49,7 @@ public class HabitListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_habit_list);
 
-        // getSupportActionBar().setTitle("Habit - All Habits");
+        getSupportActionBar().setTitle("Habit - All Habits");
 
 
         // set up the view for the activity
