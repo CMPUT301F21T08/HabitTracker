@@ -224,11 +224,10 @@ public class HabitEventEditActivity extends AppCompatActivity implements MapFrag
             // In this case we are adding a new event, hence no manipulation is needed
             habitName = data.getString("HabitName"); //TODO: use this on the habit side to transfer data
             habitEventUUID = data.getString("UniqueID");
-            String habitUUID = data.getString("HabitUUID");
 
             String date = new SimpleDateFormat("MM-dd-yyyy").format(new Date());
             habitEventTitle = habitName +": "+ date;
-            passedEvent = new HabitEvent(habitName, "", "", habitEventUUID, habitUUID);
+            passedEvent = new HabitEvent(habitName, "", "", habitEventUUID);
 
             // Set the onClickListener for confirm button
             View.OnClickListener confirmBtnOnclickListener = new EventEditConfirmListener(getApplicationContext(), this, editEventProgressDialog, comment_editText, location_editText, eventIndexInList, passedEvent, photo_imageView, uid);
@@ -570,7 +569,7 @@ public class HabitEventEditActivity extends AppCompatActivity implements MapFrag
      * @param habitName
      * @param eventUUID
      */
-    public static void deleteEventFromHabit(String habitName, String eventUUID, String uid, String habitUUID) {
+    public static void deleteEventFromHabit(String habitName, String eventUUID, String uid) {
         DatabaseReference habitRef = FirebaseDatabase.getInstance().getReference().child(uid).child("Habit");
         habitRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -578,13 +577,13 @@ public class HabitEventEditActivity extends AppCompatActivity implements MapFrag
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()){
                     Habit habitE = (Habit) dataSnapshot.getValue(Habit.class);
                     // Determine whether we are processing the right habit
-                    if (habitE.getUUID().equals(habitUUID)) {
+                    if (habitE.getHabitTitle().equals(habitName)) {
                         ArrayList<String> habitEventNameList = habitE.getEventList();
                         habitEventNameList.remove(eventUUID);
                         habitE.setEventList(habitEventNameList);
 
                         HashMap<String, Object> map = new HashMap<>();
-                        map.put(habitE.getUUID(),habitE);
+                        map.put(habitE.getHabitTitle(),habitE);
                         FirebaseDatabase.getInstance().getReference().child(uid).child("Habit").updateChildren(map);
                     }
 
@@ -596,6 +595,14 @@ public class HabitEventEditActivity extends AppCompatActivity implements MapFrag
 
             }
         });
+
+
+
+
+
+
+
+
     }
 
     // location

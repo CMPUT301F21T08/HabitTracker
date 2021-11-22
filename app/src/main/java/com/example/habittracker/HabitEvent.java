@@ -186,7 +186,6 @@ public class HabitEvent implements Parcelable {
      * @param habitName
      */
     public void setHabitName(String habitName) {
-
         this.habitName = habitName;
         int dateStartIndex = eventTitle.indexOf(":");
         String date = eventTitle.substring(dateStartIndex+2);
