@@ -135,7 +135,7 @@ public class HabitEventEditMapActivity extends AppCompatActivity {
 
 
                 Intent intent = new Intent();
-                intent.putExtra("Location_Value", "");
+//                intent.putExtra("Location_Value", "");
                 setResult(RESULT_CANCELED, intent);
                 finish();
 
@@ -175,9 +175,9 @@ public class HabitEventEditMapActivity extends AppCompatActivity {
                 public void onSuccess(Location location) {
 
                     // when success
-                    System.out.println("no aaaaaaaaaaaaaaaaaaaaaaaaa");
+
                     if (location != null){
-                        System.out.println("no bbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
+
 
                         // sync map
                         mapFragment.getMapAsync(new OnMapReadyCallback() {

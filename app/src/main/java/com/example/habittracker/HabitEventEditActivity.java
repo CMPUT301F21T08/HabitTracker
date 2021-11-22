@@ -465,8 +465,7 @@ public class HabitEventEditActivity extends AppCompatActivity  {
                 location_editText.setText("" + result);
             }
             if(resultCode == RESULT_CANCELED) {
-//                String result = data.getStringExtra("Location_Value");
-//                location_editText.setText("" + result);
+
             }
         }
     }
