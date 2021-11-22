@@ -25,11 +25,14 @@
 
 <!--        <meta-data android:name="com.google.android.geo.API_KEY"-->
 <!--            android:value="AIzaSyCJvvbjw-Qdfxe_fwAnE9HwVFE9SelWUP0"/>-->
+<!--        <meta-data-->
+<!--            android:name="com.google.android.geo.API_KEY"-->
+<!--            android:value="AIzaSyAmBtiLzRYoM2_uK3ppo0LiiSt0buv2mCA"/>-->
+
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAmBtiLzRYoM2_uK3ppo0LiiSt0buv2mCA"/>
-
-
+            android:value="AIzaSyD4KfDcLVjVPatpIKtrPXot024Z4UHVZQ8"/>
 
 
         <activity
@@ -64,10 +67,10 @@
         </activity>
 
 
-        <activity
-            android:name=".HabitEventEditMapActivity"
-            android:exported="true"
-            android:parentActivityName=".HabitEventEditActivity" />
+<!--        <activity-->
+<!--            android:name=".HabitEventEditMapActivity"-->
+<!--            android:exported="true"-->
+<!--            android:parentActivityName=".HabitEventEditActivity" />-->
 
         <activity
             android:name=".HabitEventEditActivity"

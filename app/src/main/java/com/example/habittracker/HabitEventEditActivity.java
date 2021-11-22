@@ -94,6 +94,7 @@ import android.widget.ListView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
+import androidx.fragment.app.Fragment;
 
 import android.content.DialogInterface;
 
@@ -336,6 +337,7 @@ public class HabitEventEditActivity extends AppCompatActivity  {
 
 
 //----------------------------------------------Location Information Process---------------------------------------------------------------------------
+
         // Reference: https://www.youtube.com/watch?v=t8nGh4gN1Q0
         // and https://www.youtube.com/watch?v=qO3FFuBrT2E for onActivityResult is Deprecated
         // Implement Autocomplete Place Api
@@ -351,11 +353,27 @@ public class HabitEventEditActivity extends AppCompatActivity  {
 //        View.OnClickListener currentLocationListener = new CurrentLocationListener(this, location_editText);
 //        currentLocation_button.setOnClickListener(currentLocationListener);
 
+        location_editText.setFocusable(false);
 
         currentLocation_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(HabitEventEditActivity.this, HabitEventEditMapActivity.class));
+//                startActivity(new Intent(HabitEventEditActivity.this, HabitEventEditMapActivity.class));
+
+                // initial fragment
+                Fragment fragment = new MapFragment();
+
+                // open fragment
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.habitEventEdit_content,fragment)
+                        .commit();
+
+
+
+
+//
+
             }
         });
 
@@ -385,20 +403,30 @@ public class HabitEventEditActivity extends AppCompatActivity  {
 //                }
 //            }
 //        });
-
-        location_editText.setFocusable(true);
+// set edit text non focusable
+//        location_editText.setFocusable(false);
 //        View.OnClickListener locationEditTextListener = new LocationEditTextListener(this, activityResultLauncher);
 //        location_editText.setOnClickListener(locationEditTextListener);
 
+//
+//        Bundle extras = getIntent().getExtras();
+//        if (extras != null ) {
+//
+//
+//            Boolean click_map_confirm = extras.getBoolean("If_Confirm");
+//
+//            if (click_map_confirm == true) {
+//
+//                String value = extras.getString("Location_Value");
+//                location_editText.setText(value);
+//            }
+//        }
 
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            String value = extras.getString("Location_Value");
-            location_editText.setText(value);
-        }
-        // set edit text non focusable
 
     }
+
+
+
 
     /**
      * This function makes sure that when returning to habit event list using the arrow in the tool bar, a mode string will be passed
