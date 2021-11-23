@@ -15,15 +15,16 @@ import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.os.PatternMatcher;
-import android.util.Log;
+
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -61,6 +62,7 @@ public class HabitEventEditMapActivity extends AppCompatActivity {
 
     TextView choose_location_info;
     Button confirm_choose_location_button;
+    Button return_choose_location_button;
 
 
     // Reference: https://www.youtube.com/watch?v=fpQQAUAqSjM
@@ -72,15 +74,41 @@ public class HabitEventEditMapActivity extends AppCompatActivity {
 
         choose_location_info = findViewById(R.id.map_textView);
         confirm_choose_location_button = findViewById(R.id.map_conform_button);
+        return_choose_location_button = findViewById(R.id.map_return_button);
 
 
         locMan = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
 
-
+//
+//
+//        LocationRequest mLocationRequest = LocationRequest.create();
+//        mLocationRequest.setInterval(60000);
+//        mLocationRequest.setFastestInterval(5000);
+//        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+//        LocationCallback mLocationCallback = new LocationCallback() {
+//            @Override
+//            public void onLocationResult(LocationResult locationResult) {
+//                if (locationResult == null) {
+//                    return;
+//                }
+//                for (Location location : locationResult.getLocations()) {
+//                    if (location != null) {
+//                        //TODO: UI updates.
+//                    }
+//                }
+//            }
+//        };
+//        LocationServices.getFusedLocationProviderClient(HabitEventEditMapActivity.this).requestLocationUpdates(mLocationRequest, mLocationCallback, null);
+//        LocationServices.getFusedLocationProviderClient(HabitEventEditMapActivity.this).getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
+//            @Override
+//            public void onSuccess(Location location) {
+//                //TODO: UI updates.
+//            }
+//        });
 
         // set return arrow
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.maps);
@@ -104,15 +132,41 @@ public class HabitEventEditMapActivity extends AppCompatActivity {
         confirm_choose_location_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(HabitEventEditMapActivity.this, HabitEventEditActivity.class);
-                String the_value = choose_location_info.getText().toString();
+//                Intent i = new Intent(HabitEventEditMapActivity.this, HabitEventEditActivity.class);
+//                String the_value = choose_location_info.getText().toString();
+//
+//
+//                i.putExtra("Location_Value",  the_value);
+//                System.out.println(the_value);
+//
+//                finish();
+////                startActivity(i);
+////                finish();
 
 
-                i.putExtra("Location_Value",  the_value);
-                System.out.println(the_value);
 
-                startActivity(i);
+                Intent intent = new Intent();
+                intent.putExtra("Location_Value", choose_location_info.getText().toString());
+                setResult(RESULT_OK, intent);
                 finish();
+
+            }
+        });
+
+        // set return button
+        return_choose_location_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                Intent i = new Intent(HabitEventEditMapActivity.this, HabitEventEditActivity.class);
+//                i.putExtra("Location_Value",  "");
+//                finish();
+
+
+                Intent intent = new Intent();
+//                intent.putExtra("Location_Value", "");
+                setResult(RESULT_CANCELED, intent);
+                finish();
+
 
             }
         });
@@ -149,9 +203,9 @@ public class HabitEventEditMapActivity extends AppCompatActivity {
                 public void onSuccess(Location location) {
 
                     // when success
-                    System.out.println("no aaaaaaaaaaaaaaaaaaaaaaaaa");
+
                     if (location != null){
-                        System.out.println("no bbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
+
 
                         // sync map
                         mapFragment.getMapAsync(new OnMapReadyCallback() {
@@ -213,7 +267,22 @@ public class HabitEventEditMapActivity extends AppCompatActivity {
                             }
                         });
                     }else{
-                        System.out.println("no dddddddddddddddddddddddddddddddddd");
+                        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+                            @Override
+                            public void onMapClick(LatLng latLng) {
+                                CheckConnection();
+                                if(networkInfo.isConnected() && networkInfo.isAvailable()){
+
+                                    selectedLat = latLng.latitude;
+                                    selectedLng = latLng.longitude;
+
+                                    GetAddress(selectedLat,selectedLng);
+                                }else{
+                                    Toast.makeText(HabitEventEditMapActivity.this, "Please check connection", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+
                     }
 
                 }
