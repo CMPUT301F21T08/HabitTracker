@@ -22,6 +22,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -77,7 +80,32 @@ public class HabitEventEditMapActivity extends AppCompatActivity {
         locMan = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
 
-
+//
+//
+//        LocationRequest mLocationRequest = LocationRequest.create();
+//        mLocationRequest.setInterval(60000);
+//        mLocationRequest.setFastestInterval(5000);
+//        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+//        LocationCallback mLocationCallback = new LocationCallback() {
+//            @Override
+//            public void onLocationResult(LocationResult locationResult) {
+//                if (locationResult == null) {
+//                    return;
+//                }
+//                for (Location location : locationResult.getLocations()) {
+//                    if (location != null) {
+//                        //TODO: UI updates.
+//                    }
+//                }
+//            }
+//        };
+//        LocationServices.getFusedLocationProviderClient(HabitEventEditMapActivity.this).requestLocationUpdates(mLocationRequest, mLocationCallback, null);
+//        LocationServices.getFusedLocationProviderClient(HabitEventEditMapActivity.this).getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
+//            @Override
+//            public void onSuccess(Location location) {
+//                //TODO: UI updates.
+//            }
+//        });
 
         // set return arrow
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);

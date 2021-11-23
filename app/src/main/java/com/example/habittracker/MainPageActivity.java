@@ -124,7 +124,7 @@ public class MainPageActivity extends AppCompatActivity {
                     // upload the information to database to update all habit
                     HashMap<String, Object> map = new HashMap<>();
                     map.put(habit.getUUID(),habit);
-//                    FirebaseDatabase.getInstance().getReference().child(uid).child("Habit").updateChildren(map);
+                    FirebaseDatabase.getInstance().getReference().child(uid).child("Habit").updateChildren(map);
                 }
                 toDoAdapter.notifyDataSetChanged();
             }
