@@ -78,6 +78,7 @@ public class HabitEditActivity extends AppCompatActivity implements AddWeekDaysF
     // result code
     private int original= 44;
     private int newObject= 33;
+    private int index;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,12 +106,15 @@ public class HabitEditActivity extends AppCompatActivity implements AddWeekDaysF
         if (action.equals("edit")){
             getSupportActionBar().setTitle("Habit - Edit");
             habit = (Habit) getIntent().getExtras().getSerializable("habit");
+            index = habit.getIndex();
             // input the information of habit to the view in the activity
             initView(habit);
             frequencyType = findViewById(R.id.frequency_type);
             value_of_OccurrenceDate = habit.getOccurrenceDay();
         } else{
             getSupportActionBar().setTitle("Habit - Add");
+            index = getIntent().getIntExtra("amount", 0);
+            System.out.print(index + '+');
         }
 
         // firebase connection
@@ -191,7 +195,7 @@ public class HabitEditActivity extends AppCompatActivity implements AddWeekDaysF
         backBtn.setOnClickListener(backBtnOnclickListener);
 
         // set up the backBtn to upload the habit to the database
-        View.OnClickListener confirmBtnOnclickListener = new HabitEditConfirmListener(getApplicationContext(), this, title, content, reason, date, frequency, frequencyType, habit, authentication, uid, newObject);
+        View.OnClickListener confirmBtnOnclickListener = new HabitEditConfirmListener(getApplicationContext(), this, title, content, reason, date, frequency, frequencyType, habit, authentication, uid, newObject, index);
         confirmBtn.setOnClickListener(confirmBtnOnclickListener);
     }
 

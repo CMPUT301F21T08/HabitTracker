@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="horizontal">
 
     <TextView
@@ -14,18 +14,22 @@
         android:textSize="26sp"
         android:textStyle="bold" />
 
+    <CheckBox
+        android:id="@+id/disclose_checkBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Public"
+        android:layout_alignParentRight="true"
+        />
 
-    <!-- we will implement this feature later
     <ProgressBar
-        style="@android:style/Widget.ProgressBar.Horizontal"
+        android:id="@+id/progression_bar"
+        style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/allHabits_delete_button"
-        android:layout_marginTop="16dp"
-        android:indeterminate="false"
+        android:layout_below="@id/allHabitsContent_habitContent_textView"
         android:max="100"
-        android:progress="25" />
-    -->
+        />
 
 
 </RelativeLayout>

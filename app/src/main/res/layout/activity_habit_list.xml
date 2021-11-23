@@ -25,16 +25,16 @@
                 android:textColor="@color/black"
                 android:textStyle="bold"
                 android:textSize="15sp">
-
             </TextView>
+
 
         </RelativeLayout>
 
-        <ListView
-            android:id="@+id/allHabits_habitList_listView"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/allHabits_habitList_recycleView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-        </ListView>
+        </androidx.recyclerview.widget.RecyclerView>
     </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
