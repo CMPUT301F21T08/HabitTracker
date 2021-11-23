@@ -99,7 +99,6 @@ public class HabitDescriptionActivityTest {
 
     }
 
-    }
     /**
      * Closes the activity after each test
      * @throws Exception
