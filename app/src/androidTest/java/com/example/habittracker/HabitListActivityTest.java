@@ -68,7 +68,7 @@ public class HabitListActivityTest{
         solo.clickOnButton("Confirm");
     }
 
-    // this is not working as I dont know how to interact with Fragment
+    // this is not working as I don't know how to interact with Fragment
     private void helperDeleteHabit(){
         solo.clickInList(0, 0);
         // wait for the page
@@ -77,7 +77,7 @@ public class HabitListActivityTest{
         solo.clickOnButton("Delete");
         // wait for the EditText to be ready
         solo.waitForFragmentByTag("Are you sure you want to delete?");
-        solo.clickOnButton(1);
+        solo.clickOnView(solo.getView(android.R.id.button1));
     }
 
     @Test
@@ -100,6 +100,7 @@ public class HabitListActivityTest{
             Habit newHabit = (Habit) listView.getItemAtPosition(0);// only habit in the one
             //check that the Habit is the same as entered.
             if ((!newHabit.getHabitTitle().equals("Habit1"))) throw new AssertionError();
+            helperDeleteHabit();
     }
 
 
