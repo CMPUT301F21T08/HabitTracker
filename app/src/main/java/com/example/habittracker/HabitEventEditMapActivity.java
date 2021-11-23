@@ -239,7 +239,22 @@ public class HabitEventEditMapActivity extends AppCompatActivity {
                             }
                         });
                     }else{
-                        System.out.println("no dddddddddddddddddddddddddddddddddd");
+                        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+                            @Override
+                            public void onMapClick(LatLng latLng) {
+                                CheckConnection();
+                                if(networkInfo.isConnected() && networkInfo.isAvailable()){
+
+                                    selectedLat = latLng.latitude;
+                                    selectedLng = latLng.longitude;
+
+                                    GetAddress(selectedLat,selectedLng);
+                                }else{
+                                    Toast.makeText(HabitEventEditMapActivity.this, "Please check connection", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+
                     }
 
                 }
