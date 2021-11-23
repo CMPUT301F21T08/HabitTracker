@@ -117,6 +117,7 @@ public class HabitEventEditMapActivity extends AppCompatActivity {
 
         if (ActivityCompat.checkSelfPermission(HabitEventEditMapActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
+            System.out.println("no 111111111111111111111111111");
             getLocation();
             System.out.println("no 9999999999999999999999");
 
@@ -132,19 +133,6 @@ public class HabitEventEditMapActivity extends AppCompatActivity {
         confirm_choose_location_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Intent i = new Intent(HabitEventEditMapActivity.this, HabitEventEditActivity.class);
-//                String the_value = choose_location_info.getText().toString();
-//
-//
-//                i.putExtra("Location_Value",  the_value);
-//                System.out.println(the_value);
-//
-//                finish();
-////                startActivity(i);
-////                finish();
-
-
-
                 Intent intent = new Intent();
                 intent.putExtra("Location_Value", choose_location_info.getText().toString());
                 setResult(RESULT_OK, intent);
@@ -157,13 +145,8 @@ public class HabitEventEditMapActivity extends AppCompatActivity {
         return_choose_location_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Intent i = new Intent(HabitEventEditMapActivity.this, HabitEventEditActivity.class);
-//                i.putExtra("Location_Value",  "");
-//                finish();
-
 
                 Intent intent = new Intent();
-//                intent.putExtra("Location_Value", "");
                 setResult(RESULT_CANCELED, intent);
                 finish();
 
@@ -194,17 +177,49 @@ public class HabitEventEditMapActivity extends AppCompatActivity {
             System.out.println("no ggggggggggggggggggggggggggggggg");
 
 
-            // get current location
-            // initial task location
-            Task<Location> task = client.getLastLocation();
 
-            task.addOnSuccessListener(new OnSuccessListener<Location>() {
+
+
+            LocationRequest mLocationRequest = LocationRequest.create();
+            mLocationRequest.setInterval(60000);
+            mLocationRequest.setFastestInterval(5000);
+            mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+            LocationCallback mLocationCallback = new LocationCallback() {
+                @Override
+                public void onLocationResult(LocationResult locationResult) {
+                    if (locationResult == null) {
+                        return;
+                    }
+                    for (Location location : locationResult.getLocations()) {
+                        if (location != null) {
+                            //TODO: UI updates.
+                        }
+                    }
+                }
+            };
+            LocationServices.getFusedLocationProviderClient(HabitEventEditMapActivity.this).requestLocationUpdates(mLocationRequest, mLocationCallback, null);
+
+
+
+            LocationServices.getFusedLocationProviderClient(HabitEventEditMapActivity.this).getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
                 @Override
                 public void onSuccess(Location location) {
+                    //TODO: UI updates.
+
+
+
+
+//            // get current location
+//            // initial task location
+//            Task<Location> task = client.getLastLocation();
+//
+//            task.addOnSuccessListener(new OnSuccessListener<Location>() {
+//                @Override
+//                public void onSuccess(Location location) {
 
                     // when success
-
                     if (location != null){
+                        System.out.println("no 2222222222222222222222222222222");
 
 
                         // sync map
@@ -267,19 +282,34 @@ public class HabitEventEditMapActivity extends AppCompatActivity {
                             }
                         });
                     }else{
-                        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+
+                        System.out.println("no 2222222222222222222222222222222");
+
+
+                        // sync map
+                        mapFragment.getMapAsync(new OnMapReadyCallback() {
                             @Override
-                            public void onMapClick(LatLng latLng) {
-                                CheckConnection();
-                                if(networkInfo.isConnected() && networkInfo.isAvailable()){
+                            public void onMapReady(GoogleMap googleMap) {
+                                mMap = googleMap;
 
-                                    selectedLat = latLng.latitude;
-                                    selectedLng = latLng.longitude;
+                                mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+                                    @Override
+                                    public void onMapClick(LatLng latLng) {
+                                        CheckConnection();
+                                        if(networkInfo.isConnected() && networkInfo.isAvailable()){
 
-                                    GetAddress(selectedLat,selectedLng);
-                                }else{
-                                    Toast.makeText(HabitEventEditMapActivity.this, "Please check connection", Toast.LENGTH_SHORT).show();
-                                }
+                                            selectedLat = latLng.latitude;
+                                            selectedLng = latLng.longitude;
+
+                                            GetAddress(selectedLat,selectedLng);
+                                        }else{
+                                            Toast.makeText(HabitEventEditMapActivity.this, "Please check connection", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
+
+
+
                             }
                         });
 
