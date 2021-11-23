@@ -656,6 +656,11 @@ public class HabitEventEditActivity extends AppCompatActivity  {
                     Habit habitE = (Habit) dataSnapshot.getValue(Habit.class);
                     // Determine whether we are processing the right habit
                     if (habitE.getUUID().equals(habitUUID)) {
+                        // This is added to solve a weird bug, that is, when we get habits from firebase, the notDone attribute will turn to true, even it is stored as false in Firebase
+                        // So we added this additional determination to correct this problem
+                        if (habitE.getDoneTime() == habitE.getFrequency()) {
+                            habitE.setNotDone(false);
+                        }
                         ArrayList<String> habitEventNameList = habitE.getEventList();
                         habitEventNameList.remove(eventUUID);
                         habitE.setEventList(habitEventNameList);
