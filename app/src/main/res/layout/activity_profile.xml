@@ -5,104 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/bottom_navigation_event"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        app:labelVisibilityMode="labeled"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:menu="@menu/bottom_navigation_menu" />
 
-    <TextView
-        android:id="@+id/profile_userName_TextView"
+    <ImageView
+        android:id="@+id/profile_ImageView"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="User Name: "
-        android:textSize="20dp"
+        android:layout_height="154dp"
         app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="136dp" />
-
-    <TextView
-        android:id="@+id/profile_email_TextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="user email: "
-        android:textSize="20dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profile_userName_TextView"
-        tools:layout_editor_absoluteX="136dp" />
-
-    <TextView
-        android:id="@+id/profile_gender_TextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Gender: "
-        android:textSize="20dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profile_email_TextView"
-        tools:layout_editor_absoluteX="136dp" />
-
-    <TextView
-        android:id="@+id/profile_age_TextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Age: "
-        android:textSize="20dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profile_gender_TextView"
-        tools:layout_editor_absoluteX="136dp" />
-
-    <EditText
-        android:id="@+id/profile_userName_EditText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Name"
-        app:layout_constraintLeft_toRightOf="@id/profile_userName_TextView"
-        app:layout_constraintBottom_toBottomOf="@id/profile_userName_TextView"
-        app:layout_constraintTop_toTopOf="@id/profile_userName_TextView"
-        tools:layout_editor_absoluteY="0dp" />
-
-    <TextView
-        android:id="@+id/profile_userEmail_TextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Email"
-        app:layout_constraintBottom_toBottomOf="@id/profile_email_TextView"
-        app:layout_constraintLeft_toRightOf="@id/profile_email_TextView"
-        app:layout_constraintStart_toEndOf="@+id/profile_userName_TextView"
-        app:layout_constraintTop_toTopOf="@id/profile_email_TextView"/>
-
-    <EditText
-        android:id="@+id/profile_userGender_EditText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Gender"
-        app:layout_constraintLeft_toRightOf="@id/profile_gender_TextView"
-        app:layout_constraintBottom_toBottomOf="@id/profile_gender_TextView"
-        app:layout_constraintTop_toTopOf="@id/profile_gender_TextView"
-        tools:layout_editor_absoluteY="0dp" />
-
-    <EditText
-        android:id="@+id/profile_userAge_EditText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Name"
-        app:layout_constraintLeft_toRightOf="@id/profile_age_TextView"
-        app:layout_constraintBottom_toBottomOf="@id/profile_age_TextView"
-        app:layout_constraintTop_toTopOf="@id/profile_age_TextView"
-        tools:layout_editor_absoluteY="0dp" />
+        android:src="@drawable/empty_profile"/>
 
     <Button
         android:id="@+id/profile_signOut_button"
@@ -113,7 +24,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintBottom_toTopOf="@id/bottom_navigation_event"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/profile_change_button"/>
+        app:layout_constraintRight_toLeftOf="@+id/profile_change_button" />
 
     <Button
         android:id="@+id/profile_change_button"
@@ -124,8 +35,134 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintBottom_toTopOf="@id/bottom_navigation_event"
         app:layout_constraintLeft_toRightOf="@+id/profile_signOut_button"
-        app:layout_constraintRight_toRightOf="parent"/>
+        app:layout_constraintRight_toRightOf="parent" />
 
+    <EditText
+        android:id="@+id/profile_userName_EditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Name"
+        app:layout_constraintBaseline_toBaselineOf="@id/profile_userName_TextView"
+        app:layout_constraintLeft_toLeftOf="@id/guideline2"/>
+
+    <EditText
+
+        android:id="@+id/profile_userGender_EditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Gender"
+        app:layout_constraintBaseline_toBaselineOf="@id/profile_gender_TextView"
+        app:layout_constraintLeft_toRightOf="@id/guideline2" />
+
+    <EditText
+        android:id="@+id/profile_userAge_EditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Name"
+        app:layout_constraintBaseline_toBaselineOf="@id/profile_age_TextView"
+        app:layout_constraintLeft_toRightOf="@id/guideline2" />
+
+    <TextView
+        android:id="@+id/profile_userName_TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:ems="5"
+        android:gravity="start"
+        android:text="User Name: "
+        android:textSize="20sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="@id/guideline2"
+        app:layout_constraintTop_toBottomOf="@id/profile_addImage_Button" />
+
+    <TextView
+        android:id="@+id/profile_email_TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:ems="5"
+        android:gravity="left"
+        android:text="User Email: "
+        android:textSize="20sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="@id/guideline2"
+        app:layout_constraintTop_toBottomOf="@+id/profile_userName_TextView" />
+
+    <TextView
+        android:id="@+id/profile_gender_TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:ems="5"
+        android:gravity="start"
+        android:text="Gender: "
+        android:textSize="20sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="@id/guideline2"
+        app:layout_constraintTop_toBottomOf="@+id/profile_email_TextView" />
+
+    <TextView
+        android:id="@+id/profile_age_TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:ems="5"
+        android:gravity="start"
+        android:text="Age: "
+        android:textSize="20sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="@id/guideline2"
+
+        app:layout_constraintTop_toBottomOf="@+id/profile_gender_TextView" />
+
+    <TextView
+        android:id="@+id/profile_userEmail_TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:text="Email"
+        android:textSize="18sp"
+        app:layout_constraintBaseline_toBaselineOf="@id/profile_email_TextView"
+        app:layout_constraintLeft_toRightOf="@id/guideline2" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="191dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="161dp" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/bottom_navigation_event"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:labelVisibilityMode="labeled"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:menu="@menu/bottom_navigation_menu" />
+
+    <Button
+        android:id="@+id/profile_addImage_Button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add Profile Image"
+        app:layout_constraintTop_toBottomOf="@id/profile_ImageView"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

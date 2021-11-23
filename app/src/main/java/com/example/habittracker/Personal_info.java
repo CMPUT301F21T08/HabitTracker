@@ -5,6 +5,18 @@ public class Personal_info {
     private String email;
     private String gender;
     private int age;
+    private String localImagePath;
+
+    public String getDownloadUrl() {
+        return downloadUrl;
+    }
+
+    public void setDownloadUrl(String downloadUrl) {
+        this.downloadUrl = downloadUrl;
+    }
+
+    private String downloadUrl; // This stores the url directing to the photo stored in firebase, not set by any constructor
+
 
 
     public Personal_info(){}
@@ -14,6 +26,27 @@ public class Personal_info {
         this.email = email;
         this.gender = gender;
         this.age = age;
+        this.localImagePath = null;
+    }
+
+    public Personal_info(String name, String email, String gender, int age, String localImagePath) {
+        this.name = name;
+        this.email = email;
+        this.gender = gender;
+        this.age = age;
+        this.localImagePath = localImagePath;
+    }
+
+    public Personal_info(String email) {
+        this.email = email;
+    }
+
+    public String getLocalImagePath() {
+        return localImagePath;
+    }
+
+    public void setLocalImagePath(String localImagePath) {
+        this.localImagePath = localImagePath;
     }
 
     public String getName() {

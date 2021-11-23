@@ -14,7 +14,7 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@drawable/login_avatar" />
+        tools:srcCompat="@drawable/empty_profile" />
 
     <TextView
         android:id="@+id/login_textView"

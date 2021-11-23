@@ -1,16 +1,22 @@
 package com.example.habittracker;
 
+import android.content.Context;
 import android.content.Intent;
-import android.icu.lang.UScript;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
-import android.renderscript.Sampler;
+import android.provider.MediaStore;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -19,12 +25,20 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author 'zwan1'
@@ -38,31 +52,84 @@ public class ProfileActivity extends AppCompatActivity {
 
     Button signOut_btn;
     Button applyChanges_btn;
+    Button addImage_btn;
+    ImageView profile_Image;
     BottomNavigationView bottomNavigationView;
     EditText userName;
     TextView userEmail;
     EditText userGender;
     EditText userAge;
+    String imageFilePath;
     private FirebaseAuth authentication;
     private String uid;
+    boolean addedPhoto;
+    static Personal_info personal_info;
+    Uri uri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-        
-        
-        // The the corresponding user unique uid, in order to locate into the correct user branch in firebase
+        boolean addedPhoto = false;  // flag that is used to determine whether user has added a photo
+
+
+        // The corresponding user unique uid, in order to locate into the correct user branch in firebase
         authentication = FirebaseAuth.getInstance();
         if (authentication.getCurrentUser() != null){
             uid = authentication.getCurrentUser().getUid();
         }
+
         
         // connecting attributes in the layout file
         userName = findViewById(R.id.profile_userName_EditText);
         userEmail = findViewById(R.id.profile_userEmail_TextView);
         userGender = findViewById(R.id.profile_userGender_EditText);
         userAge = findViewById(R.id.profile_userAge_EditText);
+
+        // add image
+        profile_Image = findViewById(R.id.profile_ImageView);
+        addImage_btn = findViewById(R.id.profile_addImage_Button);
+
+
+        ActivityResultLauncher<Intent> resultLauncher2 = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        // initialize result data
+                        Intent intent = result.getData();
+                        // check condition
+                        if (intent != null) {
+                            // when result data is not equal to empty
+                            try {
+                                uri = intent.getData();
+                                Bitmap bitmap = MediaStore.Images.Media.getBitmap(
+                                        getContentResolver(), uri);
+                                // set bitmap on image view
+                                profile_Image.setImageBitmap(bitmap);
+
+                                imageFilePath = getPathFromURI(ProfileActivity.this, uri);
+                                personal_info.setLocalImagePath(imageFilePath);
+
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }
+        );
+
+        addImage_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // initialize intent
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                // set type
+                intent.setType("image/*");
+                // launch in intent
+                resultLauncher2.launch(intent);
+            }
+        });
 
 
         // Using the user uid to get the correct branch for this user, go into the "Info" branch to fetch user information
@@ -71,12 +138,16 @@ public class ProfileActivity extends AppCompatActivity {
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Personal_info info = (Personal_info) dataSnapshot.getValue(Personal_info.class);
-                if (info != null) {
-                    userName.setText(info.getName());
-                    userEmail.setText(info.getEmail());
-                    userGender.setText(info.getGender());
-                    userAge.setText(Integer.toString(info.getAge()));
+                personal_info = (Personal_info) dataSnapshot.getValue(Personal_info.class);
+                if (personal_info != null) {
+                    userName.setText(personal_info.getName());
+                    userEmail.setText(personal_info.getEmail());
+                    userGender.setText(personal_info.getGender());
+                    userAge.setText(Integer.toString(personal_info.getAge()));
+                    if (personal_info.getDownloadUrl() != null){
+                        Uri uri = Uri.parse(personal_info.getDownloadUrl());
+                        Glide.with(ProfileActivity.this).load(uri).into(profile_Image);
+                    }
                 }
             }
 
@@ -95,8 +166,11 @@ public class ProfileActivity extends AppCompatActivity {
                 FirebaseAuth.getInstance().signOut();
                 Toast.makeText(ProfileActivity.this, "Sign Out successful!", Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(ProfileActivity.this, LogInActivity.class));
+                finish();
             }
         });
+
+
 
         // Create a button that apply the changes that user made to either "User Name", "Gender" or "Age"
         applyChanges_btn = findViewById(R.id.profile_change_button);
@@ -108,9 +182,13 @@ public class ProfileActivity extends AppCompatActivity {
                     Toast.makeText(ProfileActivity.this, "Wrong Input for Gender, please enter Male, Female or Others", Toast.LENGTH_SHORT).show();
                 } else if (100<=Integer.parseInt(userAge.getText().toString().trim()) || Integer.parseInt(userAge.getText().toString().trim()) <0 ){
                     Toast.makeText(ProfileActivity.this, "Wrong Input for Age, please enter an integer between 0 to 100", Toast.LENGTH_SHORT).show();
+                } else if (personal_info.getLocalImagePath() != null){
+                    personal_info = new Personal_info(userName.getText().toString().trim(),userEmail.getText().toString(),userGender.getText().toString().trim(),Integer.parseInt(userAge.getText().toString().trim()), personal_info.getLocalImagePath());
+                    uploadImage(personal_info, uid);
+                    Toast.makeText(ProfileActivity.this, "Changes has been made!", Toast.LENGTH_SHORT).show();
                 } else{
                     HashMap<String,Object> map = new HashMap<>();
-                    Personal_info personal_info = new Personal_info(userName.getText().toString().trim(),userEmail.getText().toString(),userGender.getText().toString().trim(),Integer.parseInt(userAge.getText().toString().trim()) );
+                    personal_info = new Personal_info(userName.getText().toString().trim(),userEmail.getText().toString(),userGender.getText().toString().trim(),Integer.parseInt(userAge.getText().toString().trim()), personal_info.getLocalImagePath());
                     map.put("Info",personal_info);
                     FirebaseDatabase.getInstance().getReference().child(uid).updateChildren(map);
                     Toast.makeText(ProfileActivity.this, "Changes has been made!", Toast.LENGTH_SHORT).show();
@@ -154,4 +232,40 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
     }
+
+
+    public String getPathFromURI(Context context, Uri uri) {
+        String[] proj = {MediaStore.Images.Media.DATA};
+        Cursor cursor = context.getContentResolver().query(uri, proj, null, null, null);
+        if (cursor != null) {
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        }
+        return null;
+    }
+
+    public static void uploadImage(Personal_info user, String uid) {
+
+        String imageName = "profilePhoto.jpg"; // Generate image name: habit_event_name.jpg
+        StorageReference storageRef = FirebaseStorage.getInstance().getReference().child("images/users/"+ uid + "/" + imageName); // get storage reference
+        Uri uri = Uri.fromFile(new File(user.getLocalImagePath()));
+        storageRef.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        System.out.println("-----------------> Get photo url success! URL: " + uri.toString());
+                        personal_info.setDownloadUrl(uri.toString());
+                        HashMap<String, Object> map = new HashMap<>();
+                        map.put("Info", personal_info);
+                        FirebaseDatabase.getInstance().getReference().child(uid).updateChildren(map);
+                    }
+                });
+            }
+        });
+    }
 }
+
+
