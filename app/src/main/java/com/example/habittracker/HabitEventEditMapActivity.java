@@ -59,6 +59,8 @@ public class HabitEventEditMapActivity extends AppCompatActivity {
 
     private LocationManager locMan;
 
+    private boolean hasLocation = false;
+
 
     TextView choose_location_info;
     Button confirm_choose_location_button;
@@ -127,7 +129,6 @@ public class HabitEventEditMapActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(HabitEventEditMapActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE);
 
 
-
         }
         // set confirm button
         confirm_choose_location_button.setOnClickListener(new View.OnClickListener() {
@@ -156,9 +157,6 @@ public class HabitEventEditMapActivity extends AppCompatActivity {
     }
 
 
-
-
-
     private void getLocation() {
 
         if (ActivityCompat.checkSelfPermission(HabitEventEditMapActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -170,15 +168,11 @@ public class HabitEventEditMapActivity extends AppCompatActivity {
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
             System.out.println("no fffffffffffffffffffffffffffffff");
-            ActivityCompat.requestPermissions(HabitEventEditMapActivity.this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION},44);
-            ActivityCompat.requestPermissions(HabitEventEditMapActivity.this,new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},44);
+            ActivityCompat.requestPermissions(HabitEventEditMapActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);
+            ActivityCompat.requestPermissions(HabitEventEditMapActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 44);
             return;
-        }else{
+        } else {
             System.out.println("no ggggggggggggggggggggggggggggggg");
-
-
-
-
 
             LocationRequest mLocationRequest = LocationRequest.create();
             mLocationRequest.setInterval(60000);
@@ -193,130 +187,123 @@ public class HabitEventEditMapActivity extends AppCompatActivity {
                     for (Location location : locationResult.getLocations()) {
                         if (location != null) {
                             //TODO: UI updates.
+                            System.out.println("------------------> 1 " + location);
+                            hasLocation = true;
                         }
+                    }
+
+                    if (hasLocation) {
+                        if (ActivityCompat.checkSelfPermission(HabitEventEditMapActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(HabitEventEditMapActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                            // TODO: Consider calling
+                            //    ActivityCompat#requestPermissions
+                            // here to request the missing permissions, and then overriding
+                            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                            //                                          int[] grantResults)
+                            // to handle the case where the user grants the permission. See the documentation
+                            // for ActivityCompat#requestPermissions for more details.
+                            return;
+                        }
+                        LocationServices.getFusedLocationProviderClient(HabitEventEditMapActivity.this).getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
+                            @Override
+                            public void onSuccess(Location location) {
+                                //TODO: UI updates.
+
+                                // when success
+                                if (location != null) {
+                                    System.out.println("no 2222222222222222222222222222222");
+
+
+                                    // sync map
+                                    mapFragment.getMapAsync(new OnMapReadyCallback() {
+                                        @Override
+                                        public void onMapReady(GoogleMap googleMap) {
+                                            mMap = googleMap;
+
+
+                                            Geocoder geocoder = new Geocoder(HabitEventEditMapActivity.this, Locale.getDefault());
+
+                                            List<Address> c_addresses = null;
+                                            try {
+                                                c_addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+
+                                            } catch (IOException e) {
+                                                e.printStackTrace();
+
+                                            }
+                                            if (c_addresses != null) {
+                                                currentAddress = c_addresses.get(0).getAddressLine(0);
+                                            }
+
+
+                                            // initial lat lng
+
+
+                                            LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                                            // create mark option
+
+                                            MarkerOptions markerOptions = new MarkerOptions().position(latLng).title("You are here!");
+                                            choose_location_info.setText(currentAddress);
+
+
+                                            // zoom map
+                                            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 14));
+
+                                            // add marker on map
+                                            googleMap.addMarker(markerOptions).showInfoWindow();
+
+                                            mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+                                                @Override
+                                                public void onMapClick(LatLng latLng) {
+                                                    CheckConnection();
+                                                    if (networkInfo.isConnected() && networkInfo.isAvailable()) {
+
+                                                        selectedLat = latLng.latitude;
+                                                        selectedLng = latLng.longitude;
+
+                                                        GetAddress(selectedLat, selectedLng);
+                                                    } else {
+                                                        Toast.makeText(HabitEventEditMapActivity.this, "Please check connection", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                }
+                                            });
+
+
+                                        }
+                                    });
+                                } else {
+                                    System.out.println("no 333333333333333333333333333333333");
+                                    // sync map
+                                    mapFragment.getMapAsync(new OnMapReadyCallback() {
+                                        @Override
+                                        public void onMapReady(GoogleMap googleMap) {
+                                            mMap = googleMap;
+
+                                            mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+                                                @Override
+                                                public void onMapClick(LatLng latLng) {
+                                                    CheckConnection();
+                                                    if (networkInfo.isConnected() && networkInfo.isAvailable()) {
+
+                                                        selectedLat = latLng.latitude;
+                                                        selectedLng = latLng.longitude;
+
+                                                        GetAddress(selectedLat, selectedLng);
+                                                    } else {
+                                                        Toast.makeText(HabitEventEditMapActivity.this, "Please check connection", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+                            }
+                        });
                     }
                 }
             };
+
+
             LocationServices.getFusedLocationProviderClient(HabitEventEditMapActivity.this).requestLocationUpdates(mLocationRequest, mLocationCallback, null);
-
-
-
-            LocationServices.getFusedLocationProviderClient(HabitEventEditMapActivity.this).getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
-                @Override
-                public void onSuccess(Location location) {
-                    //TODO: UI updates.
-
-
-
-
-//            // get current location
-//            // initial task location
-//            Task<Location> task = client.getLastLocation();
-//
-//            task.addOnSuccessListener(new OnSuccessListener<Location>() {
-//                @Override
-//                public void onSuccess(Location location) {
-
-                    // when success
-                    if (location != null){
-                        System.out.println("no 2222222222222222222222222222222");
-
-
-                        // sync map
-                        mapFragment.getMapAsync(new OnMapReadyCallback() {
-                            @Override
-                            public void onMapReady(GoogleMap googleMap) {
-                                mMap = googleMap;
-
-
-
-                                Geocoder geocoder = new Geocoder(HabitEventEditMapActivity.this, Locale.getDefault());
-
-                                List<Address> c_addresses = null;
-                                try{
-                                    c_addresses = geocoder.getFromLocation(location.getLatitude(),location.getLongitude(),1);
-
-                                }catch (IOException e){
-                                    e.printStackTrace();
-
-                                }
-                                if (c_addresses != null){
-                                    currentAddress = c_addresses.get(0).getAddressLine(0);
-                                }
-
-
-                                // initial lat lng
-
-
-                                LatLng latLng = new LatLng(location.getLatitude(),location.getLongitude());
-                                // create mark option
-
-                                MarkerOptions markerOptions = new MarkerOptions().position(latLng).title("You are here!");
-                                choose_location_info.setText(currentAddress);
-
-
-                                // zoom map
-                                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,14));
-
-                                // add marker on map
-                                googleMap.addMarker(markerOptions).showInfoWindow();
-
-                                mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-                                    @Override
-                                    public void onMapClick(LatLng latLng) {
-                                        CheckConnection();
-                                        if(networkInfo.isConnected() && networkInfo.isAvailable()){
-
-                                            selectedLat = latLng.latitude;
-                                            selectedLng = latLng.longitude;
-
-                                            GetAddress(selectedLat,selectedLng);
-                                        }else{
-                                            Toast.makeText(HabitEventEditMapActivity.this, "Please check connection", Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-                                });
-
-
-
-                            }
-                        });
-                    }else{
-
-                        System.out.println("no 2222222222222222222222222222222");
-
-
-                        // sync map
-                        mapFragment.getMapAsync(new OnMapReadyCallback() {
-                            @Override
-                            public void onMapReady(GoogleMap googleMap) {
-                                mMap = googleMap;
-
-                                mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-                                    @Override
-                                    public void onMapClick(LatLng latLng) {
-                                        CheckConnection();
-                                        if(networkInfo.isConnected() && networkInfo.isAvailable()){
-
-                                            selectedLat = latLng.latitude;
-                                            selectedLng = latLng.longitude;
-
-                                            GetAddress(selectedLat,selectedLng);
-                                        }else{
-                                            Toast.makeText(HabitEventEditMapActivity.this, "Please check connection", Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-                                });
-
-
-
-                            }
-                        });
-
-                    }
-
-                }
-            });
 
         }
 
