@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/habitEventEdit_content">
 
 
     <ScrollView
@@ -28,17 +29,30 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>
+
             <Button
                 android:id="@+id/habitEvent_addPhoto_button"
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
-                android:layout_marginTop="5dp"
-                android:text="@string/add_or_edit_photo"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="4dp"
+                android:text="@string/upload_photo"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintHorizontal_bias="0.108"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/habitEvent_photo_imageView" />
 
+            <Button
+                android:id="@+id/habitEvent_camera_button"
+                android:layout_width="155dp"
+                android:layout_height="48dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/camera"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.562"
+                app:layout_constraintStart_toEndOf="@+id/habitEvent_addPhoto_button"
+                app:layout_constraintTop_toBottomOf="@id/habitEvent_photo_imageView" />
 
             <TextView
                 android:id="@+id/habitEvent_comment_textView"
@@ -117,7 +131,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                android:text="@string/current_location"
+                android:text="@string/get_location"
 
 
                 app:layout_constraintStart_toEndOf="@+id/habitEvent_confirm_button"

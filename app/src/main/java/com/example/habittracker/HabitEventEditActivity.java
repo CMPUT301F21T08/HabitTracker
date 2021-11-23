@@ -49,10 +49,10 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.example.habittracker.listener.CurrentLocationListener;
+//import com.example.habittracker.listener.CurrentLocationListener;
 import com.example.habittracker.listener.EventEditConfirmListener;
 import com.example.habittracker.listener.EventEditDeleteListener;
-import com.example.habittracker.listener.LocationEditTextListener;
+//import com.example.habittracker.listener.LocationEditTextListener;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -92,6 +92,11 @@ import android.widget.ListView;
 
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.content.DialogInterface;
 
@@ -113,6 +118,7 @@ public class HabitEventEditActivity extends AppCompatActivity  {
     Button currentLocation_button;
     Button deleteBtn;
     Button confirmBtn;
+    Button cameraButton;
     FusedLocationProviderClient fusedLocationProviderClient;
 
     // Global attributes used to store habit event a dn habit related information
@@ -122,14 +128,23 @@ public class HabitEventEditActivity extends AppCompatActivity  {
     String imageFilePath; // This always saves the path for the current image shown in photo_imageView
     String habitEventUUID;
     Uri storageURL;
+    Uri capturedPhotoUri;
     int eventIndexInList;
+
+    ActivityResultLauncher<Intent> cameraActivityLauncher;
 
     // Storage Permissions
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    static final int REQUEST_IMAGE_CAPTURE = 2;
     private static String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
+
+    private static String[] PERMISSIONS_CAMERA = {
+            Manifest.permission.CAMERA
+    };
+    private static final int CAMERA_PERMISSION_CODE = 3;
 
     boolean addedPhoto = false;  // flag that is used to determin whether user has added a photo to the edit page
 
@@ -153,7 +168,7 @@ public class HabitEventEditActivity extends AppCompatActivity  {
         comment_editText = findViewById(R.id.habitEvent_comment_editText);
         photo_imageView = findViewById(R.id.habitEvent_photo_imageView);
         deleteBtn = findViewById(R.id.habitEvent_delete_button);
-        confirmBtn = findViewById(R.id.habitEvent_confirm_button);
+        cameraButton = findViewById(R.id.habitEvent_camera_button);
         editEventProgressDialog = new ProgressDialog(HabitEventEditActivity.this);
 
         getSupportActionBar().setTitle("Habit Event - Edit");
@@ -234,6 +249,44 @@ public class HabitEventEditActivity extends AppCompatActivity  {
             }
         });
 
+//------------------------------------------------- Camera Button ---------------------------------------------------------------------------------------------------------------
+        // Reference: https://stackoverflow.com/questions/62671106/onactivityresult-method-is-deprecated-what-is-the-alternative
+        //            https://developer.android.com/training/camera/photobasics
+        cameraActivityLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+            @Override
+            public void onActivityResult(ActivityResult result) {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    Intent data = result.getData();
+                    Bitmap bitmap = null;
+                    if (capturedPhotoUri != null) {
+                        try {
+                            bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), capturedPhotoUri);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        if (bitmap != null) {
+                            photo_imageView.setImageBitmap(bitmap);
+                        }
+                    }
+                }
+            }
+        });
+
+        cameraButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                // Check permission first
+                if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                    startCameraIntent();
+                }else {
+                    ActivityCompat.requestPermissions(HabitEventEditActivity.this, PERMISSIONS_CAMERA, CAMERA_PERMISSION_CODE);
+                }
+
+            }
+        });
+
+
 
 //------------------------------------------------------- Upload photo from phone and display in imageView------------------------------------------------------------------------------------------------------------------------------------
         // reference: https://www.youtube.com/watch?v=HxlAktedIhM
@@ -259,6 +312,7 @@ public class HabitEventEditActivity extends AppCompatActivity  {
                                 photo_imageView.setImageBitmap(bitmap);
                                 addedPhoto = true;
 
+                                System.out.println("-------------------->" + uri);
                                 imageFilePath = getPathFromURI(HabitEventEditActivity.this, uri);
                                 passedEvent.setLocalImagePath(imageFilePath);
                             }
@@ -286,50 +340,135 @@ public class HabitEventEditActivity extends AppCompatActivity  {
 
 
 //----------------------------------------------Location Information Process---------------------------------------------------------------------------
-        // Reference: https://www.youtube.com/watch?v=t8nGh4gN1Q0
-        // and https://www.youtube.com/watch?v=qO3FFuBrT2E for onActivityResult is Deprecated
-        // Implement Autocomplete Place Api
+//
+//        // Reference: https://www.youtube.com/watch?v=t8nGh4gN1Q0
+//        // and https://www.youtube.com/watch?v=qO3FFuBrT2E for onActivityResult is Deprecated
+//        // Implement Autocomplete Place Api
 
         location_editText = findViewById(R.id.habitEvent_enterLocation_editText);
+//
+//        // initialize place
+//        Places.initialize(getApplicationContext(),"AIzaSyCJvvbjw-Qdfxe_fwAnE9HwVFE9SelWUP0");
+//        PlacesClient placesClient = Places.createClient(this);
 
-        // initialize place
-        Places.initialize(getApplicationContext(),"AIzaSyCJvvbjw-Qdfxe_fwAnE9HwVFE9SelWUP0");
-        PlacesClient placesClient = Places.createClient(this);
-
-        // get current location https://www.youtube.com/watch?v=Ak1O9Gip-pg
+//        // get current location https://www.youtube.com/watch?v=Ak1O9Gip-pg
         currentLocation_button = findViewById(R.id.habitEvent_currentLocation_button);
-        View.OnClickListener currentLocationListener = new CurrentLocationListener(this, location_editText);
-        currentLocation_button.setOnClickListener(currentLocationListener);
+//        View.OnClickListener currentLocationListener = new CurrentLocationListener(this, location_editText);
+//        currentLocation_button.setOnClickListener(currentLocationListener);
 
+        location_editText.setFocusable(false);
 
-        activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+        currentLocation_button.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onActivityResult(ActivityResult result) {
-                if (result.getResultCode() == RESULT_OK) {
-                    //when success
-                    // initial place
-                    Place place = Autocomplete.getPlaceFromIntent(result.getData());
-                    // set address on edit text
-                    location_editText.setText(place.getAddress());
-                    // set locally name
-                    // location_information.setText(String.format("Location is %s", place.getName()));
-                }
-                else if (result.getResultCode() == AutocompleteActivity.RESULT_ERROR) {
-                    // when have error
-                    // initialize status
-                    Status status = Autocomplete.getStatusFromIntent(result.getData());
+            public void onClick(View view) {
 
-                    // display toast
-                    Toast.makeText(getApplicationContext(), status.getStatusMessage(), Toast.LENGTH_SHORT).show();
-                }
+//                startActivityForResult(new Intent(HabitEventEditActivity.this, HabitEventEditMapActivity.class));
+//                startActivity(new Intent(HabitEventEditActivity.this, HabitEventEditMapActivity.class));
+
+                Intent i = new Intent(HabitEventEditActivity.this, HabitEventEditMapActivity.class);
+
+
+////                startActivity(new Intent(HabitEventEditActivity.this, HabitEventEditMapActivity.class));
+//
+//                Bundle bundle = getIntent().getExtras();
+//                String data_map= bundle.getString("map_data");
+//                location_editText.setText(data_map);
+//
+////                // initial fragment
+////                Fragment fragment = new MapFragment();
+////
+////                // open fragment
+////                getSupportFragmentManager()
+////                        .beginTransaction()
+////                        .replace(R.id.habitEventEdit_content,fragment)
+////                        .commit();
+//
+//
+//
+//                Fragment fragment1 = new MapFragment();
+//                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+//                Bundle bundle1 = new Bundle();
+//                bundle1.putString("output_data_fragment",data_map);
+//                fragment1.setArguments(bundle1);
+//                fragmentTransaction.add(R.id.habitEventEdit_content,fragment1);
+//                fragmentTransaction.commit();
+
+
+//                Bundle extras = getIntent().getExtras();
+//                if (extras != null) {
+//                    String value = extras.getString("Location_Value");
+//                    location_editText.setText(value);
+//                    System.out.println("no dhoeefhouefheofheifheuhisuefhoeufhisuefh");
+//                }
+
+
+                startActivityForResult(i,1);
+//
+
             }
         });
 
+//
 
-        // set edit text non focusable
-        location_editText.setFocusable(false);
-        View.OnClickListener locationEditTextListener = new LocationEditTextListener(this, activityResultLauncher);
-        location_editText.setOnClickListener(locationEditTextListener);
+
+
+//
+//        activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+//            @Override
+//            public void onActivityResult(ActivityResult result) {
+//                if (result.getResultCode() == RESULT_OK) {
+//                    //when success
+//                    // initial place
+//                    Place place = Autocomplete.getPlaceFromIntent(result.getData());
+//                    // set address on edit text
+//                    location_editText.setText(place.getAddress());
+//                    // set locally name
+//                    // location_information.setText(String.format("Location is %s", place.getName()));
+//                }
+//                else if (result.getResultCode() == AutocompleteActivity.RESULT_ERROR) {
+//                    // when have error
+//                    // initialize status
+//                    Status status = Autocomplete.getStatusFromIntent(result.getData());
+//
+//                    // display toast
+//                    Toast.makeText(getApplicationContext(), status.getStatusMessage(), Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//        });
+// set edit text non focusable
+//        location_editText.setFocusable(false);
+//        View.OnClickListener locationEditTextListener = new LocationEditTextListener(this, activityResultLauncher);
+//        location_editText.setOnClickListener(locationEditTextListener);
+
+//
+//        Bundle extras = getIntent().getExtras();
+//        if (extras != null ) {
+//
+//
+//            Boolean click_map_confirm = extras.getBoolean("If_Confirm");
+//
+//            if (click_map_confirm == true) {
+//
+//                String value = extras.getString("Location_Value");
+//                location_editText.setText(value);
+//            }
+//        }
+
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if(resultCode == RESULT_OK) {
+                String result = data.getStringExtra("Location_Value");
+                location_editText.setText("" + result);
+            }
+            if(resultCode == RESULT_CANCELED) {
+
+            }
+        }
     }
 
     /**
@@ -368,10 +507,20 @@ public class HabitEventEditActivity extends AppCompatActivity  {
                 if (grantResults.length > 0 &&
                         grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     System.out.println("---------------------> access granted!");
-                }  else {
+                }
+                else {
                     System.out.println("---------------------> request access failed!");
                 }
                 return;
+            case CAMERA_PERMISSION_CODE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                    Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//                    cameraActivityLauncher.launch(takePictureIntent);
+                    startCameraIntent();
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), "Request Camera Access Failed!", Toast.LENGTH_LONG).show();
+                }
         }
     }
 
@@ -389,13 +538,16 @@ public class HabitEventEditActivity extends AppCompatActivity  {
      * @param uri picture's uri
      * @return
      */
-    public String getPathFromURI(Context context, Uri uri) {
+    public static String getPathFromURI(Context context, Uri uri) {
         String[] proj = {MediaStore.Images.Media.DATA};
         Cursor cursor = context.getContentResolver().query(uri, proj, null, null, null);
         if (cursor != null) {
             int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
             cursor.moveToFirst();
             return cursor.getString(column_index);
+        }
+        else if (uri.toString().contains("file://")) {
+            return uri.toString().substring(7);
         }
         return null;
     }
@@ -531,5 +683,50 @@ public class HabitEventEditActivity extends AppCompatActivity  {
             }
         });
     }
+
+    /**
+     * This function saves the photo captured from camera to a file
+     * Reference: https://developer.android.com/training/camera/photobasics
+     * @return
+     * @throws IOException
+     */
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        String currentPhotoPath = image.getAbsolutePath();
+        passedEvent.setLocalImagePath(currentPhotoPath);
+        return image;
+    }
+
+    public void startCameraIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+        File capturedPhoto = null;
+        try {
+            capturedPhoto = createImageFile();
+        } catch (IOException ex) {
+            // Error occurred while creating the File
+            Toast.makeText(getApplicationContext(), "Create photo file error, try again!", Toast.LENGTH_LONG).show();
+        }
+
+        // Continue only if the File was successfully created
+        if (capturedPhoto != null) {
+            capturedPhotoUri = FileProvider.getUriForFile(this,
+                    "com.example.android.fileprovider",
+                    capturedPhoto);
+            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, capturedPhotoUri);
+            cameraActivityLauncher.launch(takePictureIntent);
+        }
+    }
+
 
 }

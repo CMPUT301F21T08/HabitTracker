@@ -118,13 +118,13 @@ public class HabitEventTest {
         assertEquals(null, testEvent.getLocalImagePath());
     }
 
-    @Test
     /**
      * Test setter for local image path
      */
+    @Test
     public void testSetLocalImagePath() {
-        testEvent.setLocalImagePath("testPath");
-        assertEquals("testPath", testEvent.getLocalImagePath());
+        testEvent.setLocalImagePath("saved/image.jpg");
+        assertEquals("saved/image.jpg", testEvent.getLocalImagePath());
     }
 
     /**
@@ -134,6 +134,7 @@ public class HabitEventTest {
     public void testGetHabitName() {
         assertEquals("Run", testEvent.getHabitName());
     }
+
 
     /**
      * Test setter for habit name
