@@ -312,6 +312,7 @@ public class HabitEventEditActivity extends AppCompatActivity  {
                                 photo_imageView.setImageBitmap(bitmap);
                                 addedPhoto = true;
 
+                                System.out.println("-------------------->" + uri);
                                 imageFilePath = getPathFromURI(HabitEventEditActivity.this, uri);
                                 passedEvent.setLocalImagePath(imageFilePath);
                             }
@@ -537,13 +538,16 @@ public class HabitEventEditActivity extends AppCompatActivity  {
      * @param uri picture's uri
      * @return
      */
-    public String getPathFromURI(Context context, Uri uri) {
+    public static String getPathFromURI(Context context, Uri uri) {
         String[] proj = {MediaStore.Images.Media.DATA};
         Cursor cursor = context.getContentResolver().query(uri, proj, null, null, null);
         if (cursor != null) {
             int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
             cursor.moveToFirst();
             return cursor.getString(column_index);
+        }
+        else if (uri.toString().contains("file://")) {
+            return uri.toString().substring(7);
         }
         return null;
     }

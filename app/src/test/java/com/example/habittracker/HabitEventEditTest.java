@@ -3,13 +3,14 @@ package com.example.habittracker;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.net.Uri;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.example.habittracker.listener.EventEditConfirmListener;
 
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.Before;
 import org.junit.jupiter.api.Test;
 
 public class HabitEventEditTest {
@@ -27,7 +28,7 @@ public class HabitEventEditTest {
     int eventIndexInList;
     HabitEvent testEvent;
 
-    @BeforeEach
+    @Before
     public void setUp() {
 
         activity = new HabitEventEditActivity();
@@ -44,8 +45,7 @@ public class HabitEventEditTest {
     }
 
     @Test
-    public void testConfirmOnClickListener() {
-        EventEditConfirmListener listener = new EventEditConfirmListener(context, activity, editEventProgressDialog, comment_editText, location_editText, eventIndexInList, testEvent, photo_imageView, "1111-2222");
-        listener.onClick(confirmBtn);
+    public void testGetPathFromUri() {
+        Uri testUri = Uri.parse("content://com.google.android.apps.photos.contentprovider/-1/1/content%3A%2F%2Fmedia%2Fexternal%2Fimages%2Fmedia%2F17/ORIGINAL/NONE/image%2Fjpeg/1243923781");
     }
 }
