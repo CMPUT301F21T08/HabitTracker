@@ -24,6 +24,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -32,9 +33,6 @@ import java.util.List;
 public class FollowingActivity extends AppCompatActivity implements SearchFollowingFragment.OnFragmentInteractionListener{
 
     BottomNavigationView bottomNavigationView;
-
-
-    String [] examples = {" User1", " User2", " User3"};
 
 
     private ListView following_ListView;
@@ -75,13 +73,44 @@ public class FollowingActivity extends AppCompatActivity implements SearchFollow
 
 
         // ListView for the following list
-        // create the listView using the habit arrayList
-        following_list = new ArrayList<>();
-        following_list.addAll(Arrays.asList(examples));
+        following_list = new ArrayList<String>();
 
         following_adapter = new ArrayAdapter<>(this,R.layout.content_following,following_list);
         following_ListView.setAdapter(following_adapter);
 
+
+        // fetch the followed list in the firebase to show
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child(uid).child("Follows").child("Following");
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                following_list.clear();
+                ArrayList<String> uids_following = new ArrayList<String>();
+                for (DataSnapshot snapshot1 : snapshot.getChildren()){
+
+                    // get the corresponding uid
+                    String uid_following = (String) snapshot1.getValue();
+                    System.out.println("uid following: "+uid_following);
+                    DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference().child(uid_following).child("Info");
+                    reference1.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            Personal_info info = (Personal_info) snapshot.getValue(Personal_info.class);
+
+                            //****later change the store the entire info class in the list, create a new adatper file to manage changes
+                            following_list.add(info.getName());
+                            following_adapter.notifyDataSetChanged();
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) { }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) { }
+        });
 
 
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
@@ -168,6 +197,7 @@ public class FollowingActivity extends AppCompatActivity implements SearchFollow
     @Override
     public void onConfirmPressed(String email_toFollow) {
         authentication = FirebaseAuth.getInstance();
+        Toast.makeText(FollowingActivity.this, "Request sent to "+ email_toFollow + " !", Toast.LENGTH_SHORT).show();
         getUidByEmail(email_toFollow, new MyCallback() {
             // as onDataChange was called asynchronous, we created a onCallback method to store the uid_toFollow
             @Override

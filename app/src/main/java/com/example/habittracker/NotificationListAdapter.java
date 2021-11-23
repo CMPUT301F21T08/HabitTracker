@@ -99,15 +99,19 @@ public class NotificationListAdapter extends ArrayAdapter<Personal_info> {
                             System.out.println("The read failed: " + error.getCode());
                         }
                     });
-
+                    System.out.println("-------------------------------------------------------" + request_uid);
                     // put the accepted uid in the follower_by section in our firebase
                     HashMap<String,Object> map = new HashMap<>();
                     request_email = request_email.replace("@","");
                     request_email = request_email.replace(".","");
                     map.put(request_email,request_uid);
                     FirebaseDatabase.getInstance().getReference().child(uid).child("Follows").child("Followed_by").updateChildren(map);
-
+                    System.out.println("map done");
+                    System.out.println("-------------------------------------------------------" + request_uid);
                     // put our own uid into the requested uid's following branch, own email required
+                    System.out.println("request_uid: " + request_uid);
+
+
                     DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference().child(uid).child("Info");
                     reference1.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -118,6 +122,7 @@ public class NotificationListAdapter extends ArrayAdapter<Personal_info> {
                             HashMap<String,Object> map1 = new HashMap<>();
                             map1.put(email,uid);
                             FirebaseDatabase.getInstance().getReference().child(request_uid).child("Follows").child("Following").updateChildren(map1);
+                            System.out.println("Inside: request_uid: " + request_uid);
                         }
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) { }

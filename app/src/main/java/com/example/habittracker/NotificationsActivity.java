@@ -32,7 +32,7 @@ public class NotificationsActivity extends AppCompatActivity {
 
     String [] examples = {" User1", " User2", " User3"};
 
-
+    // private variables
     private ListView request_users_ListView;
     private ArrayList<Personal_info> request_list;
     private ArrayAdapter<Personal_info> request_adapter;
