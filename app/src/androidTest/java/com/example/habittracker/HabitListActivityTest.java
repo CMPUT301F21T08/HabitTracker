@@ -92,11 +92,11 @@ public class HabitListActivityTest{
             solo.assertCurrentActivity("Wrong Activity", HabitListActivity.class);
 
             //wait until the ListView is loaded
-            solo.waitForView(R.id.allHabits_habitList_listView);
+            solo.waitForView(R.id.allHabits_habitList_recycleView);
             //assert in correct Activity
             HabitListActivity activity = (HabitListActivity) solo.getCurrentActivity();
             //get listView
-            ListView listView = activity.findViewById(R.id.allHabits_habitList_listView);
+            ListView listView = activity.findViewById(R.id.allHabits_habitList_recycleView);
             Habit newHabit = (Habit) listView.getItemAtPosition(0);// only habit in the one
             //check that the Habit is the same as entered.
             if ((!newHabit.getHabitTitle().equals("Habit1"))) throw new AssertionError();
@@ -119,11 +119,11 @@ public class HabitListActivityTest{
         solo.waitForActivity("HabitListActivity");
         solo.assertCurrentActivity("Wrong Activity", HabitListActivity.class);
         //wait until the ListView is loaded
-        solo.waitForView(R.id.allHabits_habitList_listView);
+        solo.waitForView(R.id.allHabits_habitList_recycleView);
         //assert in correct Activity
         HabitListActivity activity = (HabitListActivity) solo.getCurrentActivity();
         //get listView
-        ListView listView = activity.findViewById(R.id.allHabits_habitList_listView);
+        ListView listView = activity.findViewById(R.id.allHabits_habitList_recycleView);
         Habit newHabit = (Habit) listView.getItemAtPosition(0);// only habit in the one
         //check that the Habit is the same as entered.
         if ((!newHabit.getHabitTitle().equals("Habit1"))) throw new AssertionError();
@@ -145,7 +145,7 @@ public class HabitListActivityTest{
         solo.assertCurrentActivity("Wrong Activity", HabitListActivity.class);
 
         //wait until the ListView is loaded
-        solo.waitForView(R.id.allHabits_habitList_listView);
+        solo.waitForView(R.id.allHabits_habitList_recycleView);
         //assert in correct Activity
         //get the habit. should have new name
         newHabit = (Habit) listView.getItemAtPosition(0);// only habit in the one
@@ -171,11 +171,11 @@ public class HabitListActivityTest{
         solo.assertCurrentActivity("Wrong Activity", HabitListActivity.class);
 
         //wait until the ListView is loaded
-        solo.waitForView(R.id.allHabits_habitList_listView);
+        solo.waitForView(R.id.allHabits_habitList_recycleView);
         //assert in correct Activity
         HabitListActivity activity = (HabitListActivity) solo.getCurrentActivity();
         //get listView
-        ListView listView = activity.findViewById(R.id.allHabits_habitList_listView);
+        ListView listView = activity.findViewById(R.id.allHabits_habitList_recycleView);
 
         //check that there is nothing left
         try {
