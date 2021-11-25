@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.widget.ImageView;
 
 import androidx.test.core.app.ApplicationProvider;
 import androidx.lifecycle.Lifecycle;
@@ -19,12 +20,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class HabitEventEditActivityTest {
 
     Context context;
-    Activity activity;
     private HabitEvent testEvent;
 
     ActivityScenarioRule testRule;
@@ -52,6 +53,29 @@ public class HabitEventEditActivityTest {
         });
         scenario.moveToState(Lifecycle.State.DESTROYED);
 
+    }
+
+    @Test
+    public void testCreateImageFile() {
+        testEvent = new HabitEvent("Run", "I've finished running", "Edmonton", "1234-5678", "1111-2222");
+        Intent intent = new Intent(ApplicationProvider.getApplicationContext(), HabitEventEditActivity.class);
+        intent.putExtra("HabitEventForEdit", testEvent);
+        intent.putExtra("EventIndex", 0);
+
+        ActivityScenario<HabitEventEditActivity> scenario = ActivityScenario.launch(intent);
+        scenario.moveToState(Lifecycle.State.CREATED);
+        scenario.moveToState(Lifecycle.State.STARTED);
+
+
+        scenario.onActivity( activity -> {
+            try {
+                File imageFile = activity.createImageFile();
+                assertNotNull(imageFile);
+            }
+            catch (IOException e) {
+                System.out.println("Creating image file failed!");
+            }
+        });
     }
 
 

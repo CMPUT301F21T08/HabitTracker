@@ -126,6 +126,7 @@ public class HabitEventEditActivity extends AppCompatActivity  {
     String habitName;
     String habitEventTitle;
     String imageFilePath; // This always saves the path for the current image shown in photo_imageView
+
     String habitEventUUID;
     Uri storageURL;
     Uri capturedPhotoUri;
@@ -346,115 +347,18 @@ public class HabitEventEditActivity extends AppCompatActivity  {
 //        // Implement Autocomplete Place Api
 
         location_editText = findViewById(R.id.habitEvent_enterLocation_editText);
-//
-//        // initialize place
-//        Places.initialize(getApplicationContext(),"AIzaSyCJvvbjw-Qdfxe_fwAnE9HwVFE9SelWUP0");
-//        PlacesClient placesClient = Places.createClient(this);
-
-//        // get current location https://www.youtube.com/watch?v=Ak1O9Gip-pg
         currentLocation_button = findViewById(R.id.habitEvent_currentLocation_button);
-//        View.OnClickListener currentLocationListener = new CurrentLocationListener(this, location_editText);
-//        currentLocation_button.setOnClickListener(currentLocationListener);
-
         location_editText.setFocusable(false);
 
         currentLocation_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-//                startActivityForResult(new Intent(HabitEventEditActivity.this, HabitEventEditMapActivity.class));
-//                startActivity(new Intent(HabitEventEditActivity.this, HabitEventEditMapActivity.class));
-
                 Intent i = new Intent(HabitEventEditActivity.this, HabitEventEditMapActivity.class);
-
-
-////                startActivity(new Intent(HabitEventEditActivity.this, HabitEventEditMapActivity.class));
-//
-//                Bundle bundle = getIntent().getExtras();
-//                String data_map= bundle.getString("map_data");
-//                location_editText.setText(data_map);
-//
-////                // initial fragment
-////                Fragment fragment = new MapFragment();
-////
-////                // open fragment
-////                getSupportFragmentManager()
-////                        .beginTransaction()
-////                        .replace(R.id.habitEventEdit_content,fragment)
-////                        .commit();
-//
-//
-//
-//                Fragment fragment1 = new MapFragment();
-//                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-//                Bundle bundle1 = new Bundle();
-//                bundle1.putString("output_data_fragment",data_map);
-//                fragment1.setArguments(bundle1);
-//                fragmentTransaction.add(R.id.habitEventEdit_content,fragment1);
-//                fragmentTransaction.commit();
-
-
-//                Bundle extras = getIntent().getExtras();
-//                if (extras != null) {
-//                    String value = extras.getString("Location_Value");
-//                    location_editText.setText(value);
-//                    System.out.println("no dhoeefhouefheofheifheuhisuefhoeufhisuefh");
-//                }
-
-
                 startActivityForResult(i,1);
-//
 
             }
         });
-
-//
-
-
-
-//
-//        activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
-//            @Override
-//            public void onActivityResult(ActivityResult result) {
-//                if (result.getResultCode() == RESULT_OK) {
-//                    //when success
-//                    // initial place
-//                    Place place = Autocomplete.getPlaceFromIntent(result.getData());
-//                    // set address on edit text
-//                    location_editText.setText(place.getAddress());
-//                    // set locally name
-//                    // location_information.setText(String.format("Location is %s", place.getName()));
-//                }
-//                else if (result.getResultCode() == AutocompleteActivity.RESULT_ERROR) {
-//                    // when have error
-//                    // initialize status
-//                    Status status = Autocomplete.getStatusFromIntent(result.getData());
-//
-//                    // display toast
-//                    Toast.makeText(getApplicationContext(), status.getStatusMessage(), Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//        });
-// set edit text non focusable
-//        location_editText.setFocusable(false);
-//        View.OnClickListener locationEditTextListener = new LocationEditTextListener(this, activityResultLauncher);
-//        location_editText.setOnClickListener(locationEditTextListener);
-
-//
-//        Bundle extras = getIntent().getExtras();
-//        if (extras != null ) {
-//
-//
-//            Boolean click_map_confirm = extras.getBoolean("If_Confirm");
-//
-//            if (click_map_confirm == true) {
-//
-//                String value = extras.getString("Location_Value");
-//                location_editText.setText(value);
-//            }
-//        }
-
-
     }
 
     @Override
@@ -687,10 +591,10 @@ public class HabitEventEditActivity extends AppCompatActivity  {
     /**
      * This function saves the photo captured from camera to a file
      * Reference: https://developer.android.com/training/camera/photobasics
-     * @return
+     * @return the image file created
      * @throws IOException
      */
-    private File createImageFile() throws IOException {
+    public File createImageFile() throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
@@ -707,6 +611,9 @@ public class HabitEventEditActivity extends AppCompatActivity  {
         return image;
     }
 
+    /**
+     * This function starts the camera inside this application and allow user to capture photos
+     */
     public void startCameraIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
@@ -727,6 +634,5 @@ public class HabitEventEditActivity extends AppCompatActivity  {
             cameraActivityLauncher.launch(takePictureIntent);
         }
     }
-
 
 }
