@@ -11,6 +11,9 @@ import static android.content.ContentValues.TAG;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.view.MenuItem;
+
+import com.example.habittracker.listener.HabitListClickListener;
+import com.example.habittracker.listener.HabitListNavigationBarClickListener;
 import com.example.habittracker.listener.NavigationBarClickListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
@@ -57,7 +60,8 @@ public class HabitListActivity extends AppCompatActivity {
 
     private FirebaseAuth authentication; // user authentication reference
     private String uid; // User unique ID
-    private View.OnClickListener onItemClickListener = new View.OnClickListener() {
+    private View.OnClickListener onItemClickListener = new HabitListClickListener(this, getApplicationContext(), habitList, uid);
+    /*{
         @Override
         public void onClick(View view) {
             RecyclerView.ViewHolder viewHolder = (RecyclerView.ViewHolder) view.getTag();
@@ -73,6 +77,8 @@ public class HabitListActivity extends AppCompatActivity {
             goToHabitDescriptionActivity(position, tapHabit);
         }
     };
+
+     */
 
 
 
@@ -225,7 +231,9 @@ public class HabitListActivity extends AppCompatActivity {
         //NavigationBarView.OnItemSelectedListener bottomNavigationViewOnItemSelectedListener = new NavigationBarClickListener(getApplicationContext(),this);
         //bottomNavigationView.setOnItemSelectedListener(bottomNavigationViewOnItemSelectedListener);
 
-        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+        NavigationBarView.OnItemSelectedListener bottomNavigationViewOnItemSelectedListener = new HabitListNavigationBarClickListener(getApplicationContext(),this, uid, habitList);
+        bottomNavigationView.setOnItemSelectedListener(bottomNavigationViewOnItemSelectedListener);
+        /*{
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 for(int i = 0; i < habitList.size(); i++){
@@ -263,6 +271,9 @@ public class HabitListActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+         */
+
     }
 
 

@@ -19,7 +19,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.habittracker.listener.HabitDescriptionDeleteListener;
 import com.example.habittracker.listener.HabitDescriptionEditListener;
+import com.example.habittracker.listener.HabitDescriptionFrequencyListener;
 import com.example.habittracker.listener.HabitDescriptionReturnListener;
 import com.example.habittracker.listener.HabitDescriptionToEventListener;
 import com.example.habittracker.listener.HabitListAddListener;
@@ -96,7 +98,9 @@ public class HabitDescriptionActivity extends AppCompatActivity implements Delet
         toEventBtn = findViewById(R.id.description_habitEvent_button);
 
         // set up the onClickListener for the frequencyType button
-        frequencyType.setOnClickListener(new View.OnClickListener() {
+        View.OnClickListener frequencyBtnOnclickListener = new HabitDescriptionFrequencyListener(getSupportFragmentManager(), habit);
+        frequencyType.setOnClickListener(frequencyBtnOnclickListener);
+        /*{
             @Override
             public void onClick(View view) {
                 // if the frequencyType is "per week", then invoke a fragment to show the occurrence week day of the habit
@@ -106,14 +110,20 @@ public class HabitDescriptionActivity extends AppCompatActivity implements Delet
             }
         });
 
+         */
+
         // set up the onClickListener for the deleteBtn button
-        deleteBtn.setOnClickListener(new View.OnClickListener() {
+        View.OnClickListener DeleteBtnOnclickListener = new HabitDescriptionDeleteListener(getSupportFragmentManager());
+        deleteBtn.setOnClickListener(DeleteBtnOnclickListener);
+        /*{
             @Override
             public void onClick(View view) {
                 // invoke a fragment to ask for confirmation for deletion of the habit from user and delete the habit if user click confirm
                 new DeleteConfirmFragment("Are you sure you want to delete?").show(getSupportFragmentManager(),"DELETE_HABIT");
             }
         });
+
+         */
 
         // set up the onClickListener for the returnBtn button
         View.OnClickListener returnBtnOnclickListener = new HabitDescriptionReturnListener(getApplicationContext(), this);
