@@ -82,46 +82,13 @@ public class HabitEventEditMapActivity extends AppCompatActivity {
         locMan = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
 
-//
-//
-//        LocationRequest mLocationRequest = LocationRequest.create();
-//        mLocationRequest.setInterval(60000);
-//        mLocationRequest.setFastestInterval(5000);
-//        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-//        LocationCallback mLocationCallback = new LocationCallback() {
-//            @Override
-//            public void onLocationResult(LocationResult locationResult) {
-//                if (locationResult == null) {
-//                    return;
-//                }
-//                for (Location location : locationResult.getLocations()) {
-//                    if (location != null) {
-//                        //TODO: UI updates.
-//                    }
-//                }
-//            }
-//        };
-//        LocationServices.getFusedLocationProviderClient(HabitEventEditMapActivity.this).requestLocationUpdates(mLocationRequest, mLocationCallback, null);
-//        LocationServices.getFusedLocationProviderClient(HabitEventEditMapActivity.this).getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
-//            @Override
-//            public void onSuccess(Location location) {
-//                //TODO: UI updates.
-//            }
-//        });
-
-        // set return arrow
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.maps);
         client = LocationServices.getFusedLocationProviderClient(HabitEventEditMapActivity.this);
 
 
         if (ActivityCompat.checkSelfPermission(HabitEventEditMapActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
-            System.out.println("no 111111111111111111111111111");
             getLocation();
-            System.out.println("no 9999999999999999999999");
 
         } else {
             // when permission denied
@@ -160,19 +127,11 @@ public class HabitEventEditMapActivity extends AppCompatActivity {
     private void getLocation() {
 
         if (ActivityCompat.checkSelfPermission(HabitEventEditMapActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            System.out.println("no fffffffffffffffffffffffffffffff");
             ActivityCompat.requestPermissions(HabitEventEditMapActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);
             ActivityCompat.requestPermissions(HabitEventEditMapActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 44);
             return;
-        } else {
-            System.out.println("no ggggggggggggggggggggggggggggggg");
+        }
+        else {
 
             LocationRequest mLocationRequest = LocationRequest.create();
             mLocationRequest.setInterval(60000);
@@ -187,31 +146,20 @@ public class HabitEventEditMapActivity extends AppCompatActivity {
                     for (Location location : locationResult.getLocations()) {
                         if (location != null) {
                             //TODO: UI updates.
-                            System.out.println("------------------> 1 " + location);
                             hasLocation = true;
                         }
                     }
 
                     if (hasLocation) {
                         if (ActivityCompat.checkSelfPermission(HabitEventEditMapActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(HabitEventEditMapActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                            // TODO: Consider calling
-                            //    ActivityCompat#requestPermissions
-                            // here to request the missing permissions, and then overriding
-                            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                            //                                          int[] grantResults)
-                            // to handle the case where the user grants the permission. See the documentation
-                            // for ActivityCompat#requestPermissions for more details.
                             return;
                         }
                         LocationServices.getFusedLocationProviderClient(HabitEventEditMapActivity.this).getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
                             @Override
                             public void onSuccess(Location location) {
-                                //TODO: UI updates.
 
                                 // when success
                                 if (location != null) {
-                                    System.out.println("no 2222222222222222222222222222222");
-
 
                                     // sync map
                                     mapFragment.getMapAsync(new OnMapReadyCallback() {
@@ -271,7 +219,6 @@ public class HabitEventEditMapActivity extends AppCompatActivity {
                                         }
                                     });
                                 } else {
-                                    System.out.println("no 333333333333333333333333333333333");
                                     // sync map
                                     mapFragment.getMapAsync(new OnMapReadyCallback() {
                                         @Override
@@ -316,7 +263,6 @@ public class HabitEventEditMapActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permission, grantResults);
         if (requestCode == REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                System.out.println("no ccccccccccccccccccccccccccccccccccccccc");
                 getLocation();
             }
         } else {
