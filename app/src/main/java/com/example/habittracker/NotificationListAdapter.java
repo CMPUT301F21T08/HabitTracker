@@ -33,7 +33,7 @@ public class NotificationListAdapter extends ArrayAdapter<Personal_info> {
     private String uid; // User unique ID
 
     /**
-     * constructor of this HabitListAdapter
+     * constructor of this NotificationtListAdapter
      */
     public NotificationListAdapter(Context context, ArrayList<Personal_info> users) {
         super(context, 0, users);
@@ -147,7 +147,7 @@ public class NotificationListAdapter extends ArrayAdapter<Personal_info> {
                     String request_uid = Accepted_user.getUid();
                     String request_name = Accepted_user.getName();
 
-                    System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n" + request_name);
+
                     DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child(uid).child("Requests").child("Request_From");
                     reference.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override

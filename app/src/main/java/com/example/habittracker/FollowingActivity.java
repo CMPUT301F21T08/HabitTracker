@@ -6,6 +6,7 @@ import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -36,8 +37,10 @@ public class FollowingActivity extends AppCompatActivity implements SearchFollow
 
 
     private ListView following_ListView;
-    private ArrayList<String> following_list;
-    private ArrayAdapter<String> following_adapter;
+    private ArrayList<Personal_info> following_list;
+    private ArrayAdapter<Personal_info> following_adapter;
+
+
     private FirebaseAuth authentication; // user authentication reference
     private String uid; // User unique ID
     private String email;
@@ -73,9 +76,9 @@ public class FollowingActivity extends AppCompatActivity implements SearchFollow
 
 
         // ListView for the following list
-        following_list = new ArrayList<String>();
+        following_list = new ArrayList<Personal_info>();
 
-        following_adapter = new ArrayAdapter<>(this,R.layout.content_following,following_list);
+        following_adapter = new FollowingListAdapter(this,following_list);
         following_ListView.setAdapter(following_adapter);
 
 
@@ -98,7 +101,7 @@ public class FollowingActivity extends AppCompatActivity implements SearchFollow
                             Personal_info info = (Personal_info) snapshot.getValue(Personal_info.class);
 
                             //****later change the store the entire info class in the list, create a new adatper file to manage changes
-                            following_list.add(info.getName());
+                            following_list.add(info);
                             following_adapter.notifyDataSetChanged();
                         }
 
@@ -112,6 +115,18 @@ public class FollowingActivity extends AppCompatActivity implements SearchFollow
             public void onCancelled(@NonNull DatabaseError error) { }
         });
 
+
+        // set up the OnItemClickListener to allow the user to click on the Users in the following list
+        following_ListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Personal_info taped_user = following_list.get(i);
+                Intent intent = new Intent(FollowingActivity.this, FollowedUserActivity.class);
+                intent.putExtra("User_Uid",taped_user.getUid());
+                startActivity(intent);
+
+            }
+        });
 
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override

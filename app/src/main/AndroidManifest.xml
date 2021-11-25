@@ -44,6 +44,10 @@
             android:exported="true"
             android:parentActivityName=".FollowingActivity"/>
         <activity
+            android:name=".FollowedUserActivity"
+            android:exported="true"
+            android:parentActivityName=".FollowingActivity"/>
+        <activity
             android:name=".SignUpActivity"
             android:exported="true" />
         <activity
