@@ -23,12 +23,6 @@
         android:requestLegacyExternalStorage="true"
         android:theme="@style/Theme.HabitTracker">
 
-<!--        <meta-data android:name="com.google.android.geo.API_KEY"-->
-<!--            android:value="AIzaSyCJvvbjw-Qdfxe_fwAnE9HwVFE9SelWUP0"/>-->
-<!--        <meta-data-->
-<!--            android:name="com.google.android.geo.API_KEY"-->
-<!--            android:value="AIzaSyAmBtiLzRYoM2_uK3ppo0LiiSt0buv2mCA"/>-->
-
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -52,7 +46,16 @@
             android:exported="true" />
         <activity
             android:name=".FollowingActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+        <activity
+            android:name=".NotificationsActivity"
+            android:exported="true"
+            android:parentActivityName=".FollowingActivity"/>
+        <activity
+            android:name=".FollowedUserActivity"
+            android:exported="true"
+            android:parentActivityName=".FollowingActivity"/>
         <activity
             android:name=".SignUpActivity"
             android:exported="true" />

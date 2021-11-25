@@ -7,6 +7,9 @@ public class Personal_info {
     private int age;
     private String localImagePath;
 
+    private String uid;
+
+
     public String getDownloadUrl() {
         return downloadUrl;
     }
@@ -79,5 +82,12 @@ public class Personal_info {
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    public String getUid(){
+        return uid;
+    }
+    public void setUid(String uid){
+        this.uid = uid;
     }
 }
