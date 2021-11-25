@@ -301,8 +301,6 @@ public class HabitEventEditMapActivity extends AppCompatActivity {
                     }
                 }
             };
-
-
             LocationServices.getFusedLocationProviderClient(HabitEventEditMapActivity.this).requestLocationUpdates(mLocationRequest, mLocationCallback, null);
 
         }
