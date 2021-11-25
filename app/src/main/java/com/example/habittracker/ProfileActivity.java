@@ -146,7 +146,7 @@ public class ProfileActivity extends AppCompatActivity {
                     userAge.setText(Integer.toString(personal_info.getAge()));
                     if (personal_info.getDownloadUrl() != null){
                         Uri uri = Uri.parse(personal_info.getDownloadUrl());
-                        Glide.with(ProfileActivity.this).load(uri).into(profile_Image);
+                        Glide.with(getApplicationContext()).load(uri).into(profile_Image);
                     }
                 }
             }
