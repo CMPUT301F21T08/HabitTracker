@@ -1,7 +1,6 @@
 package com.example.habittracker;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -9,10 +8,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -22,6 +17,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 
 public class FollowedUserActivity extends AppCompatActivity {
     private Button UnsubBtn;
@@ -58,7 +57,7 @@ public class FollowedUserActivity extends AppCompatActivity {
 
         // create the listView using the habit arrayList
         habitArrayList = new ArrayList<Habit>();
-        habitArrayAdapter = new HabitListAdapter(this, habitArrayList);
+        habitArrayAdapter = new FollowedHabitListAdapter(this, habitArrayList);
         UserHabitsListView.setAdapter(habitArrayAdapter);
 
         // get all the habit the user has from the database

@@ -5,19 +5,14 @@
  */
 package com.example.habittracker;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 
-import com.example.habittracker.listener.NavigationBarClickListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -31,7 +26,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 public class MainPageActivity extends AppCompatActivity {
     private FirebaseAuth authentication; // user authentication reference
@@ -93,6 +90,7 @@ public class MainPageActivity extends AppCompatActivity {
                 toDoList.clear();
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()){
                     Habit habit = (Habit) dataSnapshot.getValue(Habit.class);
+
                     if (habit.getDoneTime() == habit.getFrequency()) {
                         habit.setNotDone(false);
                     }

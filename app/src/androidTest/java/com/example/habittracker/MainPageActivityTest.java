@@ -24,7 +24,7 @@ import androidx.test.rule.ActivityTestRule;
 public class MainPageActivityTest{
     private Solo solo;
 
-    public static final float NAVIGATION_X_HABIT = 0;
+    public static final float  NAVIGATION_X_HABIT = 0;
     public static final float NAVIGATION_X_HABITEVENT = 216;
     public static final float NAVIGATION_X_HOME = 432;
     public static final float NAVIGATION_X_FOLLOWING = 648;
@@ -36,8 +36,8 @@ public class MainPageActivityTest{
 
 
     @Rule
-    public ActivityTestRule<MainPageActivity> rule =
-            new ActivityTestRule<>(MainPageActivity.class, true, true);
+    public ActivityTestRule<LogInActivity> rule =
+            new ActivityTestRule<>(LogInActivity.class, true, true);
 
     /**
      * Runs before all tests and creates solo instance.
@@ -48,6 +48,11 @@ public class MainPageActivityTest{
         solo = new Solo(InstrumentationRegistry.getInstrumentation(), rule.getActivity());
     }
 
+    public void login() {
+        solo.enterText((EditText) solo.getView(R.id.login_useremail_editText), "testing@gmail.com");
+        solo.enterText((EditText) solo.getView(R.id.login_password_editText), "Password1");
+        solo.clickOnButton("Login");
+    }
 
     /**
      * Gets the Activity
@@ -64,6 +69,8 @@ public class MainPageActivityTest{
      *Check that we go to the correct pages when we click Navigation Bar.
      */
     public void goToHabitActivity(){
+        // first we login
+        login();
         //assert that we are in MainPageActivity
         solo.assertCurrentActivity("Wrong Activity", MainPageActivity.class);
         solo.clickOnScreen(NAVIGATION_X_HABIT, NAVIGATION_Y);
@@ -72,6 +79,7 @@ public class MainPageActivityTest{
 
     @Test
     public void goToHabitEventActivity(){
+        login();
         //assert that we are in MainPageActivity
         solo.assertCurrentActivity("Wrong Activity", MainPageActivity.class);
         solo.clickOnScreen(NAVIGATION_X_HABITEVENT, NAVIGATION_Y);
@@ -79,6 +87,7 @@ public class MainPageActivityTest{
     }
     @Test
     public void goToHomeActivity(){
+        login();
         //assert that we are in MainPageActivity
         solo.assertCurrentActivity("Wrong Activity", MainPageActivity.class);
         solo.clickOnScreen(NAVIGATION_X_HOME, NAVIGATION_Y);
@@ -87,6 +96,7 @@ public class MainPageActivityTest{
 
     @Test
     public void goToFollowingActivity(){
+        login();
         //assert that we are in MainPageActivity
         solo.assertCurrentActivity("Wrong Activity", MainPageActivity.class);
         solo.clickOnScreen(NAVIGATION_X_FOLLOWING, NAVIGATION_Y);
@@ -95,6 +105,7 @@ public class MainPageActivityTest{
 
     @Test
     public void goToSettingsActivity(){
+        login();
         //assert that we are in MainPageActivity
         solo.assertCurrentActivity("Wrong Activity", MainPageActivity.class);
         solo.clickOnScreen(NAVIGATION_X_SETTINGS, NAVIGATION_Y);
@@ -123,8 +134,8 @@ public class MainPageActivityTest{
      * We will test a habit with daily freq
      */
     public void checkListAdded() throws AssertionError{
+        login();
         solo.assertCurrentActivity("Wrong Activity", MainPageActivity.class);
-
         // go to HabitListActivity
         solo.clickOnScreen(NAVIGATION_X_HABIT, NAVIGATION_Y);
         solo.assertCurrentActivity("Wrong Activity", HabitListActivity.class);

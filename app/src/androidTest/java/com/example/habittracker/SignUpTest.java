@@ -34,9 +34,9 @@ public class SignUpTest{
     }
 
     /**
-    * Gets the Activity
-    * @throws Exception
-    */
+     * Gets the Activity
+     * @throws Exception
+     */
     @Test
     public void start() throws Exception{
         Activity activity = rule.getActivity();
@@ -48,16 +48,24 @@ public class SignUpTest{
      * Creates user with userName 'Test', email 'test@gmail.com', password '123456'
      */
     public void checkSignup(){
-        //checking that its the correct activty
-        solo.assertCurrentActivity("Wrong Activity", SignUpActivity.class);
-        solo.enterText((EditText) solo.getView(R.id.signUp_userName_EditView), "Test");
-        solo.enterText((EditText) solo.getView(R.id.signUp_userEmail_EditView), "test@gmail.com");
-        solo.enterText((EditText) solo.getView(R.id.signUp_passWord_EditView), "Password");
-        solo.enterText((EditText) solo.getView(R.id.signUp_confirm_passWord_EditView), "Password");
-        solo.clickOnButton("Create Account");
+        signUp();
         // expect to be successful and be directed to the the loginAcvitvity page.
         // now checking if we are in the LoginActivity page
         solo.assertCurrentActivity("Wrong Activity", LogInActivity.class);
+        // logging in should work now
+        solo.enterText((EditText) solo.getView(R.id.login_useremail_editText), "testing@gmail.com");
+        solo.enterText((EditText) solo.getView(R.id.login_password_editText), "Password1");
+        solo.clickOnButton("Login");
+    }
+
+    public void signUp(){
+        //checking that its the correct activty
+        solo.assertCurrentActivity("Wrong Activity", SignUpActivity.class);
+        solo.enterText((EditText) solo.getView(R.id.signUp_userName_EditView), "Test");
+        solo.enterText((EditText) solo.getView(R.id.signUp_userEmail_EditView), "testing@gmail.com");
+        solo.enterText((EditText) solo.getView(R.id.signUp_passWord_EditView), "Password1");
+        solo.enterText((EditText) solo.getView(R.id.signUp_confirm_passWord_EditView), "Password1");
+        solo.clickOnButton("Create Account");
     }
 
 
