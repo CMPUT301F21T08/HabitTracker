@@ -49,7 +49,7 @@ public class Habit implements Serializable {
     // Unique ID for each habit
     private String UUID;
     // attribute that indicates whether the habit is public or private
-    private boolean publicHabit = false;
+    private boolean publicHabit;
     // attribute the stores the number of times that the habit need to be done
     private int needCompletion = 0;
     // attribute used to order the habit in the habit list
@@ -69,7 +69,7 @@ public class Habit implements Serializable {
      * @param frequencyType the frequency type of the habit
      * @param occurrenceDay the occurrence day of the habit
      */
-    public Habit(String habitTitle, String habitReason, String habitContent, String startDate, int frequency, String frequencyType, ArrayList<Integer> occurrenceDay, String uuid, int index){
+    public Habit(String habitTitle, String habitReason, String habitContent, String startDate, int frequency, String frequencyType, ArrayList<Integer> occurrenceDay, String uuid, int index, boolean publicHabit){
         this.habitTitle = habitTitle;
         this.habitReason = habitReason;
         this.habitContent = habitContent;
@@ -84,6 +84,7 @@ public class Habit implements Serializable {
         this.lastDate = "empty";
         this.UUID = uuid;
         this.index = index;
+        this.publicHabit = publicHabit;
     }
 
     /**

@@ -39,10 +39,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class HabitEditActivity extends AppCompatActivity implements AddWeekDaysFragment.OnFragmentInteractionListener {
-    // a public variable use to send the occurrence day of habit to HabitEditConfirmListener
+    // public variables use to send the occurrence day of habit to HabitEditConfirmListener
     public static ArrayList<Integer> value_of_OccurrenceDate;
+    public static boolean publicHabit;
     // variable that storing the Habit object
     private Habit habit;
     // variable of views
@@ -128,7 +130,7 @@ public class HabitEditActivity extends AppCompatActivity implements AddWeekDaysF
         disclose.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                habit.setPublicHabit(isChecked);
+                publicHabit = isChecked;
             }
         });
 
@@ -204,7 +206,8 @@ public class HabitEditActivity extends AppCompatActivity implements AddWeekDaysF
         backBtn.setOnClickListener(backBtnOnclickListener);
 
         // set up the backBtn to upload the habit to the database
-        View.OnClickListener confirmBtnOnclickListener = new HabitEditConfirmListener(getApplicationContext(), this, title, content, reason, date, frequency, frequencyType, habit, authentication, uid, newObject, index);
+        View.OnClickListener confirmBtnOnclickListener;
+        confirmBtnOnclickListener = new HabitEditConfirmListener(getApplicationContext(), this, title, content, reason, date, frequency, frequencyType, habit, authentication, uid, newObject, index);
         confirmBtn.setOnClickListener(confirmBtnOnclickListener);
     }
 

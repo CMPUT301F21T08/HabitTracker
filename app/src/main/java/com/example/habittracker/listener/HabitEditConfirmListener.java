@@ -1,6 +1,7 @@
 package com.example.habittracker.listener;
 
 import static com.example.habittracker.HabitEditActivity.value_of_OccurrenceDate;
+import static com.example.habittracker.HabitEditActivity.publicHabit;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -41,6 +42,7 @@ public class HabitEditConfirmListener implements View.OnClickListener{
     private EditText date;
     private EditText frequency;
     private TextView frequencyType;
+
 
     // habit object
     private Habit habit;
@@ -95,6 +97,7 @@ public class HabitEditConfirmListener implements View.OnClickListener{
                 habit.setHabitContent(content.getText().toString());
                 habit.setHabitReason(reason.getText().toString());
                 habit.setOccurrenceDay(value_of_OccurrenceDate);
+                habit.setPublicHabit(publicHabit);
                 habit.calculateTimes();
 
                 // upload the habit to the database
@@ -118,7 +121,7 @@ public class HabitEditConfirmListener implements View.OnClickListener{
                 String value_of_reason = reason.getText().toString();
                 // vlaue_of_occurrence is a global variable
                 String uuid = UUID.randomUUID().toString(); // Generate the unique uuid for each habit
-                habit = new Habit(value_of_title, value_of_reason, value_of_content, value_of_startDate, value_of_frequency, value_of_frequencyType, value_of_OccurrenceDate, uuid, index);
+                habit = new Habit(value_of_title, value_of_reason, value_of_content, value_of_startDate, value_of_frequency, value_of_frequencyType, value_of_OccurrenceDate, uuid, index, publicHabit);
                 // adding habit into the firebase
                 HashMap<String, Object> map = new HashMap<>();
                 map.put(habit.getUUID(),habit);

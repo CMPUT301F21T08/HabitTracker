@@ -23,7 +23,7 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="332dp"
+                    android:layout_width="304dp"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:text="@string/habit_title"
