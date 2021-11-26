@@ -82,7 +82,7 @@ public class SearchFollowingFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
         builder.setView(view);
-        builder.setTitle("Add user by email");
+        builder.setTitle("Send request to user by email");
         builder.setNegativeButton("Cancel", null);
         builder.setPositiveButton("Send Request", new DialogInterface.OnClickListener() {
             @Override
