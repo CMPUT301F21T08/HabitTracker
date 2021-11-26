@@ -51,9 +51,7 @@ public class HabitListActivity extends AppCompatActivity {
     private FloatingActionButton addButton;
     private HabitListAdapter habitAdapter;
     private ArrayList<Habit> habitList;
-    public static int amount;
-    private Query query;
-    private ValueEventListener queryValueListener;
+    private int amount;
 
     private FirebaseAuth authentication; // user authentication reference
     private String uid; // User unique ID
@@ -100,13 +98,8 @@ public class HabitListActivity extends AppCompatActivity {
         habitAdapter.setOnItemClickListener(onItemClickListener);
         ItemTouchHelper touchHelper = new ItemTouchHelper(new ItemTouchHelper.Callback() {
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                int fromPosition = viewHolder.getAdapterPosition();
-                int toPosition = target.getAdapterPosition();
                 Collections.swap(habitList, viewHolder.getAdapterPosition(), target.getAdapterPosition());
                 habitAdapter.notifyItemMoved(viewHolder.getAdapterPosition(), target.getAdapterPosition());
-//                Habit temp = habitList.get(fromPosition);
-//                habitList.set(fromPosition, habitList.get(toPosition));
-//                habitList.set(toPosition, temp);
                 for(int i = 0; i < habitList.size(); i++){
                     Habit habit = habitList.get(i);
                     habit.setIndex(i);
@@ -150,6 +143,7 @@ public class HabitListActivity extends AppCompatActivity {
                         i = -1;
                     }
                 }
+                amount = habitList.size();
                 habitAdapter.notifyDataSetChanged();
             }
             @Override
@@ -157,29 +151,6 @@ public class HabitListActivity extends AppCompatActivity {
                 System.out.println("Read Data Failed");
             }
         });
-
-//        // get all the habit the user has from the database
-//        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child(uid).child("Habit");
-//        query = reference.orderByChild("index");
-//        queryValueListener = new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                habitList.clear();
-//                // using the habits that retrieve from the database to set upt listView
-//                for (DataSnapshot dataSnapshot : snapshot.getChildren()){
-//
-//                    Habit hab = (Habit) dataSnapshot.getValue(Habit.class);
-//                    habitList.add(hab);
-//                }
-//                amount = habitList.size();
-//                habitAdapter.notifyDataSetChanged();
-//            }
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//                System.out.println("Read Data Failed");
-//            }
-//        };
-//        query.addListenerForSingleValueEvent(queryValueListener);
 
 
 
@@ -196,7 +167,6 @@ public class HabitListActivity extends AppCompatActivity {
         // set up the OnClickListener to allow user to add a new habit
         //View.OnClickListener addBtnOnclickListener = new HabitListAddListener(getApplicationContext(), this, amount);
         //addButton.setOnClickListener(addBtnOnclickListener);
-
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -208,6 +178,7 @@ public class HabitListActivity extends AppCompatActivity {
                     FirebaseDatabase.getInstance().getReference().child(uid).child("Habit").updateChildren(map);
                 }
                 Intent intent = new Intent(getApplicationContext(), HabitEditActivity.class);
+                intent.putExtra("amount", amount);
                 intent.putExtra("action", "add");
                 startActivity(intent);
                 finish();

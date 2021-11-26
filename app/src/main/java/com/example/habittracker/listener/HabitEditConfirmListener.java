@@ -87,6 +87,7 @@ public class HabitEditConfirmListener implements View.OnClickListener{
                 }
 
                 // use setter method of the attributes to renew the habit
+                habit.reset();
                 habit.setHabitTitle(title.getText().toString());
                 habit.setFrequency(Integer.parseInt(frequency.getText().toString()));
                 habit.setFrequencyType(frequencyType.getText().toString());
@@ -94,6 +95,7 @@ public class HabitEditConfirmListener implements View.OnClickListener{
                 habit.setHabitContent(content.getText().toString());
                 habit.setHabitReason(reason.getText().toString());
                 habit.setOccurrenceDay(value_of_OccurrenceDate);
+                habit.calculateTimes();
 
                 // upload the habit to the database
                 HashMap<String, Object> map = new HashMap<>();

@@ -5,6 +5,7 @@
 package com.example.habittracker;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -72,7 +73,7 @@ public class HabitListAdapter extends RecyclerView.Adapter<HabitListAdapter.Habi
                 habit.setPublicHabit(isChecked);
             }
         });
-
+        progression.getProgressDrawable().setColorFilter(Color.RED, android.graphics.PorterDuff.Mode.SRC_IN);
         progression.setMax(100);
         if(habit.getNeedCompletion() == 0){
             progression.setProgress(0);
@@ -103,28 +104,5 @@ public class HabitListAdapter extends RecyclerView.Adapter<HabitListAdapter.Habi
             itemView.setOnClickListener(onItemClickListener);
         }
     }
-
-//    /**
-//     * Process the view for each list element for habit event list
-//     * @param position
-//     * @param convertView
-//     * @param parent
-//     * @return
-//     */
-//    @NonNull
-//    @Override
-//    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-//        View view = convertView;
-//        if (view == null) {
-//            view = LayoutInflater.from(context).inflate(R.layout.content_habit, parent, false);
-//        }
-//
-//        Habit habit = habitArrayList.get(position);
-//
-//        TextView habitTitleView = view.findViewById(R.id.allHabitsContent_habitContent_textView);
-//        habitTitleView.setText(habit.getHabitTitle());
-//
-//        return view;
-//    }
 
 }

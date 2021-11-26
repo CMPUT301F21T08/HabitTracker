@@ -29,6 +29,9 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/allHabitsContent_habitContent_textView"
         android:max="100"
+        android:indeterminate="false"
+        android:indeterminateTintMode="src_atop"
+        android:indeterminateTint="@color/purple_700"
         />
 
 
