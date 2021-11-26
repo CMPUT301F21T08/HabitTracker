@@ -50,9 +50,10 @@ public class HabitEditConfirmListener implements View.OnClickListener{
     private String uid; // User unique ID
     // result code
     private int newObject;
+    private int index;
 
 
-    public HabitEditConfirmListener(Context context, Activity activity, EditText title, EditText content, EditText reason, EditText date, EditText frequency, TextView frequencyType, Habit habit, FirebaseAuth authentication, String uid, int newObject){
+    public HabitEditConfirmListener(Context context, Activity activity, EditText title, EditText content, EditText reason, EditText date, EditText frequency, TextView frequencyType, Habit habit, FirebaseAuth authentication, String uid, int newObject, int index){
         this.context = context;
         this.activity = activity;
         this.title = title;
@@ -65,6 +66,7 @@ public class HabitEditConfirmListener implements View.OnClickListener{
         this.authentication = authentication;
         this.uid = uid;
         this.newObject = newObject;
+        this.index = index;
     }
 
     @Override
@@ -85,6 +87,7 @@ public class HabitEditConfirmListener implements View.OnClickListener{
                 }
 
                 // use setter method of the attributes to renew the habit
+                habit.reset();
                 habit.setHabitTitle(title.getText().toString());
                 habit.setFrequency(Integer.parseInt(frequency.getText().toString()));
                 habit.setFrequencyType(frequencyType.getText().toString());
@@ -92,6 +95,7 @@ public class HabitEditConfirmListener implements View.OnClickListener{
                 habit.setHabitContent(content.getText().toString());
                 habit.setHabitReason(reason.getText().toString());
                 habit.setOccurrenceDay(value_of_OccurrenceDate);
+                habit.calculateTimes();
 
                 // upload the habit to the database
                 HashMap<String, Object> map = new HashMap<>();
@@ -114,7 +118,7 @@ public class HabitEditConfirmListener implements View.OnClickListener{
                 String value_of_reason = reason.getText().toString();
                 // vlaue_of_occurrence is a global variable
                 String uuid = UUID.randomUUID().toString(); // Generate the unique uuid for each habit
-                habit = new Habit(value_of_title, value_of_reason, value_of_content, value_of_startDate, value_of_frequency, value_of_frequencyType, value_of_OccurrenceDate, uuid);
+                habit = new Habit(value_of_title, value_of_reason, value_of_content, value_of_startDate, value_of_frequency, value_of_frequencyType, value_of_OccurrenceDate, uuid, index);
                 // adding habit into the firebase
                 HashMap<String, Object> map = new HashMap<>();
                 map.put(habit.getUUID(),habit);

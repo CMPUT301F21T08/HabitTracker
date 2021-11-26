@@ -19,6 +19,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -54,6 +56,7 @@ public class HabitEditActivity extends AppCompatActivity implements AddWeekDaysF
     private EditText frequency;
     private TextView frequencyType;
     private Spinner spinner;
+    private CheckBox disclose;
     // variable used to set up a AlertDialog
     private AlertDialog.Builder builder;
 
@@ -78,6 +81,7 @@ public class HabitEditActivity extends AppCompatActivity implements AddWeekDaysF
     // result code
     private int original= 44;
     private int newObject= 33;
+    private int index;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,12 +109,14 @@ public class HabitEditActivity extends AppCompatActivity implements AddWeekDaysF
         if (action.equals("edit")){
             getSupportActionBar().setTitle("Habit - Edit");
             habit = (Habit) getIntent().getExtras().getSerializable("habit");
+            index = habit.getIndex();
             // input the information of habit to the view in the activity
             initView(habit);
             frequencyType = findViewById(R.id.frequency_type);
             value_of_OccurrenceDate = habit.getOccurrenceDay();
         } else{
             getSupportActionBar().setTitle("Habit - Add");
+            index = getIntent().getIntExtra("amount", 0);
         }
 
         // firebase connection
@@ -118,6 +124,13 @@ public class HabitEditActivity extends AppCompatActivity implements AddWeekDaysF
         if (authentication.getCurrentUser() != null){
             uid = authentication.getCurrentUser().getUid();
         }
+
+        disclose.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                habit.setPublicHabit(isChecked);
+            }
+        });
 
         // this is a TextWatcher used to avoid user entering 0 or number that start with 0 in the EditText
         frequency.addTextChangedListener(new TextWatcher() {
@@ -191,7 +204,7 @@ public class HabitEditActivity extends AppCompatActivity implements AddWeekDaysF
         backBtn.setOnClickListener(backBtnOnclickListener);
 
         // set up the backBtn to upload the habit to the database
-        View.OnClickListener confirmBtnOnclickListener = new HabitEditConfirmListener(getApplicationContext(), this, title, content, reason, date, frequency, frequencyType, habit, authentication, uid, newObject);
+        View.OnClickListener confirmBtnOnclickListener = new HabitEditConfirmListener(getApplicationContext(), this, title, content, reason, date, frequency, frequencyType, habit, authentication, uid, newObject, index);
         confirmBtn.setOnClickListener(confirmBtnOnclickListener);
     }
 
@@ -212,7 +225,7 @@ public class HabitEditActivity extends AppCompatActivity implements AddWeekDaysF
         date = findViewById(R.id.dateInput);
         frequency = findViewById(R.id.frequencyInput);
         frequencyType = findViewById(R.id.frequency_type);
-
+        disclose = findViewById(R.id.disclose_checkBox_edit);
     }
 
     // input all information of the existing habit in the corresponding view
@@ -223,6 +236,9 @@ public class HabitEditActivity extends AppCompatActivity implements AddWeekDaysF
         content.setText(habit.getHabitContent());
         reason.setText(habit.getHabitReason());
         frequencyType.setText(habit.getFrequencyType());
+        if(habit.isPublicHabit()){
+            disclose.setChecked(true);
+        }
         setView();
     }
 
@@ -249,15 +265,7 @@ public class HabitEditActivity extends AppCompatActivity implements AddWeekDaysF
                 new AddWeekDaysFragment().show(getSupportFragmentManager(),"CHOOSE_OCCURRENCE_DATE");
                 break;
             case 3:
-                // to do later and send notification message to let user know
-                AlertDialog alert;
-                alert = builder
-                        .setTitle("Message:")
-                        .setMessage("Please choose another frequency, monthly frequency type is currently unsupported. Sorry!")
-                        .setNegativeButton("return", null).create();
-                alert.show();
-                frequency.setText("");
-                spinner.setSelection(0);
+                DateDialog();
                 break;
         }
     }
@@ -280,5 +288,30 @@ public class HabitEditActivity extends AppCompatActivity implements AddWeekDaysF
             frequency.setText(text);
             frequency = findViewById(R.id.frequencyInput);
         }
+    }
+
+    public void DateDialog(){
+        Calendar cal;
+        int day;
+        int month;
+        int year;
+        cal = Calendar.getInstance();
+        day = cal.get(Calendar.DAY_OF_MONTH);
+        month = cal.get(Calendar.MONTH);
+        year = cal.get(Calendar.YEAR);
+        DatePickerDialog.OnDateSetListener listener=new DatePickerDialog.OnDateSetListener() {
+
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear,int dayOfMonth)
+            {
+                value_of_OccurrenceDate = new ArrayList<Integer>();
+                value_of_OccurrenceDate.add(dayOfMonth);
+                frequency.setText("1");
+                frequency = findViewById(R.id.frequencyInput);
+            }};
+
+        DatePickerDialog dpDialog=new DatePickerDialog(this, listener, year, month, day);
+        dpDialog.show();
+
     }
 }

@@ -52,6 +52,7 @@ public class MainPageActivity extends AppCompatActivity {
     private int month;
     // variable stores the current day as format "MM-dd"
     private String currentDate;
+    private int year;
 
 
     BottomNavigationView bottomNavigationView;
@@ -67,9 +68,10 @@ public class MainPageActivity extends AppCompatActivity {
         calendar.setTime(date);
         weekDay = calendar.get(Calendar.DAY_OF_WEEK);
         day_of_month = calendar.get(Calendar.DAY_OF_MONTH);
+        year = calendar.get(Calendar.YEAR);
         month = calendar.get(Calendar.MONTH) + 1;
         // transfer the current day information into format "MM-dd"
-        currentDate = String.valueOf(month) + "-" + String.valueOf(day_of_month);
+        currentDate = String.valueOf(year) + "-" + String.valueOf(month) + "-" + String.valueOf(day_of_month);
 
         // firebase connection
         authentication = FirebaseAuth.getInstance();
@@ -121,10 +123,6 @@ public class MainPageActivity extends AppCompatActivity {
                             }
                             break;
                     }
-//                     upload the information to database to update all habit
-                    HashMap<String, Object> map = new HashMap<>();
-                    map.put(habit.getUUID(),habit);
-                    FirebaseDatabase.getInstance().getReference().child(uid).child("Habit").updateChildren(map);
                 }
                 toDoAdapter.notifyDataSetChanged();
             }
@@ -149,12 +147,19 @@ public class MainPageActivity extends AppCompatActivity {
         bottomNavigationView = findViewById(R.id.bottom_navigation_event);
         bottomNavigationView.setSelectedItemId(R.id.navigation_homePage);
 
-        NavigationBarView.OnItemSelectedListener bottomNavigationViewOnItemSelectedListener = new NavigationBarClickListener(getApplicationContext(),this);
-        bottomNavigationView.setOnItemSelectedListener(bottomNavigationViewOnItemSelectedListener);
+        //NavigationBarView.OnItemSelectedListener bottomNavigationViewOnItemSelectedListener = new NavigationBarClickListener(getApplicationContext(),this);
+        //bottomNavigationView.setOnItemSelectedListener(bottomNavigationViewOnItemSelectedListener);
 
-        /*bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                for(int i = 0; i < toDoList.size(); i++){
+                    Habit habit = toDoList.get(i);
+                    // upload the information to database to update all habit
+                    HashMap<String, Object> map = new HashMap<>();
+                    map.put(habit.getUUID(),habit);
+                    FirebaseDatabase.getInstance().getReference().child(uid).child("Habit").updateChildren(map);
+                }
                 switch (item.getItemId()) {
                     case R.id.navigation_habit:
                         Intent intent1 = new Intent(MainPageActivity.this, HabitListActivity.class);
@@ -163,8 +168,6 @@ public class MainPageActivity extends AppCompatActivity {
                         return true;
                     case R.id.navigation_habitEvent:
                         Intent intent2 = new Intent(MainPageActivity.this, HabitEventListActivity.class);
-
-
                         intent2.putExtra("StartMode", "normal");
                         startActivity(intent2);
                         finish();
@@ -184,7 +187,7 @@ public class MainPageActivity extends AppCompatActivity {
                 }
                 return false;
             }
-        });*/
+        });
     }
 
     // function used to go to the Habit description page

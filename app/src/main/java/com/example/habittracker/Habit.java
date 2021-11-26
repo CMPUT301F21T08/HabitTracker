@@ -6,8 +6,14 @@
 
 package com.example.habittracker;
 
+
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 
 /**
@@ -42,6 +48,15 @@ public class Habit implements Serializable {
     private ArrayList<String> eventList = new ArrayList<>();
     // Unique ID for each habit
     private String UUID;
+    // attribute that indicates whether the habit is public or private
+    private boolean publicHabit = false;
+    // attribute the stores the number of times that the habit need to be done
+    private int needCompletion = 0;
+    // attribute used to order the habit in the habit list
+    private int index;
+    private boolean addToday = false;
+    private String recordDate;
+
 
 
     /**
@@ -54,19 +69,21 @@ public class Habit implements Serializable {
      * @param frequencyType the frequency type of the habit
      * @param occurrenceDay the occurrence day of the habit
      */
-    public Habit(String habitTitle, String habitReason, String habitContent, String startDate, int frequency, String frequencyType, ArrayList<Integer> occurrenceDay, String uuid){
+    public Habit(String habitTitle, String habitReason, String habitContent, String startDate, int frequency, String frequencyType, ArrayList<Integer> occurrenceDay, String uuid, int index){
         this.habitTitle = habitTitle;
         this.habitReason = habitReason;
         this.habitContent = habitContent;
         this.startDate = startDate;
+        this.recordDate = startDate;
         this.frequency = frequency;
         this.frequencyType = frequencyType;
         this.occurrenceDay = occurrenceDay;
         this.number_of_completion = 0;
         this.notDone = true;
         this.doneTime = 0;
-        this.lastDate = "null";
+        this.lastDate = "empty";
         this.UUID = uuid;
+        this.index = index;
     }
 
     /**
@@ -87,7 +104,9 @@ public class Habit implements Serializable {
             this.notDone = true;
             this.doneTime = 0;
             this.lastDate = currentDate;
+            calculateTimes();
         }
+
     }
 
 
@@ -224,7 +243,7 @@ public class Habit implements Serializable {
     // this if statement will update the notDone attribute when user modifies the frequency and frequency type of the habit
         // when the new frequency type is "per week" or "per month", if user have already done more than once for the habit,
         // then set the habit as done since these two types of frequency can only occur one time per day
-        if(frequencyType.equals("per week") || frequencyType.equals("per month")){
+        if(frequencyType.equals("per week") || frequencyType.equals("per month") ){
             if(this.doneTime >= 1){
                 this.notDone = false;
             }
@@ -343,5 +362,140 @@ public class Habit implements Serializable {
      */
     public void setUUID(String UUID) {
         this.UUID = UUID;
+    }
+
+    public boolean isPublicHabit() {
+        return publicHabit;
+    }
+
+    public void setPublicHabit(boolean publicHabit) {
+        this.publicHabit = publicHabit;
+    }
+
+    public int getNeedCompletion() {
+        return needCompletion;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
+    public String getRecordDate() {
+        return recordDate;
+    }
+
+    public void calculateTimes(){
+        SimpleDateFormat myFormat = new SimpleDateFormat("yyyy-MM-dd");
+        if(this.frequencyType.equals("per day")){
+            try {
+                Date date1 = myFormat.parse(this.recordDate);
+                Date date2 = myFormat.parse(this.lastDate);
+                long diff = date2.getTime() - date1.getTime();
+                int days = (int) (diff / (1000*60*60*24)) + 1;
+                this.needCompletion = this.needCompletion + days * this.frequency;
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        } else if(this.frequencyType.equals("per week")){
+            try {
+                Date date1 = myFormat.parse(this.recordDate);
+                Date date2 = myFormat.parse(this.lastDate);
+                for (int i = 0; i < this.occurrenceDay.size(); i++ ){
+                    this.needCompletion = this.needCompletion + calculateWeekdays(date1, date2, this.occurrenceDay.get(i));
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        } else {
+            try {
+                Date date1 = myFormat.parse(this.recordDate);
+                Date date2 = myFormat.parse(this.lastDate);
+                this.needCompletion = this.needCompletion + calculateMonthdays(date1, date2, this.occurrenceDay.get(0));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        try {
+            this.recordDate = this.lastDate;
+            Date time = myFormat.parse(this.recordDate);
+            Calendar record = Calendar.getInstance();
+            record.setTime(time);
+            record.add(Calendar.DAY_OF_MONTH, 1);
+            this.recordDate = myFormat.format(record.getTime());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private int calculateWeekdays(Date start, Date end, int i){
+        Calendar startCal = Calendar.getInstance();
+        startCal.setTime(start);
+        Calendar endCal = Calendar.getInstance();
+        endCal.setTime(end);
+        int days = 0;
+        if (startCal.getTimeInMillis() > endCal.getTimeInMillis()) {
+            return days;
+        }
+
+        while (startCal.getTimeInMillis() <= endCal.getTimeInMillis()){
+            if (startCal.get(Calendar.DAY_OF_WEEK) == i) {
+                ++days;
+            }
+            startCal.add(Calendar.DAY_OF_MONTH, 1);
+        }
+        return days;
+    }
+
+    private int calculateMonthdays(Date start, Date end, int i){
+        Calendar startCal = Calendar.getInstance();
+        startCal.setTime(start);
+        Calendar endCal = Calendar.getInstance();
+        endCal.setTime(end);
+        int days = 0;
+        if (startCal.getTimeInMillis() > endCal.getTimeInMillis()) {
+            return days;
+        }
+
+        while (startCal.getTimeInMillis() <= endCal.getTimeInMillis()){
+            if (startCal.get(Calendar.DAY_OF_MONTH) == i) {
+                ++days;
+            }
+            startCal.add(Calendar.DAY_OF_MONTH, 1);
+        }
+        return days;
+    }
+
+
+    public void reset(){
+        SimpleDateFormat myFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar current = Calendar.getInstance();
+        try{
+            Date time = myFormat.parse(lastDate);
+            current.setTime(time);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        if(frequencyType.equals("per week") ){
+            if(this.occurrenceDay.contains(current.get(Calendar.DAY_OF_WEEK))){
+                this.needCompletion--;
+                this.recordDate = this.lastDate;
+            }
+
+        }
+        if (frequencyType.equals("per month")){
+            if(this.occurrenceDay.contains(current.get(Calendar.DAY_OF_MONTH))){
+                this.needCompletion--;
+                this.recordDate = this.lastDate;
+            }
+
+        }
+        if(frequencyType.equals("per day")){
+            this.needCompletion = this.needCompletion - this.frequency;
+            this.recordDate = this.lastDate;
+        }
     }
 }
