@@ -1,16 +1,16 @@
 package com.example.habittracker;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class profileTest {
 
     public Personal_info info;
-    @Before
+
+    @BeforeEach
     public void setup(){
-        Personal_info info = new Personal_info("Test","test@gmail.com","Others",'1');
+        info = new Personal_info("Test","test@gmail.com","Others",1);
     }
 
     // getters test

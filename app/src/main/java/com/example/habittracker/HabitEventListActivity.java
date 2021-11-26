@@ -16,6 +16,8 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import com.example.habittracker.listener.EventListClickListener;
+import com.example.habittracker.listener.NavigationBarClickListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -29,7 +31,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class HabitEventListActivity extends AppCompatActivity {
-
+    // UI view objects
     ListView habitEventListView;
     ArrayAdapter<HabitEvent> habitEventAdapter;
     ArrayList<HabitEvent> habitEventList;
@@ -39,11 +41,7 @@ public class HabitEventListActivity extends AppCompatActivity {
     HabitEvent passedEvent;
 
     private FirebaseAuth authentication;
-    private String uid;
-
-    // test
-    HabitEvent newEvent;
-
+    private String uid; // unique id for each user
 
 
     @Override
@@ -51,6 +49,7 @@ public class HabitEventListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_habit_event_list);
 
+//----------------------------UI Setup----------------------------------------------------------------------
         getSupportActionBar().setTitle("Habit Events");
 
         habitEventListView = findViewById(R.id.lv_habit_event);
@@ -71,18 +70,6 @@ public class HabitEventListActivity extends AppCompatActivity {
         }
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child(uid).child("HabitEvent");
 
-//----------------------------------Get some test sample (test only) -----------------------------------------------
-
-
-//        String habitEventName = "habit 3" ;
-//
-//        newEvent = new HabitEvent(habitEventName, "comment 1", "", "");  // Comment can be empty, hence no error checking
-//
-//        HashMap<String, Object> map = new HashMap<>();
-//        map.put(newEvent.getEventTitle(),newEvent);
-//
-//        FirebaseDatabase.getInstance().getReference().child(uid).child("HabitEvent").updateChildren(map);
-//
 
 //----------------------------------update listView -----------------------------------------------
 
@@ -106,12 +93,18 @@ public class HabitEventListActivity extends AppCompatActivity {
 
 //--------------------------------------------- Process List View-----------------------------------------------------------------------------------------------------
 
-        habitEventListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                goToEventEditActivity(i);
-            }
-        });
+
+//  /*-------
+        AdapterView.OnItemClickListener habitEventListListener = new EventListClickListener(getApplicationContext(),this,habitEventAdapter);
+        habitEventListView.setOnItemClickListener(habitEventListListener);
+//-------------------*/
+
+//        habitEventListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+//                goToEventEditActivity(i);
+//            }
+//        });
 
 
 
@@ -119,35 +112,42 @@ public class HabitEventListActivity extends AppCompatActivity {
         bottomNavigationView = findViewById(R.id.bottom_navigation_event);
         bottomNavigationView.setSelectedItemId(R.id.navigation_habitEvent);
 
-        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.navigation_habit:
-                        Intent intent1 = new Intent(HabitEventListActivity.this, HabitListActivity.class);
-                        startActivity(intent1);
-                        finish();
-                        return true;
-                    case R.id.navigation_homePage:
-                        Intent intent2 = new Intent(HabitEventListActivity.this, MainPageActivity.class);
-                        intent2.putExtra("StartMode", "normal");
-                        startActivity(intent2);
-                        finish();
-                        return true;
-                    case R.id.navigation_following:
-                        Intent intent3 = new Intent(HabitEventListActivity.this, FollowingActivity.class);
-                        startActivity(intent3);
-                        finish();
-                        return true;
-                    case R.id.navigation_settings:
-                        Intent intent4 = new Intent(HabitEventListActivity.this, ProfileActivity.class);
-                        startActivity(intent4);
-                        finish();
-                        return true;
-                }
-                return false;
-            }
-        });
+//  /*-------
+        NavigationBarView.OnItemSelectedListener bottomNavigationViewOnItemSelectedListener = new NavigationBarClickListener(getApplicationContext(),this);
+        bottomNavigationView.setOnItemSelectedListener(bottomNavigationViewOnItemSelectedListener);
+//-------------------*/
+
+
+
+//        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+//            @Override
+//            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+//                switch (item.getItemId()) {
+//                    case R.id.navigation_habit:
+//                        Intent intent1 = new Intent(HabitEventListActivity.this, HabitListActivity.class);
+//                        startActivity(intent1);
+//                        finish();
+//                        return true;
+//                    case R.id.navigation_homePage:
+//                        Intent intent2 = new Intent(HabitEventListActivity.this, MainPageActivity.class);
+//                        intent2.putExtra("StartMode", "normal");
+//                        startActivity(intent2);
+//                        finish();
+//                        return true;
+//                    case R.id.navigation_following:
+//                        Intent intent3 = new Intent(HabitEventListActivity.this, FollowingActivity.class);
+//                        startActivity(intent3);
+//                        finish();
+//                        return true;
+//                    case R.id.navigation_settings:
+//                        Intent intent4 = new Intent(HabitEventListActivity.this, ProfileActivity.class);
+//                        startActivity(intent4);
+//                        finish();
+//                        return true;
+//                }
+//                return false;
+//            }
+//        });
 
 
     }
@@ -162,46 +162,29 @@ public class HabitEventListActivity extends AppCompatActivity {
         // Get passed-in data-----------------------------------------------------------------------------------------------------
         Intent intent = getIntent();
         Bundle data = intent.getExtras();
-        String startMode = data.getString("StartMode");
-
-        // This is used to enter this activity without editing the list
-        // in another word: since data won;t be passed if we just want to enter this activity and see contents, we use a StartMode to identify different entry method
-        // we only fetch data when it's needed
-        if (startMode.equals("Edit")) {
-            int eventIndexInList = data.getInt("EventIndex");
-            passedEvent = (HabitEvent) data.getParcelable("HabitEventFromEdit");
-
-            if (eventIndexInList >= 0) {
-                // update existing entry
-                HabitEvent tempEvent = habitEventAdapter.getItem(eventIndexInList);
-                tempEvent.setComment(passedEvent.getComment());
-                tempEvent.setLocation(passedEvent.getLocation());
-            }
-            else {
-                // add new entry to list
-                habitEventAdapter.add(passedEvent);
-            }
-            habitEventAdapter.notifyDataSetChanged();
-        }
-
     }
 
-    // This method is used to ensure the getIntent() method always returns the latest intent
+    /**
+     * This method is used to ensure the getIntent() method always returns the latest intent
+     * @param intent
+     */
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         setIntent(intent);
     }
 
-    /**
-     * This method is used to shift to event edit activity from event list activity
-     * @param index the index of pressed event in the event list
-     */
-    public void goToEventEditActivity(int index) {
-        Intent intent = new Intent(this, HabitEventEditActivity.class);
-        intent.putExtra("HabitEventForEdit", habitEventAdapter.getItem(index));
-        intent.putExtra("EventIndex", index);
-        startActivity(intent);
-    }
+
+
+//    /**
+//     * This method is used to shift to event edit activity from event list activity
+//     * @param index the index of pressed event in the event list
+//     */
+//    public void goToEventEditActivity(int index) {
+//        Intent intent = new Intent(this, HabitEventEditActivity.class);
+//        intent.putExtra("HabitEventForEdit", habitEventAdapter.getItem(index));
+//        intent.putExtra("EventIndex", index);
+//        startActivity(intent);
+//    }
 
 }

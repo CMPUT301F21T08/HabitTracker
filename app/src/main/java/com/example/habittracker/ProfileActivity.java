@@ -26,6 +26,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @author 'zwan1'
+ * Shows the user's profile information and allowing users to edit them, also provides the functionality of Signing Out
+ * User Name: shown as an EditText that can be edited
+ * User Email: shown as a TextView that cannot be edited
+ * Gender: shown as an EditText that can be edited, can only enter "Male", "Female" or "Others"
+ * Age: shown as an EditText that can be edited, can only enter integer from 0 to 100
+ */
 public class ProfileActivity extends AppCompatActivity {
 
     Button signOut_btn;
@@ -42,17 +50,23 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-
+        
+        
+        // The the corresponding user unique uid, in order to locate into the correct user branch in firebase
         authentication = FirebaseAuth.getInstance();
         if (authentication.getCurrentUser() != null){
             uid = authentication.getCurrentUser().getUid();
         }
+        
+        // connecting attributes in the layout file
         userName = findViewById(R.id.profile_userName_EditText);
         userEmail = findViewById(R.id.profile_userEmail_TextView);
         userGender = findViewById(R.id.profile_userGender_EditText);
         userAge = findViewById(R.id.profile_userAge_EditText);
 
 
+        // Using the user uid to get the correct branch for this user, go into the "Info" branch to fetch user information
+        // Information stored as an Personal_info class in the firebase
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child(uid).child("Info");
         reference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -72,7 +86,8 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
-
+        
+        // Create a button that lets user to sign out and go back to the login page
         signOut_btn = findViewById(R.id.profile_signOut_button);
         signOut_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,6 +98,7 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
+        // Create a button that apply the changes that user made to either "User Name", "Gender" or "Age"
         applyChanges_btn = findViewById(R.id.profile_change_button);
         applyChanges_btn.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -2,8 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:descendantFocusability="blocksDescendants"
+    android:layout_height="wrap_content"
     android:orientation="horizontal">
 
     <TextView
@@ -11,37 +10,26 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_toLeftOf="@id/allHabits_delete_button"
-        android:layout_alignTop="@id/allHabits_delete_button"
-        android:layout_alignBottom="@id/allHabits_delete_button"
         android:text="Habit content"
-        android:clickable="true"
-        android:enabled="true"
         android:textSize="26sp"
         android:textStyle="bold" />
 
-    <ImageButton
-        android:id="@+id/allHabits_delete_button"
+    <CheckBox
+        android:id="@+id/disclose_checkBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="Public"
         android:layout_alignParentRight="true"
-        android:layout_marginStart="198dp"
-        android:layout_marginRight="10dp"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
-        app:srcCompat="@android:drawable/ic_menu_close_clear_cancel" />
+        />
 
-    <!-- we will implement this feature later
     <ProgressBar
-        style="@android:style/Widget.ProgressBar.Horizontal"
+        android:id="@+id/progression_bar"
+        style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/allHabits_delete_button"
-        android:layout_marginTop="16dp"
-        android:indeterminate="false"
+        android:layout_below="@id/allHabitsContent_habitContent_textView"
         android:max="100"
-        android:progress="25" />
-    -->
+        />
 
 
 </RelativeLayout>

@@ -20,8 +20,15 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.HashMap;
 
+
+/**
+ * @author 'adhanani' and 'zwan1'
+ * Allows user to signup for an account, providing a user email, name and enter password twice
+ * Should enter the info and then click Creat Account.
+ */
 public class SignUpActivity extends AppCompatActivity {
 
+    //setting the fields
     Button createButton;
     EditText userName;
     EditText userEmail;
@@ -34,7 +41,8 @@ public class SignUpActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
-
+        
+        //connecting to the layout file
         createButton = findViewById(R.id.signUp_createAccount_Button);
         userName = findViewById(R.id.signUp_userName_EditView);
         userEmail = findViewById(R.id.signUp_userEmail_EditView);
@@ -42,6 +50,8 @@ public class SignUpActivity extends AppCompatActivity {
         confirmPassWord = findViewById(R.id.signUp_confirm_passWord_EditView);
         authentication =  FirebaseAuth.getInstance();
 
+        
+        // onClickListener to give for different error message of different wrong inputs, create account if nothing is wrong
         createButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -53,7 +63,6 @@ public class SignUpActivity extends AppCompatActivity {
                 if (TextUtils.isEmpty(sUserEmail) || TextUtils.isEmpty(sUserName)  || TextUtils.isEmpty(sPassWord) || TextUtils.isEmpty(sConfirmPassword)){
                     Toast.makeText(SignUpActivity.this, "All fields need to be filled", Toast.LENGTH_SHORT).show();
                 }
-
                 else if (!(sConfirmPassword.equals(sPassWord))){
                     Toast.makeText(SignUpActivity.this, "Password needs to match with Confirm Password", Toast.LENGTH_SHORT).show();
                 }
@@ -66,6 +75,13 @@ public class SignUpActivity extends AppCompatActivity {
         });
     }
 
+/**
+* This method takes the userEmail, password and userName to sign up for an account
+* Will toast messages to the user for whether sign up was successful or not
+* @param userEmail: the email entered
+* @param passWord: the password entered
+* @param userName: the user Name entered
+*/
     private void signUp(String userEmail, String passWord, String userName) {
         authentication.createUserWithEmailAndPassword(userEmail, passWord).addOnCompleteListener(SignUpActivity.this,  new OnCompleteListener<AuthResult>() {
             @Override
@@ -77,7 +93,9 @@ public class SignUpActivity extends AppCompatActivity {
                         uid = authentication.getCurrentUser().getUid();
                         System.out.println(uid);
                     }
-
+                    
+                    // if successful, push the personal infomation of the user onto the firebase with uid as branch
+                    // Push the Personal_info class directly to the firebase, with gender set to "null" and age set to 0
                     HashMap<String,Object> map = new HashMap<>();
                     Personal_info empty = new Personal_info();
                     Personal_info personal_info = new Personal_info(userName,userEmail,"null",0);

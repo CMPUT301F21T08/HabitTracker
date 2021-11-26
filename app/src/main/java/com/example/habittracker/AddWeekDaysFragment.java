@@ -15,10 +15,15 @@ import androidx.fragment.app.DialogFragment;
 
 import java.util.ArrayList;
 
+/**
+ * a fragment allows user to choose weekly occurrence day
+ */
 public class AddWeekDaysFragment extends DialogFragment {
     private OnFragmentInteractionListener listener;
+    // frequency and occurrence day information
     private ArrayList<Integer> days =  new ArrayList<Integer>();
     private int valueOfFrequency = 0;
+    // views of the fragment
     private CheckBox Monday;
     private CheckBox Tuesday;
     private CheckBox Wednesday;
@@ -27,6 +32,9 @@ public class AddWeekDaysFragment extends DialogFragment {
     private CheckBox Saturday;
     private CheckBox Sunday;
 
+    /**
+     * Default Constructor
+     */
     public AddWeekDaysFragment(){
         super();
     }
@@ -54,6 +62,7 @@ public class AddWeekDaysFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        // set up the view of the fragment
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_weekly_occurrence_day, null);
         Monday = view.findViewById(R.id.checkbox_monday);
         Tuesday = view.findViewById(R.id.checkbox_tuesday);
@@ -62,6 +71,7 @@ public class AddWeekDaysFragment extends DialogFragment {
         Friday = view.findViewById(R.id.checkbox_friday);
         Saturday = view.findViewById(R.id.checkbox_saturday);
         Sunday = view.findViewById(R.id.checkbox_sunday);
+        // make all checkbox checkable
         setAllClickable();
 
         // create the AlertDialog
@@ -76,6 +86,7 @@ public class AddWeekDaysFragment extends DialogFragment {
                     @Override
                     // extract the information from EditText to set up a new Medicine Object
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        // to add the checked week day into the occurrence day list
                         if(Monday.isChecked()){
                             days.add(2);
                             valueOfFrequency++;
@@ -110,6 +121,7 @@ public class AddWeekDaysFragment extends DialogFragment {
 
     }
 
+    // a function to make all the checkbox checkable
     private void setAllClickable(){
         Monday.setClickable(true);
         Tuesday.setClickable(true);

@@ -1,3 +1,8 @@
+/**
+ * @author 'yhu19'
+ * Allow user to modefied the information of the existing habit or add a new habit
+ *
+ */
 package com.example.habittracker;
 
 import androidx.annotation.NonNull;
@@ -12,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
+import com.example.habittracker.listener.NavigationBarClickListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -28,17 +34,25 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 public class MainPageActivity extends AppCompatActivity {
-    private FirebaseAuth authentication;
-    private String uid;
+    private FirebaseAuth authentication; // user authentication reference
+    private String uid; // User unique ID
+    // variable used to get the current time
     private Calendar calendar = Calendar.getInstance();
+    // adapter used to set up the listView
     private ArrayAdapter<Habit> toDoAdapter;
     private ArrayList<Habit> toDoList;
+    // variable used to get the current time
     private Date date = new Date();
+    // variable stores the current week day information for the day
     private int weekDay;
+    // variable stores the current month day information for the day
     private int day_of_month;
     private ListView toDoListView;
+    // variable stores the current month using integer representation
     private int month;
+    // variable stores the current day as format "MM-dd"
     private String currentDate;
+    private int year;
 
 
     BottomNavigationView bottomNavigationView;
@@ -48,20 +62,30 @@ public class MainPageActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        // set up the listView for the activity
         toDoListView = findViewById(R.id.habitToDo_listView);
         //get the current date information
         calendar.setTime(date);
         weekDay = calendar.get(Calendar.DAY_OF_WEEK);
         day_of_month = calendar.get(Calendar.DAY_OF_MONTH);
+        year = calendar.get(Calendar.YEAR);
         month = calendar.get(Calendar.MONTH) + 1;
-        currentDate = String.valueOf(month) + "-" + String.valueOf(day_of_month);
+        // transfer the current day information into format "MM-dd"
+        currentDate = String.valueOf(year) + "-" + String.valueOf(month) + "-" + String.valueOf(day_of_month);
+
+        // firebase connection
         authentication = FirebaseAuth.getInstance();
         if (authentication.getCurrentUser() != null){
             uid = authentication.getCurrentUser().getUid();
         }
+
+        // set up the adapter with the habit list
         toDoList = new ArrayList<Habit>();
         toDoAdapter = new ToDoListAdapter(this, toDoList);
+        // set up the listView with the adapter
         toDoListView.setAdapter(toDoAdapter);
+
+        // get all the habits of the user from database and determine whether it should appear in the main activity(to do list)
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child(uid).child("Habit");
         reference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -69,14 +93,25 @@ public class MainPageActivity extends AppCompatActivity {
                 toDoList.clear();
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()){
                     Habit habit = (Habit) dataSnapshot.getValue(Habit.class);
+                    if (habit.getDoneTime() == habit.getFrequency()) {
+                        habit.setNotDone(false);
+                    }
+
+                    // refresh all the information related to done time of habit if the date is changed
                     habit.refresh(currentDate);
+                    // get the occurrence day of the habit
                     ArrayList<Integer> occurrenceDay = habit.getOccurrenceDay();
+                    // this will distinguish three types of habit and do different operations
                     switch (habit.getFrequencyType()){
                         case "per day":
+                            // check if the habit is finished/done today; if not done show on the to do list
                             if(habit.isNotDone()) {
                                 toDoList.add(habit);
                             }
                             break;
+                        // for the per week or per month frequency, we not only need to check whether the habit is done
+                        // or finished, we also need to check its occurrence day to see whether the date of today is in the
+                        // occurrence day list of the habit
                         case "per week":
                             if(occurrenceDay.contains(weekDay) && habit.isNotDone()){
                                 toDoList.add(habit);
@@ -88,9 +123,6 @@ public class MainPageActivity extends AppCompatActivity {
                             }
                             break;
                     }
-                    HashMap<String, Object> map = new HashMap<>();
-                    map.put(habit.getHabitTitle(),habit);
-                    FirebaseDatabase.getInstance().getReference().child(uid).child("Habit").updateChildren(map);
                 }
                 toDoAdapter.notifyDataSetChanged();
             }
@@ -100,6 +132,8 @@ public class MainPageActivity extends AppCompatActivity {
             }
         });
 
+        // set up the OnItemClickListener for the listView to allow user to go to description page to see the detailed
+        // information of habit
         toDoListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -109,12 +143,23 @@ public class MainPageActivity extends AppCompatActivity {
             }
         });
 
+        // Process Navigation Bar
         bottomNavigationView = findViewById(R.id.bottom_navigation_event);
         bottomNavigationView.setSelectedItemId(R.id.navigation_homePage);
+
+        //NavigationBarView.OnItemSelectedListener bottomNavigationViewOnItemSelectedListener = new NavigationBarClickListener(getApplicationContext(),this);
+        //bottomNavigationView.setOnItemSelectedListener(bottomNavigationViewOnItemSelectedListener);
 
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                for(int i = 0; i < toDoList.size(); i++){
+                    Habit habit = toDoList.get(i);
+                    // upload the information to database to update all habit
+                    HashMap<String, Object> map = new HashMap<>();
+                    map.put(habit.getUUID(),habit);
+                    FirebaseDatabase.getInstance().getReference().child(uid).child("Habit").updateChildren(map);
+                }
                 switch (item.getItemId()) {
                     case R.id.navigation_habit:
                         Intent intent1 = new Intent(MainPageActivity.this, HabitListActivity.class);
@@ -123,8 +168,6 @@ public class MainPageActivity extends AppCompatActivity {
                         return true;
                     case R.id.navigation_habitEvent:
                         Intent intent2 = new Intent(MainPageActivity.this, HabitEventListActivity.class);
-
-
                         intent2.putExtra("StartMode", "normal");
                         startActivity(intent2);
                         finish();
@@ -147,6 +190,7 @@ public class MainPageActivity extends AppCompatActivity {
         });
     }
 
+    // function used to go to the Habit description page
     private void goToHabitDescriptionActivity(int position, Habit tapHabit){
         Intent intent = new Intent(this, HabitDescriptionActivity.class);
         Bundle bundle = new Bundle();
