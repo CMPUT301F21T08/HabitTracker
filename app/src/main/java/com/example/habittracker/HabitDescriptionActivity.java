@@ -13,6 +13,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -47,6 +48,8 @@ public class HabitDescriptionActivity extends AppCompatActivity implements Delet
     private Habit habit;
     private String action ="original";
     private int position;
+    // variable used to set up a AlertDialog
+    private AlertDialog.Builder builder;
     //result code
     private int newObject= 33;
 
@@ -78,7 +81,7 @@ public class HabitDescriptionActivity extends AppCompatActivity implements Delet
         setContentView(R.layout.activity_habit_description);
 
         getSupportActionBar().setTitle("Habit - Description");
-
+        builder = new AlertDialog.Builder(HabitDescriptionActivity.this);
         // get the habit object from HabitListActivity
         Bundle bundle = getIntent().getExtras();
         habit = (Habit) bundle.getSerializable("habit");
@@ -102,6 +105,15 @@ public class HabitDescriptionActivity extends AppCompatActivity implements Delet
                 // if the frequencyType is "per week", then invoke a fragment to show the occurrence week day of the habit
                 if(habit.getFrequencyType().equals("per week")){
                     new ShowWeekDaysFragment(habit).show(getSupportFragmentManager(),"SHOW_OCCURRENCE_DAYS");
+                }
+                // if the frequencyType is "per month", then invoke the alert dialog to show the occurrence month day of the habit
+                if(habit.getFrequencyType().equals("per month")){
+                    AlertDialog alert;
+                    alert = builder
+                            .setTitle("Monthly Occurrence Day")
+                            .setMessage("The monthly occurrence day for this habit is "+ habit.getOccurrenceDay().get(0) + "th")
+                            .setNegativeButton("return", null).create();
+                    alert.show();
                 }
             }
         });
