@@ -123,6 +123,16 @@ public class HabitEventEditMapActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Process the KEY_RETURN signal in the map activity
+     * Make it having the same effect as clicking the return button
+     */
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent();
+        setResult(RESULT_CANCELED, intent);
+        finish();
+    }
 
     private void getLocation() {
 

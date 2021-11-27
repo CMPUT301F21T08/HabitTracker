@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -41,10 +42,14 @@ public class LogInActivity extends AppCompatActivity {
     private SharedPreferences loginPreferences;
     private SharedPreferences.Editor loginPrefsEditor;
 
+    private int backCount;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_in);
+
+        backCount = 0;
 
         //connecting to the layout file
         login_signIn_button = findViewById(R.id.login_signIn_button);
@@ -108,6 +113,22 @@ public class LogInActivity extends AppCompatActivity {
                 startActivity(Main);
             }
         });
+    }
+
+    /**
+     * Process the KEY_RETURN signal in log-in activity
+     * When back button is pressed more than once, exit program
+     */
+    @Override
+    public void onBackPressed() {
+        backCount+=1;
+        if (backCount == 1) {
+            Toast.makeText(LogInActivity.this, "Press the back button again to return to home page", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            backCount = 0;
+            super.onBackPressed();
+        }
     }
 
     /**

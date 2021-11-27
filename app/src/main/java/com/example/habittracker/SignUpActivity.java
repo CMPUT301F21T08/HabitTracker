@@ -100,6 +100,17 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     /**
+     * Process the KEY_RETURN signal in sign-up activity
+     * When back button is pressed, return to log-in activity
+     */
+    @Override
+    public void onBackPressed() {
+        Intent intent3 = new Intent(SignUpActivity.this, LogInActivity.class);
+        startActivity(intent3);
+        finish();
+    }
+
+    /**
      * This method takes the userEmail, password and userName to sign up for an account
      * Will toast messages to the user for whether sign up was successful or not
      * @param userEmail: the email entered

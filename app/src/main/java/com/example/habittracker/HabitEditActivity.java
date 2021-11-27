@@ -64,6 +64,7 @@ public class HabitEditActivity extends AppCompatActivity implements AddWeekDaysF
 
     private FirebaseAuth authentication; // user authentication reference
     private String uid; // User unique ID
+    private String message;
 
     // variables used to construct the spinner
     private ArrayList<String> frequencyList = new ArrayList<String>();
@@ -201,7 +202,7 @@ public class HabitEditActivity extends AppCompatActivity implements AddWeekDaysF
         });
 
         // set up the backBtn to allow user to go back to the previous activity
-        String message = getIntent().getStringExtra("action");
+        message = getIntent().getStringExtra("action");
         View.OnClickListener backBtnOnclickListener = new HabitEditBackListener(getApplicationContext(), this, action, original, message);
         backBtn.setOnClickListener(backBtnOnclickListener);
 
@@ -211,9 +212,31 @@ public class HabitEditActivity extends AppCompatActivity implements AddWeekDaysF
         confirmBtn.setOnClickListener(confirmBtnOnclickListener);
     }
 
-    /* method that will create a correct format string that represent the date that selected in the
-       datePickerDialog and add it to the EditText
+    /**
+     * Process the KEY_RETURN signal in the habit edit activity
+     * When back button is pressed, return to the page where the user is at previously
+     * Either description activity or list activity
      */
+    @Override
+    public void onBackPressed() {
+        Intent intentReturn;
+        if(message.equals("add")){
+            // go back to HabitListActivity
+            intentReturn = new Intent(this, HabitListActivity.class);
+            startActivity(intentReturn);
+        } else {
+            // go back to HabitDescriptionActivity with the modified habit
+            intentReturn = new Intent();
+            action = "original";
+            intentReturn.putExtra("action", action);
+            setResult(original, intentReturn);
+        }
+        finish();
+    }
+
+    /* method that will create a correct format string that represent the date that selected in the
+           datePickerDialog and add it to the EditText
+         */
     private void addText() {
         String myFormat = "yyyy-MM-dd";
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat);

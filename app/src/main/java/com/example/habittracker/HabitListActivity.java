@@ -236,6 +236,16 @@ public class HabitListActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Process the KEY_RETURN signal in the habit list activity
+     * When back button is pressed, return to main activity directly
+     */
+    @Override
+    public void onBackPressed() {
+        Intent intent2 = new Intent(HabitListActivity.this, MainPageActivity.class);
+        startActivity(intent2);
+        finish();
+    }
 
     // a function used to go to the habit description page with the tapped habit
     private void goToHabitDescriptionActivity(int position, Habit tapHabit){
