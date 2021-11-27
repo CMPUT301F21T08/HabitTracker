@@ -161,6 +161,17 @@ public class FollowingActivity extends AppCompatActivity implements SearchFollow
         });
     }
 
+    /**
+     * Process the KEY_RETURN signal in following activity
+     * When back button is pressed, return to main page activity
+     */
+    @Override
+    public void onBackPressed() {
+        Intent intent3 = new Intent(FollowingActivity.this, MainPageActivity.class);
+        startActivity(intent3);
+        finish();
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {

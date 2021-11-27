@@ -106,12 +106,22 @@ public class HabitEventsOfHabitActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 Intent intentReturn = new Intent(getApplicationContext(), HabitListActivity.class); // Return to the habit event list page
-//                intentReturn.putExtra("StartMode", "normal");
                 startActivity(intentReturn);
                 finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    /**
+     * Process the KEY_RETURN signal in the habit edit activity
+     * When back button is pressed, return to habit list activity
+     */
+    @Override
+    public void onBackPressed() {
+        Intent intentReturn = new Intent(getApplicationContext(), HabitListActivity.class); // Return to the habit event list page
+        startActivity(intentReturn);
+        finish();
     }
 }

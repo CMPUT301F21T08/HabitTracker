@@ -233,6 +233,17 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Process the KEY_RETURN signal in profile activity
+     * When back button is pressed, return to main page activity
+     */
+    @Override
+    public void onBackPressed() {
+        Intent intent3 = new Intent(ProfileActivity.this, MainPageActivity.class);
+        startActivity(intent3);
+        finish();
+    }
+
 
     public String getPathFromURI(Context context, Uri uri) {
         String[] proj = {MediaStore.Images.Media.DATA};
