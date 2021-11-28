@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Patterns;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -14,8 +15,11 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.FirebaseNetworkException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -97,10 +101,12 @@ public class LogInActivity extends AppCompatActivity {
                 if (sUserEmail == null || sUserEmail.isEmpty()){
                     email_layout.setError("Email cannot be empty!");
                     return;
-                }
-                if (sPassWord == null || sPassWord.isEmpty()){
+                } else if (sPassWord == null || sPassWord.isEmpty()){
                     password_layout.setError("Password cannot be empty!");
                     return;
+                }else if (! Patterns.EMAIL_ADDRESS.matcher(sUserEmail).matches()){
+                    email_layout.setError("Incorrect email format");
+                    email_layout.requestFocus();
                 }
 
                 InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -151,7 +157,8 @@ public class LogInActivity extends AppCompatActivity {
      * @param passWord: the password entered
      */
     private void userLogin(@NonNull String userEmail,@NonNull String passWord) {
-        authentication.signInWithEmailAndPassword(userEmail, passWord).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        authentication.signInWithEmailAndPassword(userEmail, passWord)
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
@@ -159,7 +166,19 @@ public class LogInActivity extends AppCompatActivity {
                     startActivity(new Intent(getApplicationContext(), MainPageActivity.class));
                     finish();
                 } else {
-                    Toast.makeText(LogInActivity.this, "Login failed ", Toast.LENGTH_SHORT).show();
+                    try {
+                        throw task.getException();
+                    } catch (FirebaseAuthInvalidUserException e){
+                        email_layout.setError("Email unrecognised.");
+                        email_layout.requestFocus();
+                    } catch (FirebaseAuthInvalidCredentialsException e){
+                        password_layout.setError("Password incorrect!");
+                        password_layout.requestFocus();
+                    } catch (FirebaseNetworkException e){
+                        Toast.makeText(LogInActivity.this, "No internet connection", Toast.LENGTH_LONG);
+                    } catch (Exception e) {
+                        Toast.makeText(LogInActivity.this, "Unexpected error", Toast.LENGTH_LONG);
+                    }
                 }
             }
         });
