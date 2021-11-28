@@ -11,6 +11,9 @@ import static android.content.ContentValues.TAG;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.view.MenuItem;
+
+import com.example.habittracker.listener.HabitListClickListener;
+import com.example.habittracker.listener.HabitListNavigationBarClickListener;
 import com.example.habittracker.listener.NavigationBarClickListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
@@ -55,7 +58,8 @@ public class HabitListActivity extends AppCompatActivity {
 
     private FirebaseAuth authentication; // user authentication reference
     private String uid; // User unique ID
-    private View.OnClickListener onItemClickListener = new View.OnClickListener() {
+    private View.OnClickListener onItemClickListener;
+    /*{
         @Override
         public void onClick(View view) {
             RecyclerView.ViewHolder viewHolder = (RecyclerView.ViewHolder) view.getTag();
@@ -71,6 +75,8 @@ public class HabitListActivity extends AppCompatActivity {
             goToHabitDescriptionActivity(position, tapHabit);
         }
     };
+
+     */
 
 
 
@@ -95,6 +101,7 @@ public class HabitListActivity extends AppCompatActivity {
         habitAdapter = new HabitListAdapter(this, habitList);
         habitRecycleView.setAdapter(habitAdapter);
         habitRecycleView.setLayoutManager(new LinearLayoutManager(this));
+        onItemClickListener = new HabitListClickListener(this, getApplicationContext(), habitList, uid);
         habitAdapter.setOnItemClickListener(onItemClickListener);
         ItemTouchHelper touchHelper = new ItemTouchHelper(new ItemTouchHelper.Callback() {
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
@@ -165,9 +172,9 @@ public class HabitListActivity extends AppCompatActivity {
 //        });
 
         // set up the OnClickListener to allow user to add a new habit
-        //View.OnClickListener addBtnOnclickListener = new HabitListAddListener(getApplicationContext(), this, amount);
-        //addButton.setOnClickListener(addBtnOnclickListener);
-        addButton.setOnClickListener(new View.OnClickListener() {
+        View.OnClickListener addBtnOnclickListener = new HabitListAddListener(getApplicationContext(), this, amount,habitList,uid);
+        addButton.setOnClickListener(addBtnOnclickListener);
+        /*addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 for(int i = 0; i < habitList.size(); i++){
@@ -185,6 +192,8 @@ public class HabitListActivity extends AppCompatActivity {
             }
         });
 
+         */
+
 
 
 
@@ -196,7 +205,9 @@ public class HabitListActivity extends AppCompatActivity {
         //NavigationBarView.OnItemSelectedListener bottomNavigationViewOnItemSelectedListener = new NavigationBarClickListener(getApplicationContext(),this);
         //bottomNavigationView.setOnItemSelectedListener(bottomNavigationViewOnItemSelectedListener);
 
-        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+        NavigationBarView.OnItemSelectedListener bottomNavigationViewOnItemSelectedListener = new HabitListNavigationBarClickListener(getApplicationContext(),this, uid, habitList);
+        bottomNavigationView.setOnItemSelectedListener(bottomNavigationViewOnItemSelectedListener);
+        /*{
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 for(int i = 0; i < habitList.size(); i++){
@@ -234,6 +245,8 @@ public class HabitListActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+         */
     }
 
 

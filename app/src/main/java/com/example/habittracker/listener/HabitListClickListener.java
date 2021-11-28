@@ -1,40 +1,38 @@
 package com.example.habittracker.listener;
 
-import static android.content.ContentValues.TAG;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
+import android.os.Bundle;
 import android.view.View;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.habittracker.Habit;
-import com.example.habittracker.HabitEditActivity;
-import com.google.android.material.tabs.TabLayout;
+import com.example.habittracker.HabitDescriptionActivity;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class HabitListAddListener implements View.OnClickListener{
-    // attributes
+public class HabitListClickListener implements View.OnClickListener{
     Context context;
     Activity activity;
-    int amount;
     ArrayList<Habit> habitList;
     String uid;
 
-    public HabitListAddListener(Context context, Activity activity, int amount,ArrayList<Habit> habitList, String ui ){
+    public HabitListClickListener(Activity activity,Context context, ArrayList<Habit> habitList, String uid ){
         this.context = context;
         this.activity = activity;
-        this.amount = amount;
         this.habitList = habitList;
         this.uid = uid;
 
     }
-
     @Override
     public void onClick(View view) {
+        RecyclerView.ViewHolder viewHolder = (RecyclerView.ViewHolder) view.getTag();
+        int position = viewHolder.getAdapterPosition();
+        Habit tapHabit = habitList.get(position);
         for(int i = 0; i < habitList.size(); i++){
             Habit habit = habitList.get(i);
             // upload the information to database to update all habit
@@ -42,10 +40,19 @@ public class HabitListAddListener implements View.OnClickListener{
             map.put(habit.getUUID(),habit);
             FirebaseDatabase.getInstance().getReference().child(uid).child("Habit").updateChildren(map);
         }
-        Intent intent = new Intent(context, HabitEditActivity.class);
-        intent.putExtra("amount", amount);
-        intent.putExtra("action", "add");
+        goToHabitDescriptionActivity(position, tapHabit);
+    }
+
+    private void goToHabitDescriptionActivity(int position, Habit tapHabit){
+        Intent intent = new Intent(context, HabitDescriptionActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putInt("position", position);
+        bundle.putSerializable("habit",tapHabit);
+        intent.putExtras(bundle);
         activity.startActivity(intent);
         activity.finish();
     }
+
+
+
 }

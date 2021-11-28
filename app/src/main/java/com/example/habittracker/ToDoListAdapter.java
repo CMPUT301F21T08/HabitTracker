@@ -18,6 +18,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.habittracker.listener.ToDoListCheckedChangedListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -74,7 +75,9 @@ public class ToDoListAdapter extends ArrayAdapter<Habit>{
 
         // get the index/position for which checkbox being checked
         done.setTag(position);
-        done.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
+        CompoundButton.OnCheckedChangeListener ToDoListListener = new ToDoListCheckedChangedListener(getContext(), uid, done, habitArrayList);
+        done.setOnCheckedChangeListener(ToDoListListener);
+        /*{
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
             {
                 // if the checkbox of the habit is checked, we will call setDoneTime() to increment the doneTime of the habit,
@@ -121,6 +124,8 @@ public class ToDoListAdapter extends ArrayAdapter<Habit>{
             }
 
         });
+
+         */
         // set the habit title in the to do list
         habitTitleView.setText(habit.getHabitTitle());
         // calculate the remaining time that the user need to do to finish the habit for today
