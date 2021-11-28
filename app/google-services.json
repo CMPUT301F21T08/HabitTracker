@@ -1,34 +1,33 @@
 {
   "project_info": {
-    "project_number": "747727223248",
-    "firebase_url": "https://habittracker-9757c-default-rtdb.firebaseio.com",
-    "project_id": "habittracker-9757c",
-    "storage_bucket": "habittracker-9757c.appspot.com"
+    "project_number": "92128964583",
+    "project_id": "habittrackernew",
+    "storage_bucket": "habittrackernew.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:747727223248:android:0258381c36c0f6c7c561d5",
+        "mobilesdk_app_id": "1:92128964583:android:dd48ab6f1ead3f9922d742",
         "android_client_info": {
           "package_name": "com.example.habittracker"
         }
       },
       "oauth_client": [
         {
-          "client_id": "747727223248-p21l04kqben61h38b44509dmk6kdji4i.apps.googleusercontent.com",
+          "client_id": "92128964583-ibdpbpcu7h3j5to6g5cogrkifjlr8g67.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDPROJty4-lmDIQhnRma2RUsVhcOXu266o"
+          "current_key": "AIzaSyCjvbLb4r7TisdKkvVxnxebX-FjPxCjHsQ"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "747727223248-p21l04kqben61h38b44509dmk6kdji4i.apps.googleusercontent.com",
+              "client_id": "92128964583-ibdpbpcu7h3j5to6g5cogrkifjlr8g67.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

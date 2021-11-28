@@ -361,6 +361,16 @@ public class HabitEventEditActivity extends AppCompatActivity  {
         });
     }
 
+
+    /**
+     * Put the location which user chooses into editText.
+     * @param requestCode
+     *    This is the request code passed in.
+     * @param resultCode
+     *   This specifies status of the called message as Intent
+     * @param data
+     *   This is intent.
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
