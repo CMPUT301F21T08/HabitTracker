@@ -6,8 +6,6 @@
 
 package com.example.habittracker;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Intent;
@@ -28,18 +26,13 @@ import android.widget.TextView;
 
 import com.example.habittracker.listener.HabitEditBackListener;
 import com.example.habittracker.listener.HabitEditConfirmListener;
-import com.example.habittracker.listener.HabitListAddListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
-
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Objects;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 /**
  * This activity will allow user to edit a habit in the habit list/add a habit to the habit list
@@ -89,12 +82,12 @@ public class HabitEditActivity extends AppCompatActivity implements AddWeekDaysF
     private int original= 44;
     private int newObject= 33;
     private int index;
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_habit_edit);
-    // initialize the set up of the activity
+        // initialize the set up of the activity
         builder = new AlertDialog.Builder(HabitEditActivity.this);
         addDate = findViewById(R.id.addDate_button);
         backBtn = findViewById(R.id.habitEdit_return_button);
@@ -180,6 +173,7 @@ public class HabitEditActivity extends AppCompatActivity implements AddWeekDaysF
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
+                date.setVisibility(View.VISIBLE);
                 new DatePickerDialog(HabitEditActivity.this, time, myCalendar
                         .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                         myCalendar.get(Calendar.DAY_OF_MONTH)).show();
@@ -191,6 +185,7 @@ public class HabitEditActivity extends AppCompatActivity implements AddWeekDaysF
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
                 // set up the editText for frequency to disallow user to input data
+                frequency.setVisibility(View.VISIBLE);
                 frequency.setFocusableInTouchMode(false);
                 frequency.setFocusable(false);
                 // call this function to guide user input required information
