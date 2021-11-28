@@ -28,9 +28,9 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
     testOptions {
-//        unitTests.all {
-//            useJUnitPlatform() // <--- this is the important part
-//        }
+       unitTests.all {
+        useJUnitPlatform() // <--- this is the important part
+            }
 
         unitTests.includeAndroidResources = true
     }
