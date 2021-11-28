@@ -199,17 +199,26 @@ public class ProfileActivity extends AppCompatActivity {
         applyChanges_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (100<=Integer.parseInt(userAge.getText().toString().trim()) || Integer.parseInt(userAge.getText().toString().trim()) <0 ){
+                if (100<=Integer.parseInt(userAge.getText().toString().trim()) || Integer.parseInt(userAge.getText().toString().trim()) <0 || gender_RadioButton == null){
                     Toast.makeText(ProfileActivity.this, "Wrong Input for Age, please enter an integer between 0 to 100", Toast.LENGTH_SHORT).show();
                 } else if (personal_info.getLocalImagePath() != null){
                     personal_info = new Personal_info(userName.getText().toString().trim(),userEmail.getText().toString(),gender_RadioButton.getText().toString(), gender_RadioButton.getId(),Integer.parseInt(userAge.getText().toString().trim()), personal_info.getLocalImagePath());
                     personal_info.setUid(uid);
+
+
+                    System.out.println(personal_info.getGender());
+
                     uploadImage(personal_info, uid);
                     Toast.makeText(ProfileActivity.this, "Changes has been made!", Toast.LENGTH_SHORT).show();
                 } else{
                     HashMap<String,Object> map = new HashMap<>();
                     personal_info = new Personal_info(userName.getText().toString().trim(),userEmail.getText().toString(),gender_RadioButton.getText().toString(), gender_RadioButton.getId(),Integer.parseInt(userAge.getText().toString().trim()), personal_info.getLocalImagePath());
                     personal_info.setUid(uid);
+
+
+                    System.out.println(personal_info.getGender());
+
+
                     map.put("Info",personal_info);
                     FirebaseDatabase.getInstance().getReference().child(uid).updateChildren(map);
                     Toast.makeText(ProfileActivity.this, "Changes has been made!", Toast.LENGTH_SHORT).show();

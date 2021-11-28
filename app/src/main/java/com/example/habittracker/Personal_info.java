@@ -43,7 +43,7 @@ public class Personal_info {
         this.name = name;
         this.email = email;
         this.genderId = genderId;
-
+        this.gender = gender;
         this.age = age;
         this.localImagePath = null;
         this.localImagePath = localImagePath;
