@@ -32,7 +32,7 @@ public class ToDoListAdapterTest {
         testOccurrenceDay.add(1);
         // Create mock habit event
         testHabit = new Habit("HabitTest1","reason1","content1",
-                "2021-11-20",3,"per day",testOccurrenceDay,"1111-3333");
+                "2021-11-20",3,"per day",testOccurrenceDay,"1111-3333", 0, false);
 
         testList.add(testHabit);
         testAdapter = new ToDoListAdapter(ApplicationProvider.getApplicationContext(), testList);

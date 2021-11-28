@@ -41,9 +41,13 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Objects;
 
+/**
+ * This activity will allow user to edit a habit in the habit list/add a habit to the habit list
+ */
 public class HabitEditActivity extends AppCompatActivity implements AddWeekDaysFragment.OnFragmentInteractionListener {
-    // public variables use to send the occurrence day of habit to HabitEditConfirmListener
+    // public variable used to send the occurrence day of habit to HabitEditConfirmListener
     public static ArrayList<Integer> value_of_OccurrenceDate;
+    // public variable used to send the disclosure status of habit to HabitEditConfirmListener
     public static boolean publicHabit;
     // variable that storing the Habit object
     private Habit habit;
@@ -127,6 +131,7 @@ public class HabitEditActivity extends AppCompatActivity implements AddWeekDaysF
             uid = authentication.getCurrentUser().getUid();
         }
 
+        // set up the onCheckedChangeListener to record the disclosure status of the habit
         disclose.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -211,16 +216,20 @@ public class HabitEditActivity extends AppCompatActivity implements AddWeekDaysF
         confirmBtn.setOnClickListener(confirmBtnOnclickListener);
     }
 
-    /* method that will create a correct format string that represent the date that selected in the
-       datePickerDialog and add it to the EditText
+    /**
+     * method that will create a correct format string that represent the date that selected in the
+     * datePickerDialog and add it to the EditText
      */
     private void addText() {
+        // the format of the date that we will store for the habit
         String myFormat = "yyyy-MM-dd";
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat);
         date.setText(sdf.format(myCalendar.getTime()));
     }
 
-    // set up the view for the activity
+    /**
+     * method that sets up the view for the activity
+     */
     private void setView() {
         title = findViewById(R.id.TitleInput);
         content = findViewById(R.id.contentInput);
@@ -231,7 +240,9 @@ public class HabitEditActivity extends AppCompatActivity implements AddWeekDaysF
         disclose = findViewById(R.id.disclose_checkBox_edit);
     }
 
-    // input all information of the existing habit in the corresponding view
+    /**
+     * method that inputs all information of the existing habit in the corresponding view
+     */
     private void initView(Habit habit){
         title.setText(habit.getHabitTitle());
         date.setText(habit.getStartDate());
@@ -245,7 +256,9 @@ public class HabitEditActivity extends AppCompatActivity implements AddWeekDaysF
         setView();
     }
 
-    // initialize the arrayList for the spinner
+    /**
+     * method that initializes the arrayList for the spinner
+     */
     private void initArrayList(){
         frequencyList.add("choose frequency");
         frequencyList.add("per day");
@@ -253,7 +266,9 @@ public class HabitEditActivity extends AppCompatActivity implements AddWeekDaysF
         frequencyList.add("per month");
     }
 
-    // a function used to set up the relevant view for the user to input frequency when they choose frequency type
+    /**
+     * method that sets up the relevant view for the user to input frequency when they choose frequency type
+     */
     private void setFragment(int position){
         switch(position){
             case 1:
@@ -268,12 +283,17 @@ public class HabitEditActivity extends AppCompatActivity implements AddWeekDaysF
                 new AddWeekDaysFragment().show(getSupportFragmentManager(),"CHOOSE_OCCURRENCE_DATE");
                 break;
             case 3:
+                // call the DateDialog to set up the monthly occurrence day
                 DateDialog();
                 break;
         }
     }
 
-    // this function is called when the user click the confirm button in the AddWeekDaysFragment
+    /**
+     * method that will be called when the user click the confirm button in the AddWeekDaysFragment
+     * @param valueOfFrequency the amount of weekly occurrence days the user chose for the habit
+     * @param days  the arraylist that stores all the weekly occurrence days the user chose
+     */
     public void onConfirmPressed(ArrayList<Integer> days, int valueOfFrequency){
         // invoke the alert dialog if the user choose nothing to avoid 0 frequency appears
         if(valueOfFrequency == 0){
@@ -293,7 +313,11 @@ public class HabitEditActivity extends AppCompatActivity implements AddWeekDaysF
         }
     }
 
+    /**
+     * method that sets up a date picker dialog to allow user choose the monthly occurrence day and record it
+     */
     public void DateDialog(){
+        // set up the date picker dialog
         Calendar cal;
         int day;
         int month;
@@ -307,12 +331,15 @@ public class HabitEditActivity extends AppCompatActivity implements AddWeekDaysF
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear,int dayOfMonth)
             {
+                // store the monthly occurrence day in the habit object
                 value_of_OccurrenceDate = new ArrayList<Integer>();
                 value_of_OccurrenceDate.add(dayOfMonth);
+                // set up the view to display the frequency
                 frequency.setText("1");
                 frequency = findViewById(R.id.frequencyInput);
             }};
 
+        // show the date picker dialog
         DatePickerDialog dpDialog=new DatePickerDialog(this, listener, year, month, day);
         dpDialog.show();
 

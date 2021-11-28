@@ -1,9 +1,3 @@
-/**
- * @author 'yhu19' and 'ingabire'
- * Allow user to see the detailed information of the habit
- *
- */
-
 package com.example.habittracker;
 
 import androidx.activity.result.ActivityResult;
@@ -32,6 +26,11 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 
+/**
+ * @author 'yhu19' and 'ingabire'
+ * Allow user to see the detailed information of the habit
+ *
+ */
 public class HabitDescriptionActivity extends AppCompatActivity implements DeleteConfirmFragment.OnDeleteConfirmFragmentInteractionListener {
     // views in this activity
     private Button returnBtn;
@@ -80,6 +79,7 @@ public class HabitDescriptionActivity extends AppCompatActivity implements Delet
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_habit_description);
 
+        // set the title of this page
         getSupportActionBar().setTitle("Habit - Description");
         builder = new AlertDialog.Builder(HabitDescriptionActivity.this);
         // get the habit object from HabitListActivity
@@ -148,8 +148,11 @@ public class HabitDescriptionActivity extends AppCompatActivity implements Delet
 
     }
 
-    // a function that will get call when the user click the confirm button in the fragment.
-    // this function will delete the current habit from the database and return to the HabitListActivity
+
+    /**
+     * A function that will get call when the user click the confirm button in the fragment.
+     * And this function will delete the current habit from the database and return to the HabitListActivity
+     */
     @Override
     public void onConfirmDeletePressed() {
 
@@ -164,7 +167,9 @@ public class HabitDescriptionActivity extends AppCompatActivity implements Delet
         finish();
     }
 
-    //
+    /**
+     * method that sets up the view for the activity
+     */
     private void setView() {
         title = findViewById(R.id.description_habitTitle_textView);
         startDate = findViewById(R.id.description_startDate_textView);

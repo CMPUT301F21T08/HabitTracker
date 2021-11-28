@@ -11,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HabitTracker">
         <activity
-            android:name=".ForgotPassword"
+            android:name=".ForgotPasswordActivity"
             android:exported="true" />
 
         <activity
@@ -104,5 +104,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <permission android:name="android.permission.INJECT_EVENTS"
+        android:protectionLevel="signature" />
 
 </manifest>
