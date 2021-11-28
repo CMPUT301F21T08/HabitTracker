@@ -3,13 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="@drawable/background"
     android:layout_height="match_parent">
-
 
     <ImageView
         android:id="@+id/profile_ImageView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="154dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginHorizontal="25dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:srcCompat="@drawable/default_picture"
@@ -17,26 +19,33 @@
         android:contentDescription="This is where the profile picture is stored." />
 
 
-    <Button
-        android:id="@+id/profile_signOut_button"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Sign Out"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/profile_gender_RadioGroup"
         app:layout_constraintBottom_toTopOf="@id/bottom_navigation_event"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/profile_change_button" />
-
-    <Button
-        android:id="@+id/profile_change_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Apply Changes"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBaseline_toBaselineOf="@id/profile_signOut_button"
-        app:layout_constraintLeft_toRightOf="@+id/profile_signOut_button"/>
+        android:layout_marginHorizontal="30dp"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/profile_signOut_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginRight="10dp"
+            android:text="Sign Out" />
 
 
+        <Button
+            android:id="@+id/profile_change_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="10dp"
+            android:text="Apply Changes"/>
+
+
+    </LinearLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/profile_userName_Layout"
@@ -45,8 +54,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:endIconMode="clear_text"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
+        android:layout_marginHorizontal="30dp"
         app:layout_constraintTop_toBottomOf="@+id/profile_addImage_Button">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -67,8 +75,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
+        android:layout_marginHorizontal="30dp"
         app:layout_constraintTop_toBottomOf="@+id/profile_userName_Layout">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -92,8 +99,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:endIconMode="clear_text"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
+        android:layout_marginHorizontal="30dp"
         app:layout_constraintTop_toBottomOf="@+id/profile_userEmail_Layout">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -110,16 +116,12 @@
 
 
 
-
-
     <RadioGroup
         android:id="@+id/profile_gender_RadioGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginLeft="25dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginRight="25dp"
+        android:layout_marginHorizontal="30dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/profile_userAge_Layout">
 
@@ -130,8 +132,8 @@
             android:checked="false"
             android:text="Female"
             android:fontFamily="sans-serif-black"
-            android:textSize="20sp"
-            android:paddingLeft="5dp"/>
+            android:textSize="14sp"
+            android:paddingLeft="4dp"/>
 
         <RadioButton
             android:id="@+id/profile_male_radioButton"
@@ -141,8 +143,8 @@
             android:text="Male"
             android:layout_marginLeft="30dp"
             android:fontFamily="sans-serif-black"
-            android:textSize="20sp"
-            android:paddingLeft="5dp"/>
+            android:textSize="14sp"
+            android:paddingLeft="4dp"/>
 
         <RadioButton
             android:id="@+id/profile_others_radioButton"
@@ -152,8 +154,8 @@
             android:text="Others"
             android:layout_marginLeft="30dp"
             android:fontFamily="sans-serif-black"
-            android:textSize="20sp"
-            android:paddingLeft="5dp"/>
+            android:textSize="14sp"
+            android:paddingLeft="4dp"/>
     </RadioGroup>
 
 
@@ -166,16 +168,14 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:labelVisibilityMode="labeled"
-
         app:menu="@menu/bottom_navigation_menu" />
 
     <Button
         android:id="@+id/profile_addImage_Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"
         android:text="Add Profile Image"
+        android:textSize="14sp"
         app:layout_constraintBottom_toTopOf="@+id/profile_userName_Layout"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

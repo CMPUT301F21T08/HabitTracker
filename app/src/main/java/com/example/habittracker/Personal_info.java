@@ -39,7 +39,7 @@ public class Personal_info {
         this.localImagePath = null;
     }
 
-    public Personal_info(String name, String email, int genderId, int age, String localImagePath) {
+    public Personal_info(String name, String email, String gender, int genderId, int age, String localImagePath) {
         this.name = name;
         this.email = email;
         this.genderId = genderId;

@@ -1,5 +1,5 @@
 # HabitTracker
-This is an Android applicaion that is designed to track habits.
+This is an Android application that is designed to track habits.
 <br />User can add a habit with a start date ,a recurring frequency, and a reason for why start tracking this habit. 
 The frequency can be either multiple times per day, per week or per month. 
 The app will prompt you when it's time to finish every habit, and will calculate your level of completeness for each habit. 
