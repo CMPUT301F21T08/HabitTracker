@@ -150,6 +150,17 @@ public class HabitDescriptionActivity extends AppCompatActivity implements Delet
 
 
     /**
+     * Process the KEY_RETURN signal in the habit description activity
+     * When back button is pressed, return to habit list activity
+     */
+    @Override
+    public void onBackPressed() {
+        Intent intentReturn = new Intent(this, HabitListActivity.class);
+        startActivity(intentReturn);
+        finish();//return to the HabitListActivity
+    }
+
+    /**
      * A function that will get call when the user click the confirm button in the fragment.
      * And this function will delete the current habit from the database and return to the HabitListActivity
      */

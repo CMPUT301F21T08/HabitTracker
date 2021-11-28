@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
@@ -51,6 +52,7 @@ public class MainPageActivity extends AppCompatActivity {
     private String currentDate;
     private int year;
 
+    private int backCount;
 
     BottomNavigationView bottomNavigationView;
 
@@ -59,6 +61,9 @@ public class MainPageActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        backCount = 0;
+
         // set up the listView for the activity
         toDoListView = findViewById(R.id.habitToDo_listView);
         //get the current date information
@@ -185,6 +190,23 @@ public class MainPageActivity extends AppCompatActivity {
             }
         });
     }
+
+    /**
+     * Process the KEY_RETURN signal in main page activity
+     * When back button is pressed more than once, exit program
+     */
+    @Override
+    public void onBackPressed() {
+        backCount+=1;
+        if (backCount == 1) {
+            Toast.makeText(MainPageActivity.this, "Press the back button again to return to home page", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            backCount = 0;
+            super.onBackPressed();
+        }
+    }
+
 
     /**
      * method that used to go to the habit description page with the tapped habit

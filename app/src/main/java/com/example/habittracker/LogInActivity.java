@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -31,6 +32,8 @@ public class LogInActivity extends AppCompatActivity {
     private Button login_signIn_button;
     private Button login_signUp_button;
     private Button login_forgotPassword_button;
+    private TextInputLayout email_layout;
+    private TextInputLayout password_layout;
     private EditText userEmail;
     private EditText passWord;
     private CheckBox rememberMeBox;
@@ -41,16 +44,22 @@ public class LogInActivity extends AppCompatActivity {
     private SharedPreferences loginPreferences;
     private SharedPreferences.Editor loginPrefsEditor;
 
+    private int backCount;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_in);
+
+        backCount = 0;
 
         //connecting to the layout file
         login_signIn_button = findViewById(R.id.login_signIn_button);
         login_signUp_button = findViewById(R.id.login_signUp_button);
         userEmail = findViewById(R.id.login_useremail_editText);
         passWord = findViewById(R.id.login_password_editText);
+        email_layout = findViewById(R.id.login_useremail_Layout);
+        password_layout = findViewById(R.id.login_password_Layout);
         rememberMeBox = (CheckBox) findViewById(R.id.login_rememberMe);
 
         loginPreferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
@@ -85,6 +94,15 @@ public class LogInActivity extends AppCompatActivity {
                 String sUserEmail = userEmail.getText().toString().trim();
                 String sPassWord = passWord.getText().toString().trim();
 
+                if (sUserEmail == null || sUserEmail.isEmpty()){
+                    email_layout.setError("Email cannot be empty!");
+                    return;
+                }
+                if (sPassWord == null || sPassWord.isEmpty()){
+                    password_layout.setError("Password cannot be empty!");
+                    return;
+                }
+
                 InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(userEmail.getWindowToken(), 0);
                 if (rememberMeBox.isChecked()){
@@ -111,6 +129,22 @@ public class LogInActivity extends AppCompatActivity {
     }
 
     /**
+     * Process the KEY_RETURN signal in log-in activity
+     * When back button is pressed more than once, exit program
+     */
+    @Override
+    public void onBackPressed() {
+        backCount+=1;
+        if (backCount == 1) {
+            Toast.makeText(LogInActivity.this, "Press the back button again to return to home page", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            backCount = 0;
+            super.onBackPressed();
+        }
+    }
+
+    /**
      * This method takes the email address and password and checks with FireBase if the information
      * is correct. If successful go to main page. ELse, post a toast telling the user it failed.
      * @param userEmail: the email entered
@@ -125,7 +159,7 @@ public class LogInActivity extends AppCompatActivity {
                     startActivity(new Intent(getApplicationContext(), MainPageActivity.class));
                     finish();
                 } else {
-                    Toast.makeText(LogInActivity.this, "Login failed", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LogInActivity.this, "Login failed ", Toast.LENGTH_SHORT).show();
                 }
             }
         });

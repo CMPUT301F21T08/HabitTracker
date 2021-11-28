@@ -1,8 +1,9 @@
 package com.example.habittracker;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.provider.Settings;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,16 +21,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
 
 public class FollowingActivity extends AppCompatActivity implements SearchFollowingFragment.OnFragmentInteractionListener{
 
@@ -65,6 +63,8 @@ public class FollowingActivity extends AppCompatActivity implements SearchFollow
         Toolbar myToolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
         myToolbar.showOverflowMenu();
+        myToolbar.setTitleTextColor(Color.WHITE);
+
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("Following");
 
@@ -161,6 +161,17 @@ public class FollowingActivity extends AppCompatActivity implements SearchFollow
         });
     }
 
+    /**
+     * Process the KEY_RETURN signal in following activity
+     * When back button is pressed, return to main page activity
+     */
+    @Override
+    public void onBackPressed() {
+        Intent intent3 = new Intent(FollowingActivity.this, MainPageActivity.class);
+        startActivity(intent3);
+        finish();
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -217,7 +228,6 @@ public class FollowingActivity extends AppCompatActivity implements SearchFollow
             // as onDataChange was called asynchronous, we created a onCallback method to store the uid_toFollow
             @Override
             public void onCallback(String email_toFollow, String uid_toFollow) {
-
                 // put the uid into the Request_To list
                 HashMap<String,Object> map = new HashMap<>();
                 email_toFollow = email_toFollow.replace("@","");

@@ -123,7 +123,21 @@ public class HabitEventEditMapActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Process the KEY_RETURN signal in the map activity
+     * Make it having the same effect as clicking the return button
+     */
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent();
+        setResult(RESULT_CANCELED, intent);
+        finish();
+    }
 
+    /**
+     * This gets current location and shows marker and address.
+     * After that when user clicks on the map it shows marker and address.
+     */
     private void getLocation() {
 
         if (ActivityCompat.checkSelfPermission(HabitEventEditMapActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -256,6 +270,15 @@ public class HabitEventEditMapActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Check permission.
+     * @param requestCode
+     *   This is the request code passed in.
+     * @param permission
+     *   This is the requested permissions.
+     * @param grantResults
+     *   The grant results for the corresponding permissions which is either PERMISSION_GRANTED or PERMISSION_DENIED.
+     */
 
 
     @Override
@@ -271,15 +294,22 @@ public class HabitEventEditMapActivity extends AppCompatActivity {
     }
 
 
-
-
-
-
+    /**
+     * Check internet connection.
+     */
 
     private void CheckConnection(){
         manager = (ConnectivityManager) getApplicationContext().getSystemService(CONNECTIVITY_SERVICE);
         networkInfo = manager.getActiveNetworkInfo();
     }
+
+    /**
+     * Get address of a location.
+     * @param mLat
+     *   This is latitude of address.
+     * @param mLng
+     *   This is longitude of address.
+     */
 
     private void GetAddress(double mLat, double mLng){
         geocoder = new Geocoder(HabitEventEditMapActivity.this, Locale.getDefault());

@@ -1,7 +1,9 @@
 package com.example.habittracker;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -31,6 +33,8 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forgot_password);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         resetButton = (Button) findViewById(R.id.forgotPassword_reset_Button);
         emailEditText = (EditText) findViewById(R.id.forgotPassword_email_EditText);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
@@ -45,6 +49,36 @@ public class ForgotPasswordActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    /**
+     * Process the KEY_RETURN signal in forgot password activity
+     * When back button is pressed, return to log-in activity
+     */
+    @Override
+    public void onBackPressed() {
+        Intent intent3 = new Intent(ForgotPasswordActivity.this, LogInActivity.class);
+        startActivity(intent3);
+        finish();
+    }
+
+    /**
+     * This function makes sure that when returning to habit event list using the arrow in the tool bar, a mode string will be passed
+     * so that the return can be successful
+     * This is how we customize the return arrow in the toolbar
+     * @param item
+     * @return
+     */
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                Intent intentReturn = new Intent(getApplicationContext(), LogInActivity.class); // Return to the log-in page
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     private void resetPassword() {

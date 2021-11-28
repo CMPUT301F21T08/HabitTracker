@@ -126,4 +126,14 @@ public class HabitEventListActivity extends AppCompatActivity {
         setIntent(intent);
     }
 
+    /**
+     * This method is used to control the workflow when user press the back button (one device, not in app)
+     * Will return to main page directly
+     */
+    @Override
+    public void onBackPressed() {
+        Intent intent3 = new Intent(this, MainPageActivity.class);
+        startActivity(intent3);
+        finish();
+    }
 }

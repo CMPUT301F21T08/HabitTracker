@@ -361,6 +361,16 @@ public class HabitEventEditActivity extends AppCompatActivity  {
         });
     }
 
+
+    /**
+     * Put the location which user chooses into editText.
+     * @param requestCode
+     *    This is the request code passed in.
+     * @param resultCode
+     *   This specifies status of the called message as Intent
+     * @param data
+     *   This is intent.
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -428,11 +438,23 @@ public class HabitEventEditActivity extends AppCompatActivity  {
         }
     }
 
+    /**
+     * This function is used to process the KEY_RETURN signal captured in the habit event edit page
+     * It is designed in a way that user can only return when editing an existing event
+     * If the user is creating an event, clicking the return button has no use
+     */
+    @Override
+    public void onBackPressed() {
+        // Forbid user to return when creating a new event
+        if (eventIndexInList > 0) {
+            Intent intentReturn = new Intent(getApplicationContext(), HabitEventListActivity.class); // Return to the habit event list page
+            intentReturn.putExtra("StartMode", "normal");
+            startActivity(intentReturn);
+            finish();
+        }
+    }
 
-
-
-
-//-----------------------------------------------functional APIs-------------------------------------------------------------------------------------------------------------
+    //-----------------------------------------------functional APIs-------------------------------------------------------------------------------------------------------------
 
     // The following two methods took reference from: https://www.youtube.com/watch?v=-sItRxJ3rVk
 

@@ -1,6 +1,7 @@
 package com.example.habittracker;
 
 import android.content.DialogInterface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -9,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -25,13 +27,16 @@ import androidx.appcompat.app.AppCompatActivity;
 public class FollowedUserActivity extends AppCompatActivity {
     private Button UnsubBtn;
     private TextView UserNameTextView;
+    private TextView UserAgeTextView;
+    private TextView UserGenderTextView;
+
     private ListView UserHabitsListView;
     private ImageView UserAvatarImageView;
     private String followed_user_uid;
 
     private FirebaseAuth authentication; // user authentication reference
     private String uid; // User unique ID
-
+    private Personal_info User;
     private ArrayAdapter<Habit> habitArrayAdapter;
     private ArrayList<Habit> habitArrayList;
 
@@ -47,6 +52,8 @@ public class FollowedUserActivity extends AppCompatActivity {
         UnsubBtn = findViewById(R.id.followed_user_unsubscribe_button);
         UserHabitsListView = findViewById(R.id.followed_user_habits_listview);
         UserNameTextView = findViewById(R.id.followed_user_name_textView);
+        UserAgeTextView = findViewById(R.id.followed_user_age_textView);
+        UserGenderTextView = findViewById(R.id.followed_user_gender_textView);
         UserAvatarImageView = findViewById(R.id.followed_user_avatar_imageView);
 
         // firebase connection
@@ -60,6 +67,25 @@ public class FollowedUserActivity extends AppCompatActivity {
         habitArrayAdapter = new FollowedHabitListAdapter(this, habitArrayList);
         UserHabitsListView.setAdapter(habitArrayAdapter);
 
+
+        DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference().child(followed_user_uid).child("Info");
+        reference1.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                User = (Personal_info) snapshot.getValue(Personal_info.class);
+                UserNameTextView.setText(User.getName());
+                UserAgeTextView.setText("Age: "+User.getName());
+                UserGenderTextView.setText("Gender: "+User.getGender());
+                if (User.getDownloadUrl() != null){
+                    Uri uri = Uri.parse(User.getDownloadUrl());
+                    Glide.with(getApplicationContext()).load(uri).into(UserAvatarImageView);
+                }
+
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) { }
+        });
+
         // get all the habit the user has from the database
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child(followed_user_uid).child("Habit");
         reference.addValueEventListener(new ValueEventListener() {
@@ -69,7 +95,9 @@ public class FollowedUserActivity extends AppCompatActivity {
                 // using the habits that retrieve from the database to set upt listView
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()){
                     Habit hab = (Habit) dataSnapshot.getValue(Habit.class);
-                    habitArrayList.add(hab);
+                    if (hab.isPublicHabit()){
+                        habitArrayList.add(hab);
+                    }
                 }
                 habitArrayAdapter.notifyDataSetChanged();
             }
