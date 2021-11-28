@@ -7,12 +7,14 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -56,21 +58,40 @@ public class ProfileActivity extends AppCompatActivity {
     ImageView profile_Image;
     BottomNavigationView bottomNavigationView;
     EditText userName;
-    TextView userEmail;
-    EditText userGender;
+    EditText userEmail;
     EditText userAge;
     String imageFilePath;
     private FirebaseAuth authentication;
     private String uid;
     boolean addedPhoto;
+    private RadioGroup gender_RadioGroup;
+    private RadioButton gender_RadioButton;
+
+
+    private final String FEMALE = "Female";
+    private final String MALE = "Male";
+    private final String OTHER = "Other";
+
     static Personal_info personal_info;
     Uri uri;
+
+    public ProfileActivity() {
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
         boolean addedPhoto = false;  // flag that is used to determine whether user has added a photo
+
+        gender_RadioGroup = findViewById(R.id.profile_gender_RadioGroup);
+        gender_RadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                gender_RadioButton = findViewById(i);
+                Log.v("NEWONE", ""+gender_RadioButton.getText().toString());
+            }
+        });
 
 
         // The corresponding user unique uid, in order to locate into the correct user branch in firebase
@@ -82,8 +103,8 @@ public class ProfileActivity extends AppCompatActivity {
         
         // connecting attributes in the layout file
         userName = findViewById(R.id.profile_userName_EditText);
-        userEmail = findViewById(R.id.profile_userEmail_TextView);
-        userGender = findViewById(R.id.profile_userGender_EditText);
+        userEmail = findViewById(R.id.profile_userEmail_EditText);
+      //  userGender = findViewById(R.id.profile_userGender_EditText);
         userAge = findViewById(R.id.profile_userAge_EditText);
 
         // add image
@@ -142,7 +163,9 @@ public class ProfileActivity extends AppCompatActivity {
                 if (personal_info != null) {
                     userName.setText(personal_info.getName());
                     userEmail.setText(personal_info.getEmail());
-                    userGender.setText(personal_info.getGender());
+                    if (personal_info.getGenderId() != -1){
+                        gender_RadioGroup.check(personal_info.getGenderId());
+                    }
                     userAge.setText(Integer.toString(personal_info.getAge()));
                     if (personal_info.getDownloadUrl() != null){
                         Uri uri = Uri.parse(personal_info.getDownloadUrl());
@@ -177,18 +200,17 @@ public class ProfileActivity extends AppCompatActivity {
         applyChanges_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                if (userGender.getText().toString().trim().compareTo("Male") != 0 && userGender.getText().toString().trim().compareTo("Female") != 0 && userGender.getText().toString().trim().compareTo("Others") != 0){
-                    Toast.makeText(ProfileActivity.this, "Wrong Input for Gender, please enter Male, Female or Others", Toast.LENGTH_SHORT).show();
-                } else if (100<=Integer.parseInt(userAge.getText().toString().trim()) || Integer.parseInt(userAge.getText().toString().trim()) <0 ){
+                if (100<=Integer.parseInt(userAge.getText().toString().trim()) || Integer.parseInt(userAge.getText().toString().trim()) <0 ){
                     Toast.makeText(ProfileActivity.this, "Wrong Input for Age, please enter an integer between 0 to 100", Toast.LENGTH_SHORT).show();
                 } else if (personal_info.getLocalImagePath() != null){
-                    personal_info = new Personal_info(userName.getText().toString().trim(),userEmail.getText().toString(),userGender.getText().toString().trim(),Integer.parseInt(userAge.getText().toString().trim()), personal_info.getLocalImagePath());
+                    personal_info = new Personal_info(userName.getText().toString().trim(),userEmail.getText().toString(),gender_RadioButton.getId(),Integer.parseInt(userAge.getText().toString().trim()), personal_info.getLocalImagePath());
+                    personal_info.setUid(uid);
                     uploadImage(personal_info, uid);
                     Toast.makeText(ProfileActivity.this, "Changes has been made!", Toast.LENGTH_SHORT).show();
                 } else{
                     HashMap<String,Object> map = new HashMap<>();
-                    personal_info = new Personal_info(userName.getText().toString().trim(),userEmail.getText().toString(),userGender.getText().toString().trim(),Integer.parseInt(userAge.getText().toString().trim()), personal_info.getLocalImagePath());
+                    personal_info = new Personal_info(userName.getText().toString().trim(),userEmail.getText().toString(),gender_RadioButton.getId(),Integer.parseInt(userAge.getText().toString().trim()), personal_info.getLocalImagePath());
+                    personal_info.setUid(uid);
                     map.put("Info",personal_info);
                     FirebaseDatabase.getInstance().getReference().child(uid).updateChildren(map);
                     Toast.makeText(ProfileActivity.this, "Changes has been made!", Toast.LENGTH_SHORT).show();
@@ -270,6 +292,7 @@ public class ProfileActivity extends AppCompatActivity {
                         System.out.println("-----------------> Get photo url success! URL: " + uri.toString());
                         personal_info.setDownloadUrl(uri.toString());
                         HashMap<String, Object> map = new HashMap<>();
+                        personal_info.setUid(uid);
                         map.put("Info", personal_info);
                         FirebaseDatabase.getInstance().getReference().child(uid).updateChildren(map);
                     }

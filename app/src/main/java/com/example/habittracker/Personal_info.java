@@ -6,9 +6,16 @@ public class Personal_info {
     private String gender;
     private int age;
     private String localImagePath;
-
+    private int genderId = -1;
     private String uid;
 
+    public int getGenderId() {
+        return genderId;
+    }
+
+    public void setGenderId(int genderId) {
+        this.genderId = genderId;
+    }
 
     public String getDownloadUrl() {
         return downloadUrl;
@@ -31,6 +38,16 @@ public class Personal_info {
         this.age = age;
         this.localImagePath = null;
     }
+
+    public Personal_info(String name, String email, int genderId, int age, String localImagePath) {
+        this.name = name;
+        this.email = email;
+        this.genderId = genderId;
+        this.age = age;
+        this.localImagePath = null;
+        this.localImagePath = localImagePath;
+    }
+
 
     public Personal_info(String name, String email, String gender, int age, String localImagePath) {
         this.name = name;

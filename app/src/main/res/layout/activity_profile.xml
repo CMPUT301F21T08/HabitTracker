@@ -9,20 +9,20 @@
     <ImageView
         android:id="@+id/profile_ImageView"
         android:layout_width="match_parent"
-        android:layout_height="154dp"
-        android:layout_marginTop="20dp"
+        android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
+        app:srcCompat="@drawable/default_picture"
         app:layout_constraintTop_toTopOf="parent"
-        android:src="@drawable/empty_profile"/>
+        android:contentDescription="This is where the profile picture is stored." />
 
 
     <Button
         android:id="@+id/profile_signOut_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="50dp"
         android:text="Sign Out"
+        app:layout_constraintTop_toBottomOf="@id/profile_gender_RadioGroup"
         app:layout_constraintBottom_toTopOf="@id/bottom_navigation_event"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/profile_change_button" />
@@ -31,12 +31,10 @@
         android:id="@+id/profile_change_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="50dp"
         android:text="Apply Changes"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/bottom_navigation_event"
-        app:layout_constraintLeft_toRightOf="@+id/profile_signOut_button"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBaseline_toBaselineOf="@id/profile_signOut_button"
+        app:layout_constraintLeft_toRightOf="@+id/profile_signOut_button"/>
 
 
 
@@ -49,7 +47,6 @@
         app:endIconMode="clear_text"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
-        android:layout_marginTop="20dp"
         app:layout_constraintTop_toBottomOf="@+id/profile_addImage_Button">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -116,7 +113,7 @@
 
 
     <RadioGroup
-        android:id="@+id/profile_gender_Radiogroup"
+        android:id="@+id/profile_gender_RadioGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -133,7 +130,7 @@
             android:checked="false"
             android:text="Female"
             android:fontFamily="sans-serif-black"
-            android:textSize="20dp"
+            android:textSize="20sp"
             android:paddingLeft="5dp"/>
 
         <RadioButton
@@ -144,7 +141,7 @@
             android:text="Male"
             android:layout_marginLeft="30dp"
             android:fontFamily="sans-serif-black"
-            android:textSize="20dp"
+            android:textSize="20sp"
             android:paddingLeft="5dp"/>
 
         <RadioButton
@@ -155,7 +152,7 @@
             android:text="Others"
             android:layout_marginLeft="30dp"
             android:fontFamily="sans-serif-black"
-            android:textSize="20dp"
+            android:textSize="20sp"
             android:paddingLeft="5dp"/>
     </RadioGroup>
 
@@ -166,20 +163,23 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        app:labelVisibilityMode="labeled"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:labelVisibilityMode="labeled"
+
         app:menu="@menu/bottom_navigation_menu" />
 
     <Button
         android:id="@+id/profile_addImage_Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Add Profile Image"
         android:layout_marginTop="20dp"
-        app:layout_constraintTop_toBottomOf="@id/profile_ImageView"
+        android:layout_marginBottom="20dp"
+        android:text="Add Profile Image"
+        app:layout_constraintBottom_toTopOf="@+id/profile_userName_Layout"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"/>
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/profile_ImageView" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
