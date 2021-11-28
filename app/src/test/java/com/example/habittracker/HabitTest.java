@@ -1,11 +1,9 @@
 package com.example.habittracker;
 
 
-import org.junit.Before;
 import static org.junit.Assert.assertEquals;
+
 import org.junit.jupiter.api.Test;
-//import org.junit.Test;
-import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -88,6 +86,25 @@ public class HabitTest {
         list.add(2);
         list.add(3);
         assertEquals(list, habit.getOccurrenceDay());
+    }
+
+    /**
+     * Test getter for index
+     */
+    @Test
+    void testGetIndex(){
+        Habit habit = mockHabit();
+        assertEquals(0,habit.getIndex());
+    }
+    /**
+     * Test setter for index
+     */
+    @Test
+    void testSetIndex(){
+        Habit habit = mockHabit();
+        int num = 0;
+        habit.setIndex(num);
+        assertEquals(num,habit.getIndex());
     }
 
     /**
@@ -193,7 +210,7 @@ public class HabitTest {
     @Test
     void testGetLastDate(){
         Habit habit = mockHabit();
-        assertEquals(true, habit.getLastDate().equals("null"));
+        assertEquals(true, habit.getLastDate().equals("empty"));
     }
 
     /**
@@ -329,11 +346,12 @@ public class HabitTest {
         assertEquals(false, habit.isNotDone());
     }
 
+
     /**
      * Test calculateTimes()
      */
     @Test
-    void testCalculateTimes(){
+    void calculateTimes(){
         ArrayList<Integer> occurrenceDay = new ArrayList<Integer>();
         String uniqueID = UUID.randomUUID().toString();
         occurrenceDay.add(1);
@@ -370,7 +388,7 @@ public class HabitTest {
      * Test reset()
      */
     @Test
-    void testReset(){
+    void reset(){
         ArrayList<Integer> occurrenceDay= new ArrayList<Integer>();
         ArrayList<Integer> occurrenceDayW = new ArrayList<Integer>();
         ArrayList<Integer> occurrenceDayM = new ArrayList<Integer>();
@@ -378,15 +396,10 @@ public class HabitTest {
         occurrenceDay.add(1);
         occurrenceDay.add(2);
         occurrenceDay.add(3);
-        //Habit habit = mockHabit();
-        Calendar current = Calendar.getInstance();
-        Date date = new Date();
-        int day_of_month = current.get(Calendar.DAY_OF_MONTH);
-        int day_of_week = current.get(Calendar.DAY_OF_WEEK);
-        occurrenceDayW.add(day_of_week);
-        occurrenceDayM.add(day_of_month);
-        //int day_of_week = current.get(Calendar.DAY_OF_WEEK);
-        //int month = calendar.get(Calendar.MONTH) + 1;
+        occurrenceDayW.add(3);
+        occurrenceDayM.add(2);
+
+        //create instance of per day to test reset
         Habit habit = new Habit("Reading", "Good", "reading books three times per day", "2021-11-02", 3, "per day", occurrenceDay, uniqueID, 0, false);
         assertEquals("2021-11-02", habit.getRecordDate());
         habit.refresh("2021-11-03");
@@ -395,22 +408,32 @@ public class HabitTest {
         habit.reset();
         assertEquals(3,habit.getNeedCompletion());
 
-        /*habit = new Habit("Reading", "Good", "reading books three times per week", "2021-11-02", 3, "per week", occurrenceDayW, uniqueID, 0, false);
-        assertEquals("2021-11-02", habit.getRecordDate());
-        habit.refresh("2021-12-02");
-        assertEquals("2021-12-02", habit.getLastDate());
-        assertEquals(4, habit.getNeedCompletion());
-        habit.reset();
-        assertEquals(3,habit.getNeedCompletion());
-         */
-
-        habit = new Habit("Reading", "Good", "reading books three times per month", "2021-11-02", 3, "per month", occurrenceDayM, uniqueID, 0, false);
-        assertEquals("2021-11-02", habit.getRecordDate());
-        habit.refresh("2021-12-02");
-        assertEquals("2021-12-02", habit.getLastDate());
+        //create instance of per week to test reset
+        habit = new Habit("Reading", "Good", "reading books three times per week", "2021-11-02", 1, "per week", occurrenceDayW, uniqueID, 0, false);
+        habit.refresh("2021-11-02");
+        assertEquals("2021-11-03", habit.getRecordDate());
+        assertEquals("2021-11-02", habit.getLastDate());
 
         assertEquals(1, habit.getNeedCompletion());
         habit.reset();
         assertEquals(0,habit.getNeedCompletion());
+
+
+        //create instance of per month to test reset
+        habit = new Habit("Reading", "Good", "reading books three times per month", "2021-11-02", 1, "per month", occurrenceDayM, uniqueID, 0, false);
+        habit.refresh("2021-11-02");
+        assertEquals("2021-11-03", habit.getRecordDate());
+        //habit.refresh("2021-11-02");
+        assertEquals("2021-11-02", habit.getLastDate());
+
+        assertEquals(1, habit.getNeedCompletion());
+        habit.reset();
+        assertEquals(0,habit.getNeedCompletion());
+
+
+
+
     }
+
+
 }
