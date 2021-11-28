@@ -21,8 +21,9 @@ import java.util.ArrayList;
  * a fragment allows user to see weekly occurrence day of habit
  */
 public class ShowWeekDaysFragment extends DialogFragment {
-    //private ShowWeekDaysFragment.OnFragmentInteractionListener listener;
+    // the arraylist used to store the weekly occurrence days
     private ArrayList<Integer> days;
+    // the view in the fragment
     private CheckBox Monday;
     private CheckBox Tuesday;
     private CheckBox Wednesday;
@@ -30,6 +31,7 @@ public class ShowWeekDaysFragment extends DialogFragment {
     private CheckBox Friday;
     private CheckBox Saturday;
     private CheckBox Sunday;
+    // the variable used to store the habit object
     private Habit habit;
 
     /**
@@ -43,6 +45,10 @@ public class ShowWeekDaysFragment extends DialogFragment {
 
 
 
+    /**
+     * The "onAttach" method for DialogFragment
+     * @param context context of the activity
+     */
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -72,6 +78,10 @@ public class ShowWeekDaysFragment extends DialogFragment {
 
     }
 
+    /**
+     * The method used to set up the checkbox in the fragment to show the weekly occurrence days of the habit
+     * @param habit the current habit
+     */
     private void setCheckBox(Habit habit){
         ArrayList<Integer> days = habit.getOccurrenceDay();
         if(days.contains(2)){

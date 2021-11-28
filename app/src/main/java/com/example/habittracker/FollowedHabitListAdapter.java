@@ -52,7 +52,7 @@ public class FollowedHabitListAdapter extends ArrayAdapter<Habit> {
         if(habit.getNeedCompletion() == 0){
             progression.setProgress(0);
         } else {
-            progression.setProgress((habit.getDoneTime()*100)/habit.getNeedCompletion());
+            progression.setProgress((habit.getNumber_of_completion()*100)/habit.getNeedCompletion());
         }
 
 

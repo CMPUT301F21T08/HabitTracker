@@ -30,7 +30,7 @@ public class Habit implements Serializable {
     private String habitContent;
     // start date of the habit
     private String startDate;
-    // attribute that used to determine whether the date time has changed
+    // attribute that used to determine whether the date time has changed(usually store the date of the current time)
     private String lastDate;
     // frequency of the habit
     private int frequency;
@@ -54,7 +54,7 @@ public class Habit implements Serializable {
     private int needCompletion = 0;
     // attribute used to order the habit in the habit list
     private int index;
-    private boolean addToday = false;
+    // the starting date used in calculating the total number of need completion
     private String recordDate;
 
 
@@ -68,6 +68,9 @@ public class Habit implements Serializable {
      * @param frequency the frequency of the habit
      * @param frequencyType the frequency type of the habit
      * @param occurrenceDay the occurrence day of the habit
+     * @param uuid the id for the habit
+     * @param index the index for the habit in the habit list
+     * @param publicHabit disclosure status of the habit
      */
     public Habit(String habitTitle, String habitReason, String habitContent, String startDate, int frequency, String frequencyType, ArrayList<Integer> occurrenceDay, String uuid, int index, boolean publicHabit){
         this.habitTitle = habitTitle;
@@ -365,61 +368,101 @@ public class Habit implements Serializable {
         this.UUID = UUID;
     }
 
+    /**
+     * Getter for publicHabit
+     * @return
+     */
     public boolean isPublicHabit() {
         return publicHabit;
     }
 
+    /**
+     * Setter for publicHabit
+     * @param publicHabit
+     */
     public void setPublicHabit(boolean publicHabit) {
         this.publicHabit = publicHabit;
     }
 
+    /**
+     * Getter for needCompletion
+     * @return
+     */
     public int getNeedCompletion() {
         return needCompletion;
     }
 
+    /**
+     * Getter for index
+     * @return
+     */
     public int getIndex() {
         return index;
     }
 
+    /**
+     * Setter for index
+     * @param index
+     */
     public void setIndex(int index) {
         this.index = index;
     }
 
+    /**
+     * Getter for recordDate
+     * @return
+     */
     public String getRecordDate() {
         return recordDate;
     }
 
+    /**
+     * the method used to calculate how many times the habit needed to be done for the current time
+     */
     public void calculateTimes(){
+        // the simpleDateFormat used to create the Date variable
         SimpleDateFormat myFormat = new SimpleDateFormat("yyyy-MM-dd");
+        // calculate the times needed for the habits with per day frequency
         if(this.frequencyType.equals("per day")){
             try {
+                // create the Date variables for the record date and the current date
                 Date date1 = myFormat.parse(this.recordDate);
                 Date date2 = myFormat.parse(this.lastDate);
+                // get the difference between two dates
                 long diff = date2.getTime() - date1.getTime();
+                // round up the difference into integer to reflect the amount of days
                 int days = (int) (diff / (1000*60*60*24)) + 1;
+                // calculate the number of times needed for the period between record date and current date and add it to the variable needCompletion
                 this.needCompletion = this.needCompletion + days * this.frequency;
             } catch (ParseException e) {
                 e.printStackTrace();
             }
+            // calculate the times needed for the habit with per week frequency
         } else if(this.frequencyType.equals("per week")){
             try {
+                // create the Date variables for the record date and the current date
                 Date date1 = myFormat.parse(this.recordDate);
                 Date date2 = myFormat.parse(this.lastDate);
+                // loop through all the weekly occurrence days to calculate the number of times that the habit need to be done
                 for (int i = 0; i < this.occurrenceDay.size(); i++ ){
+                    // call the calculateWeekdays method to calculate the number of  a specific week day in a period
                     this.needCompletion = this.needCompletion + calculateWeekdays(date1, date2, this.occurrenceDay.get(i));
                 }
             } catch (ParseException e) {
                 e.printStackTrace();
             }
+            // calculate the times needed for the habit with per month frequency
         } else {
             try {
                 Date date1 = myFormat.parse(this.recordDate);
                 Date date2 = myFormat.parse(this.lastDate);
-                this.needCompletion = this.needCompletion + calculateMonthdays(date1, date2, this.occurrenceDay.get(0));
+                // call the calculateMonthDays method to calculate the number of times that the number of the monthly occurrence date in a period
+                this.needCompletion = this.needCompletion + calculateMonthDays(date1, date2, this.occurrenceDay.get(0));
             } catch (ParseException e) {
                 e.printStackTrace();
             }
         }
+        // change the value in the recordDate variable to become the next date of the current date time
         try {
             this.recordDate = this.lastDate;
             Date time = myFormat.parse(this.recordDate);
@@ -432,46 +475,76 @@ public class Habit implements Serializable {
         }
     }
 
+    /**
+     * the method used to calculate the total amount of a specific week day in a given period
+     * @param start the starting date of the period
+     * @param end the end date of the period
+     * @param i the number that represent the week day in the week
+     * @return
+     */
     private int calculateWeekdays(Date start, Date end, int i){
+        // using the two Date variables to create Calendar variables for the starting date and the end date
         Calendar startCal = Calendar.getInstance();
         startCal.setTime(start);
         Calendar endCal = Calendar.getInstance();
         endCal.setTime(end);
+        // variable used to store the total number of the specific week day in the period
         int days = 0;
+        // return 0 if the starting date is after the end date
         if (startCal.getTimeInMillis() > endCal.getTimeInMillis()) {
             return days;
         }
-
+        // a loop that used to calculate the number of occurrence of a weekday in the period
         while (startCal.getTimeInMillis() <= endCal.getTimeInMillis()){
+            // check if the the date in the startCal is the specific week day
             if (startCal.get(Calendar.DAY_OF_WEEK) == i) {
                 ++days;
             }
+            // move the starting day one day up
             startCal.add(Calendar.DAY_OF_MONTH, 1);
         }
+        // return the result
         return days;
     }
 
-    private int calculateMonthdays(Date start, Date end, int i){
+    /**
+     * the method used to calculate the total amount of the monthly occurrence day in a given period
+     * @param start the starting date of the period
+     * @param end the end date of the period
+     * @param i the number that represent the week day in the week
+     * @return
+     */
+    private int calculateMonthDays(Date start, Date end, int i){
+        // using the two Date variables to create Calendar variables for the starting date and the end date
         Calendar startCal = Calendar.getInstance();
         startCal.setTime(start);
         Calendar endCal = Calendar.getInstance();
         endCal.setTime(end);
+        // variable used to store the total number of the specific week day in the period
         int days = 0;
+        // return 0 if the starting date is after the end date
         if (startCal.getTimeInMillis() > endCal.getTimeInMillis()) {
             return days;
         }
-
+        // a loop that used to calculate the number of occurrence of a date of month in the period
         while (startCal.getTimeInMillis() <= endCal.getTimeInMillis()){
             if (startCal.get(Calendar.DAY_OF_MONTH) == i) {
                 ++days;
             }
+            // move the starting day one day up
             startCal.add(Calendar.DAY_OF_MONTH, 1);
         }
+        // return the result
         return days;
     }
 
 
+    /**
+     * the method used to reset the times in the needCompletion variable and the date in the recordDate variable
+     * if the user edits habit
+     */
     public void reset(){
+        // set up the Calendar variable
         SimpleDateFormat myFormat = new SimpleDateFormat("yyyy-MM-dd");
         Calendar current = Calendar.getInstance();
         try{
@@ -480,22 +553,33 @@ public class Habit implements Serializable {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+        // if the habit is with per week frequency
         if(frequencyType.equals("per week") ){
+            // if the habit need to be done today
             if(this.occurrenceDay.contains(current.get(Calendar.DAY_OF_WEEK))){
+                // decrement the times in the needCompletion by 1
                 this.needCompletion--;
+                // set the date in the recordDate to be the current date in the lastDate
                 this.recordDate = this.lastDate;
             }
 
         }
+        // if the habit is with per month frequency
         if (frequencyType.equals("per month")){
+            // if the habit need to be done today
             if(this.occurrenceDay.contains(current.get(Calendar.DAY_OF_MONTH))){
+                // decrement the times in the needCompletion by 1
                 this.needCompletion--;
+                // set the date in the recordDate to be the current date in the lastDate
                 this.recordDate = this.lastDate;
             }
 
         }
+        // if the habit is with per day frequency
         if(frequencyType.equals("per day")){
+            // decrement the times in the needCompletion by the number of frequency of the habit
             this.needCompletion = this.needCompletion - this.frequency;
+            // set the date in the recordDate to be the current date in the lastDate
             this.recordDate = this.lastDate;
         }
     }

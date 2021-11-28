@@ -13,6 +13,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
@@ -83,7 +84,7 @@ public class HabitDescriptionActivityTest {
         //click on the Habit
         HabitListActivity activity = (HabitListActivity) solo.getCurrentActivity();
         //get listView
-        ListView listView = activity.findViewById(R.id.allHabits_habitList_listView);
+        RecyclerView recyclerView = activity.findViewById(R.id.allHabits_habitList_recycleView);
         // click on the Habit
         solo.clickInList(0,0);
         // check information is the same.

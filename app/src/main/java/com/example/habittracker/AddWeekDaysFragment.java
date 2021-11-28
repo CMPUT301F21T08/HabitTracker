@@ -39,9 +39,12 @@ public class AddWeekDaysFragment extends DialogFragment {
         super();
     }
 
+    /**
+     * interface of OnFragmentInteractionListener
+     */
     public interface OnFragmentInteractionListener{
+        // the function will be called when the confirm button is pressed
         void onConfirmPressed(ArrayList<Integer> days, int valueOfFrequency);
-        //void onReturnPressed();
     }
 
     /**
@@ -121,7 +124,9 @@ public class AddWeekDaysFragment extends DialogFragment {
 
     }
 
-    // a function to make all the checkbox checkable
+    /**
+     *  a function to make all the checkbox checkable
+     */
     private void setAllClickable(){
         Monday.setClickable(true);
         Tuesday.setClickable(true);

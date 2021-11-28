@@ -1,9 +1,3 @@
-/**
- * @author 'yhu19' and 'ingabire'
- * Allow users to see the list of habits they have
- *
- */
-
 package com.example.habittracker;
 
 import static android.content.ContentValues.TAG;
@@ -45,36 +39,45 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 
+/**
+ * @author 'yhu19' and 'ingabire'
+ * This activity will shows the list of habits that user have created
+ */
 public class HabitListActivity extends AppCompatActivity {
     // views of the activity
     private RecyclerView habitRecycleView;
     private FloatingActionButton addButton;
+    // adapter for the recycler view
     private HabitListAdapter habitAdapter;
+    // arraylist used to store list of habit
     private ArrayList<Habit> habitList;
+    // the amount of habits in the habit list
     private int amount;
 
     private FirebaseAuth authentication; // user authentication reference
     private String uid; // User unique ID
+    // set up the OnItemClickListener to allow the user to click on the habit to see its detailed information
     private View.OnClickListener onItemClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
+            // get the position of the tapped habit
             RecyclerView.ViewHolder viewHolder = (RecyclerView.ViewHolder) view.getTag();
             int position = viewHolder.getAdapterPosition();
+            // get the tapped habit
             Habit tapHabit = habitList.get(position);
+            // upload the information to database to update all habit
             for(int i = 0; i < habitList.size(); i++){
                 Habit habit = habitList.get(i);
-                // upload the information to database to update all habit
                 HashMap<String, Object> map = new HashMap<>();
                 map.put(habit.getUUID(),habit);
                 FirebaseDatabase.getInstance().getReference().child(uid).child("Habit").updateChildren(map);
             }
+            // call the goToHabitDescriptionActivity method to go to HabitEditActivity
             goToHabitDescriptionActivity(position, tapHabit);
         }
     };
-
-
-
     BottomNavigationView bottomNavigationView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,16 +93,21 @@ public class HabitListActivity extends AppCompatActivity {
             uid = authentication.getCurrentUser().getUid();
         }
 
-        // create the listView using the habit arrayList
+        // create the recycler view using the adapter and the arraylist of habits
         habitList = new ArrayList<Habit>();
         habitAdapter = new HabitListAdapter(this, habitList);
         habitRecycleView.setAdapter(habitAdapter);
         habitRecycleView.setLayoutManager(new LinearLayoutManager(this));
+        // attach the onItemClickListener to the adapter
         habitAdapter.setOnItemClickListener(onItemClickListener);
+        // set up the itemTouchHelper to change the index of habits to record the order of habits in the habit list
         ItemTouchHelper touchHelper = new ItemTouchHelper(new ItemTouchHelper.Callback() {
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                // swap two habits' positions in the arraylist
                 Collections.swap(habitList, viewHolder.getAdapterPosition(), target.getAdapterPosition());
+                // refresh the adapter
                 habitAdapter.notifyItemMoved(viewHolder.getAdapterPosition(), target.getAdapterPosition());
+                // set up the index of habit according to their positions in the habit list
                 for(int i = 0; i < habitList.size(); i++){
                     Habit habit = habitList.get(i);
                     habit.setIndex(i);
@@ -128,11 +136,12 @@ public class HabitListActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 habitList.clear();
-                // using the habits that retrieve from the database to set upt listView
+                // using the habits that retrieve from the database to set up the recycler view
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()){
                     Habit hab = (Habit) dataSnapshot.getValue(Habit.class);
                     habitList.add(hab);
                 }
+                // order the habit in the arraylist according to their index
                 for (int i = 0; i < habitList.size() - 1; i++){
                     if (habitList.get(i).getIndex() > habitList.get(i+1).getIndex()) {
 
@@ -143,6 +152,7 @@ public class HabitListActivity extends AppCompatActivity {
                         i = -1;
                     }
                 }
+                // record the amount of habit in the habit list
                 amount = habitList.size();
                 habitAdapter.notifyDataSetChanged();
             }
@@ -153,30 +163,18 @@ public class HabitListActivity extends AppCompatActivity {
         });
 
 
-
-//        // set up the OnItemClickListener to allow the user to click on the habit to see its detailed information
-//        habitListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//                Habit tapHabit = habitList.get(i);
-//                goToHabitDescriptionActivity(i, tapHabit);
-//
-//            }
-//        });
-
         // set up the OnClickListener to allow user to add a new habit
-        //View.OnClickListener addBtnOnclickListener = new HabitListAddListener(getApplicationContext(), this, amount);
-        //addButton.setOnClickListener(addBtnOnclickListener);
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // upload the information to database to update all habits
                 for(int i = 0; i < habitList.size(); i++){
                     Habit habit = habitList.get(i);
-                    // upload the information to database to update all habit
                     HashMap<String, Object> map = new HashMap<>();
                     map.put(habit.getUUID(),habit);
                     FirebaseDatabase.getInstance().getReference().child(uid).child("Habit").updateChildren(map);
                 }
+                // go to the HabitEditActivity to allow user add a habit
                 Intent intent = new Intent(getApplicationContext(), HabitEditActivity.class);
                 intent.putExtra("amount", amount);
                 intent.putExtra("action", "add");
@@ -193,15 +191,12 @@ public class HabitListActivity extends AppCompatActivity {
         bottomNavigationView = findViewById(R.id.bottom_navigation_event);
         bottomNavigationView.setSelectedItemId(R.id.navigation_habit);
 
-        //NavigationBarView.OnItemSelectedListener bottomNavigationViewOnItemSelectedListener = new NavigationBarClickListener(getApplicationContext(),this);
-        //bottomNavigationView.setOnItemSelectedListener(bottomNavigationViewOnItemSelectedListener);
-
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                // upload the information to database to update all habit
                 for(int i = 0; i < habitList.size(); i++){
                     Habit habit = habitList.get(i);
-                    // upload the information to database to update all habit
                     HashMap<String, Object> map = new HashMap<>();
                     map.put(habit.getUUID(),habit);
                     FirebaseDatabase.getInstance().getReference().child(uid).child("Habit").updateChildren(map);
@@ -246,8 +241,12 @@ public class HabitListActivity extends AppCompatActivity {
         startActivity(intent2);
         finish();
     }
-
-    // a function used to go to the habit description page with the tapped habit
+  
+    /**
+     * method that used to go to the habit description page with the tapped habit
+     * @param position the position of the habit in the habit list
+     * @param tapHabit the habit tapped by the user
+     */
     private void goToHabitDescriptionActivity(int position, Habit tapHabit){
         Intent intent = new Intent(this, HabitDescriptionActivity.class);
         Bundle bundle = new Bundle();

@@ -1,8 +1,3 @@
-/**
- * @author 'yhu19'
- * Allow user to modefied the information of the existing habit or add a new habit
- *
- */
 package com.example.habittracker;
 
 import android.content.Intent;
@@ -31,6 +26,11 @@ import java.util.HashMap;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+/**
+ * @author 'yhu19'
+ * this activity allows user to see the habits that need to be done today and mark the habit as done
+ *
+ */
 public class MainPageActivity extends AppCompatActivity {
     private FirebaseAuth authentication; // user authentication reference
     private String uid; // User unique ID
@@ -95,7 +95,6 @@ public class MainPageActivity extends AppCompatActivity {
                 toDoList.clear();
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()){
                     Habit habit = (Habit) dataSnapshot.getValue(Habit.class);
-
                     if (habit.getDoneTime() == habit.getFrequency()) {
                         habit.setNotDone(false);
                     }
@@ -127,6 +126,7 @@ public class MainPageActivity extends AppCompatActivity {
                             break;
                     }
                 }
+                // refresh the adapter
                 toDoAdapter.notifyDataSetChanged();
             }
             @Override
@@ -150,15 +150,13 @@ public class MainPageActivity extends AppCompatActivity {
         bottomNavigationView = findViewById(R.id.bottom_navigation_event);
         bottomNavigationView.setSelectedItemId(R.id.navigation_homePage);
 
-        //NavigationBarView.OnItemSelectedListener bottomNavigationViewOnItemSelectedListener = new NavigationBarClickListener(getApplicationContext(),this);
-        //bottomNavigationView.setOnItemSelectedListener(bottomNavigationViewOnItemSelectedListener);
 
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                // upload the information to database to update all habit
                 for(int i = 0; i < toDoList.size(); i++){
                     Habit habit = toDoList.get(i);
-                    // upload the information to database to update all habit
                     HashMap<String, Object> map = new HashMap<>();
                     map.put(habit.getUUID(),habit);
                     FirebaseDatabase.getInstance().getReference().child(uid).child("Habit").updateChildren(map);
@@ -210,7 +208,11 @@ public class MainPageActivity extends AppCompatActivity {
     }
 
 
-    // function used to go to the Habit description page
+    /**
+     * method that used to go to the habit description page with the tapped habit
+     * @param position the position of the habit in the habit list
+     * @param tapHabit the habit tapped by the user
+     */
     private void goToHabitDescriptionActivity(int position, Habit tapHabit){
         Intent intent = new Intent(this, HabitDescriptionActivity.class);
         Bundle bundle = new Bundle();
