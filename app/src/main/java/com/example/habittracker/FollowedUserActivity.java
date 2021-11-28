@@ -27,6 +27,9 @@ import androidx.appcompat.app.AppCompatActivity;
 public class FollowedUserActivity extends AppCompatActivity {
     private Button UnsubBtn;
     private TextView UserNameTextView;
+    private TextView UserAgeTextView;
+    private TextView UserGenderTextView;
+
     private ListView UserHabitsListView;
     private ImageView UserAvatarImageView;
     private String followed_user_uid;
@@ -49,6 +52,8 @@ public class FollowedUserActivity extends AppCompatActivity {
         UnsubBtn = findViewById(R.id.followed_user_unsubscribe_button);
         UserHabitsListView = findViewById(R.id.followed_user_habits_listview);
         UserNameTextView = findViewById(R.id.followed_user_name_textView);
+        UserAgeTextView = findViewById(R.id.followed_user_age_textView);
+        UserGenderTextView = findViewById(R.id.followed_user_gender_textView);
         UserAvatarImageView = findViewById(R.id.followed_user_avatar_imageView);
 
         // firebase connection
@@ -68,8 +73,9 @@ public class FollowedUserActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User = (Personal_info) snapshot.getValue(Personal_info.class);
-
                 UserNameTextView.setText(User.getName());
+                UserAgeTextView.setText("Age: "+User.getName());
+                UserGenderTextView.setText("Gender: "+User.getGender());
                 if (User.getDownloadUrl() != null){
                     Uri uri = Uri.parse(User.getDownloadUrl());
                     Glide.with(getApplicationContext()).load(uri).into(UserAvatarImageView);
@@ -89,7 +95,9 @@ public class FollowedUserActivity extends AppCompatActivity {
                 // using the habits that retrieve from the database to set upt listView
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()){
                     Habit hab = (Habit) dataSnapshot.getValue(Habit.class);
-                    habitArrayList.add(hab);
+                    if (hab.isPublicHabit()){
+                        habitArrayList.add(hab);
+                    }
                 }
                 habitArrayAdapter.notifyDataSetChanged();
             }

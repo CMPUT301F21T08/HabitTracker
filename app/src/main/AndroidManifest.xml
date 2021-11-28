@@ -34,7 +34,7 @@
         <activity
             android:name=".FollowingActivity"
             android:exported="true"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+            android:theme="@style/Theme.HabitTracker_NoActionBar" />
         <activity
             android:name=".NotificationsActivity"
             android:exported="true"

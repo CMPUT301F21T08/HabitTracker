@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/background"
     tools:context=".HabitListActivity">
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,7 +15,7 @@
             android:id="@+id/RelativeLayout01"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:padding="10dp">
+            android:padding="20dp">
             <ImageView
                 android:id="@+id/followed_user_avatar_imageView"
                 android:layout_width="wrap_content"
@@ -38,6 +39,30 @@
                 android:textColor="@color/black"
                 android:textSize="26sp"
                 android:textStyle="bold" />
+            <TextView
+                android:id="@+id/followed_user_age_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="50dp"
+                android:layout_toRightOf="@id/followed_user_avatar_imageView"
+                android:padding="10dp"
+                android:text="Age:"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+            <TextView
+                android:id="@+id/followed_user_gender_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="80dp"
+                android:layout_toRightOf="@id/followed_user_avatar_imageView"
+                android:padding="10dp"
+                android:text="Gender: "
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
             <Button
                 android:id="@+id/followed_user_unsubscribe_button"
@@ -46,7 +71,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="36dp"
-                android:layout_marginEnd="3dp"
+                android:layout_marginEnd="20dp"
                 android:text="Unsubscribe"
                 android:textSize="10sp" />
 
@@ -55,6 +80,7 @@
 
 
         <ListView
+            android:paddingHorizontal="25dp"
             android:id="@+id/followed_user_habits_listview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">

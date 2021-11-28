@@ -1,6 +1,7 @@
 package com.example.habittracker;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -62,6 +63,8 @@ public class FollowingActivity extends AppCompatActivity implements SearchFollow
         Toolbar myToolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
         myToolbar.showOverflowMenu();
+        myToolbar.setTitleTextColor(Color.WHITE);
+
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("Following");
 
