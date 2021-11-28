@@ -126,7 +126,7 @@ public class SignUpActivity extends AppCompatActivity {
 
                     if (authentication.getCurrentUser() != null){
                         uid = authentication.getCurrentUser().getUid();
-                        System.out.println(uid);
+                        System.out.println("------------------->" + uid);
                     }
 
                     // if successful, push the personal information of the user onto the firebase with uid as branch
