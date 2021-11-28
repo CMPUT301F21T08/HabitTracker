@@ -1,6 +1,7 @@
 package com.example.habittracker;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,12 +9,13 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public class FollowingListAdapter extends ArrayAdapter<Personal_info> {
     private ArrayList<Personal_info> FollowingArrayList;
@@ -50,9 +52,14 @@ public class FollowingListAdapter extends ArrayAdapter<Personal_info> {
 
         // set up the views in each row of listView
         TextView UserNameView = view.findViewById(R.id.Following_Content_User_textView);
-        //ImageView UserImage = view.findViewById(R.id.Following_Content_User_imageView);
+        ImageView UserImage = view.findViewById(R.id.Following_Content_User_imageView);
 
         UserNameView.setText(User.getName());
+        if (User.getDownloadUrl() != null){
+            Uri uri = Uri.parse(User.getDownloadUrl());
+            Glide.with(context.getApplicationContext()).load(uri).into(UserImage);
+        }
+
 
         return view;
     }

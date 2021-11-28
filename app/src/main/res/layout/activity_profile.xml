@@ -8,12 +8,14 @@
 
     <ImageView
         android:id="@+id/profile_ImageView"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="154dp"
+        android:layout_marginTop="20dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:src="@drawable/empty_profile"/>
+
 
     <Button
         android:id="@+id/profile_signOut_button"
@@ -21,7 +23,6 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="50dp"
         android:text="Sign Out"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintBottom_toTopOf="@id/bottom_navigation_event"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/profile_change_button" />
@@ -37,113 +38,128 @@
         app:layout_constraintLeft_toRightOf="@+id/profile_signOut_button"
         app:layout_constraintRight_toRightOf="parent" />
 
-    <EditText
-        android:id="@+id/profile_userName_EditText"
-        android:layout_width="wrap_content"
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/profile_userName_Layout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Name"
-        app:layout_constraintBaseline_toBaselineOf="@id/profile_userName_TextView"
-        app:layout_constraintLeft_toLeftOf="@id/guideline2"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:endIconMode="clear_text"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintTop_toBottomOf="@+id/profile_addImage_Button">
 
-    <EditText
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/profile_userName_EditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:fontFamily="sans-serif-black"
+            android:textSize="25sp"
+            android:backgroundTint="@color/white"
+            android:hint="Name"/>
+    </com.google.android.material.textfield.TextInputLayout>
 
-        android:id="@+id/profile_userGender_EditText"
-        android:layout_width="wrap_content"
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/profile_userEmail_Layout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Gender"
-        app:layout_constraintBaseline_toBaselineOf="@id/profile_gender_TextView"
-        app:layout_constraintLeft_toRightOf="@id/guideline2" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        app:layout_constraintTop_toBottomOf="@+id/profile_userName_Layout">
 
-    <EditText
-        android:id="@+id/profile_userAge_EditText"
-        android:layout_width="wrap_content"
+        <com.google.android.material.textfield.TextInputEditText
+            android:textAlignment="center"
+            android:fontFamily="sans-serif-black"
+            android:backgroundTint="@color/white"
+            android:id="@+id/profile_userEmail_EditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:focusable="false"
+            android:hint="Email"
+            android:textSize="25sp"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/profile_userAge_Layout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Name"
-        app:layout_constraintBaseline_toBaselineOf="@id/profile_age_TextView"
-        app:layout_constraintLeft_toRightOf="@id/guideline2" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:endIconMode="clear_text"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        app:layout_constraintTop_toBottomOf="@+id/profile_userEmail_Layout">
 
-    <TextView
-        android:id="@+id/profile_userName_TextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:ems="5"
-        android:gravity="start"
-        android:text="User Name: "
-        android:textSize="20sp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="@id/guideline2"
-        app:layout_constraintTop_toBottomOf="@id/profile_addImage_Button" />
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/profile_userAge_EditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:fontFamily="sans-serif-black"
+            android:textSize="25sp"
+            android:backgroundTint="@color/white"
+            android:hint="Age"/>
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <TextView
-        android:id="@+id/profile_email_TextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:ems="5"
-        android:gravity="left"
-        android:text="User Email: "
-        android:textSize="20sp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="@id/guideline2"
-        app:layout_constraintTop_toBottomOf="@+id/profile_userName_TextView" />
 
-    <TextView
-        android:id="@+id/profile_gender_TextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:ems="5"
-        android:gravity="start"
-        android:text="Gender: "
-        android:textSize="20sp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="@id/guideline2"
-        app:layout_constraintTop_toBottomOf="@+id/profile_email_TextView" />
 
-    <TextView
-        android:id="@+id/profile_age_TextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:ems="5"
-        android:gravity="start"
-        android:text="Age: "
-        android:textSize="20sp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="@id/guideline2"
 
-        app:layout_constraintTop_toBottomOf="@+id/profile_gender_TextView" />
 
-    <TextView
-        android:id="@+id/profile_userEmail_TextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:text="Email"
-        android:textSize="18sp"
-        app:layout_constraintBaseline_toBaselineOf="@id/profile_email_TextView"
-        app:layout_constraintLeft_toRightOf="@id/guideline2" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_begin="191dp" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline4"
-        android:layout_width="wrap_content"
+    <RadioGroup
+        android:id="@+id/profile_gender_Radiogroup"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="161dp" />
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="25dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/profile_userAge_Layout">
+
+        <RadioButton
+            android:id="@+id/profile_female_radioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="Female"
+            android:fontFamily="sans-serif-black"
+            android:textSize="20dp"
+            android:paddingLeft="5dp"/>
+
+        <RadioButton
+            android:id="@+id/profile_male_radioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="Male"
+            android:layout_marginLeft="30dp"
+            android:fontFamily="sans-serif-black"
+            android:textSize="20dp"
+            android:paddingLeft="5dp"/>
+
+        <RadioButton
+            android:id="@+id/profile_others_radioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="Others"
+            android:layout_marginLeft="30dp"
+            android:fontFamily="sans-serif-black"
+            android:textSize="20dp"
+            android:paddingLeft="5dp"/>
+    </RadioGroup>
+
+
 
     <com.google.android.material.bottomnavigation.BottomNavigationView xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/bottom_navigation_event"
@@ -160,6 +176,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Add Profile Image"
+        android:layout_marginTop="20dp"
         app:layout_constraintTop_toBottomOf="@id/profile_ImageView"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -14,6 +13,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -32,6 +32,8 @@ public class LogInActivity extends AppCompatActivity {
     private Button login_signIn_button;
     private Button login_signUp_button;
     private Button login_forgotPassword_button;
+    private TextInputLayout email_layout;
+    private TextInputLayout password_layout;
     private EditText userEmail;
     private EditText passWord;
     private CheckBox rememberMeBox;
@@ -56,6 +58,8 @@ public class LogInActivity extends AppCompatActivity {
         login_signUp_button = findViewById(R.id.login_signUp_button);
         userEmail = findViewById(R.id.login_useremail_editText);
         passWord = findViewById(R.id.login_password_editText);
+        email_layout = findViewById(R.id.login_useremail_Layout);
+        password_layout = findViewById(R.id.login_password_Layout);
         rememberMeBox = (CheckBox) findViewById(R.id.login_rememberMe);
 
         loginPreferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
@@ -89,6 +93,15 @@ public class LogInActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String sUserEmail = userEmail.getText().toString().trim();
                 String sPassWord = passWord.getText().toString().trim();
+
+                if (sUserEmail == null || sUserEmail.isEmpty()){
+                    email_layout.setError("Email cannot be empty!");
+                    return;
+                }
+                if (sPassWord == null || sPassWord.isEmpty()){
+                    password_layout.setError("Password cannot be empty!");
+                    return;
+                }
 
                 InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(userEmail.getWindowToken(), 0);
@@ -146,7 +159,7 @@ public class LogInActivity extends AppCompatActivity {
                     startActivity(new Intent(getApplicationContext(), MainPageActivity.class));
                     finish();
                 } else {
-                    Toast.makeText(LogInActivity.this, "Login failed", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LogInActivity.this, "Login failed ", Toast.LENGTH_SHORT).show();
                 }
             }
         });

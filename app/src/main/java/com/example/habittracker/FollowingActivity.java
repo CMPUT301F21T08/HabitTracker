@@ -2,7 +2,7 @@ package com.example.habittracker;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.Settings;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,16 +20,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
 
 public class FollowingActivity extends AppCompatActivity implements SearchFollowingFragment.OnFragmentInteractionListener{
 
@@ -228,7 +225,6 @@ public class FollowingActivity extends AppCompatActivity implements SearchFollow
             // as onDataChange was called asynchronous, we created a onCallback method to store the uid_toFollow
             @Override
             public void onCallback(String email_toFollow, String uid_toFollow) {
-
                 // put the uid into the Request_To list
                 HashMap<String,Object> map = new HashMap<>();
                 email_toFollow = email_toFollow.replace("@","");
