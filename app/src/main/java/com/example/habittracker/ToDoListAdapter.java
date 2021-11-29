@@ -74,53 +74,8 @@ public class ToDoListAdapter extends ArrayAdapter<Habit>{
 
         // get the index/position for which checkbox being checked
         done.setTag(position);
-        done.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-            {
-                // if the checkbox of the habit is checked, we will call setDoneTime() to increment the doneTime of the habit,
-                // and also determine whether the habit is finished today
-                if(isChecked) {
-                    // get the habit that is being checked
-                    Integer position = (Integer) buttonView.getTag();
-                    Intent intent = new Intent(getContext(), HabitEventEditActivity.class);
-                    Habit tappedHabit = habitArrayList.get(position);
-                    // increment the doneTime of habit and determine whether the habit is finished today
-                    // if the habit is finished today, then allow user to add a habit event
-                    if(tappedHabit.setDoneTime()){
-                        String title = tappedHabit.getHabitTitle();
-
-                        //Generate a unique id for habit event
-                        String uniqueID = UUID.randomUUID().toString();
-
-
-//                      tappedHabit.addEvent(title+": "+ date);
-                        tappedHabit.addEvent(uniqueID);
-
-                        // upload the habit to the data base, so the change of doneTime can be saved
-                        HashMap<String, Object> map = new HashMap<>();
-                        map.put(tappedHabit.getUUID(),tappedHabit);
-                        FirebaseDatabase.getInstance().getReference().child(uid).child("Habit").updateChildren(map);
-
-                        // go to the habit event page to allow user add an habit event
-                        intent.putExtra("EventIndex", -1);
-                        intent.putExtra("HabitName", title);
-                        intent.putExtra("HabitUUID", tappedHabit.getUUID());
-                        intent.putExtra("UniqueID", uniqueID);
-
-                        context.startActivity(intent);
-                        ((MainPageActivity)context).finish();
-                    } else {
-                        // upload the habit to the data base, so the change of doneTime can be saved
-                        HashMap<String, Object> map = new HashMap<>();
-                        map.put(tappedHabit.getUUID(),tappedHabit);
-                        FirebaseDatabase.getInstance().getReference().child(uid).child("Habit").updateChildren(map);
-                        done.setChecked(false);
-                    }
-
-                }
-            }
-
-        });
+        CompoundButton.OnCheckedChangeListener ToDoListListener = new ToDoListCheckedChangedListener(getContext(), uid, done, habitArrayList);
+        done.setOnCheckedChangeListener(ToDoListListener);
         // set the habit title in the to do list
         habitTitleView.setText(habit.getHabitTitle());
         // calculate the remaining time that the user need to do to finish the habit for today
