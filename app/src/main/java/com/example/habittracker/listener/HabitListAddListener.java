@@ -8,8 +8,12 @@ import android.content.Intent;
 import android.util.Log;
 import android.view.View;
 
+import com.example.habittracker.Habit;
 import com.example.habittracker.HabitEditActivity;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.database.FirebaseDatabase;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class HabitListAddListener implements View.OnClickListener{
     // attributes
