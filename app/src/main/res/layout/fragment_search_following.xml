@@ -18,16 +18,15 @@
         app:srcCompat="@drawable/ic_notification" />
 
 
-
     <EditText
         android:id="@+id/Search_EditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
-        app:layout_constraintTop_toTopOf="parent"
+        android:hint=" Find "
         android:inputType="text"
         app:layout_constraintLeft_toRightOf="@+id/search_notification_image"
-        android:hint=" Search" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 

@@ -15,6 +15,7 @@
             android:id="@+id/RelativeLayout01"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
+            android:layout_marginHorizontal="20dp"
             android:paddingVertical="10dp">
 
             <TextView
@@ -25,7 +26,8 @@
                 android:paddingVertical="10dp"
                 android:text="All Habits"
                 android:textColor="@color/black"
-                android:textSize="15sp"
+                android:textSize="20sp"
+                android:fontFamily="sans-serif-black"
                 android:textStyle="bold"></TextView>
 
 
@@ -34,6 +36,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/allHabits_habitList_recycleView"
             android:layout_width="match_parent"
+            android:layout_marginHorizontal="20dp"
             android:layout_height="wrap_content">
         </androidx.recyclerview.widget.RecyclerView>
     </LinearLayout>
