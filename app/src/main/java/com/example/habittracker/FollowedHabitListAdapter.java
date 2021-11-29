@@ -25,13 +25,22 @@ public class FollowedHabitListAdapter extends ArrayAdapter<Habit> {
     private FirebaseAuth authentication;
     private String uid;
 
+    /**
+     * Consturctor for the FollowedHabitListAdapter
+     */
     public FollowedHabitListAdapter(Context context, ArrayList<Habit> habits) {
         super(context, 0, habits);
         this.habitArrayList = habits;
         this.context = context;
     }
 
-
+    /**
+     * Process the view for each list element for to do list
+     * @param position
+     * @param convertView
+     * @param parent
+     * @return
+     */
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -42,7 +51,7 @@ public class FollowedHabitListAdapter extends ArrayAdapter<Habit> {
 
         Habit habit = habitArrayList.get(position);
 
-
+        // assign corresponding habit elements to the adapter
         TextView habitTitleView = view.findViewById(R.id.allHabitsContent_habitContent_textView);
         habitTitleView.setText(habit.getHabitTitle());
         progression = view.findViewById(R.id.progression_bar);
