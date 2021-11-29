@@ -446,7 +446,7 @@ public class HabitEventEditActivity extends AppCompatActivity  {
     @Override
     public void onBackPressed() {
         // Forbid user to return when creating a new event
-        if (eventIndexInList > 0) {
+        if (eventIndexInList >= 0) {
             Intent intentReturn = new Intent(getApplicationContext(), HabitEventListActivity.class); // Return to the habit event list page
             intentReturn.putExtra("StartMode", "normal");
             startActivity(intentReturn);
