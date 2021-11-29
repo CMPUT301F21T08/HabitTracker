@@ -111,5 +111,16 @@ public class NotificationsActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Process the KEY_RETURN signal in notification activity
+     * When back button is pressed, return to following list activity
+     */
+    @Override
+    public void onBackPressed() {
+        Intent intent3 = new Intent(NotificationsActivity.this, FollowingActivity.class);
+        startActivity(intent3);
+        finish();
+    }
+
 
 }

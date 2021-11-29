@@ -1,6 +1,7 @@
 package com.example.habittracker;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -184,6 +185,17 @@ public class FollowedUserActivity extends AppCompatActivity {
                 dialog.show();
             }
         });
+    }
+
+    /**
+     * Process the KEY_RETURN signal in followed user activity
+     * When back button is pressed, return to following list activity
+     */
+    @Override
+    public void onBackPressed() {
+        Intent intent3 = new Intent(FollowedUserActivity.this, FollowingActivity.class);
+        startActivity(intent3);
+        finish();
     }
 
 }

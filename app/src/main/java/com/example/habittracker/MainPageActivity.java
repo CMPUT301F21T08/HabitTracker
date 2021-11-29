@@ -199,7 +199,7 @@ public class MainPageActivity extends AppCompatActivity {
     public void onBackPressed() {
         backCount+=1;
         if (backCount == 1) {
-            Toast.makeText(MainPageActivity.this, "Press the back button again to return to home page", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainPageActivity.this, "Press the back button again to exit the program", Toast.LENGTH_SHORT).show();
         }
         else {
             backCount = 0;
