@@ -18,6 +18,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+/**
+ * OnClickListener for the delete button in habit event edit page
+ */
 public class EventEditDeleteListener implements DialogInterface.OnClickListener {
 
     // Attribute variables
@@ -38,7 +41,12 @@ public class EventEditDeleteListener implements DialogInterface.OnClickListener 
         this.eventIndexInList = eventIndexInList;
     }
 
-
+    /**
+     * on click method for habit event delete button
+     * Delete an event from the event list, also delete it's entry in the corresponding habit
+     * @param dialogInterface
+     * @param i
+     */
     @Override
     public void onClick(DialogInterface dialogInterface, int i) {
         Intent intentReturn = new Intent(context, HabitEventListActivity.class); // Return to the habit event list page

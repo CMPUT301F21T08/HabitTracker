@@ -11,6 +11,9 @@ import androidx.activity.result.ActivityResultLauncher;
 import com.example.habittracker.Habit;
 import com.example.habittracker.HabitEditActivity;
 
+/**
+ * OnClickListener for the edit button in habit description page
+ */
 public class HabitDescriptionEditListener implements View.OnClickListener{
     // attributes
     private String action;
@@ -24,6 +27,10 @@ public class HabitDescriptionEditListener implements View.OnClickListener{
         this.habit = habit;
     }
 
+    /**
+     * Open the habit edit page for corresponding habit
+     * @param view
+     */
     @Override
     public void onClick(View view) {
         // send the habit object and the mode signal

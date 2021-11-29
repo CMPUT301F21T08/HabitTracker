@@ -6,6 +6,9 @@ import androidx.fragment.app.FragmentManager;
 
 import com.example.habittracker.DeleteConfirmFragment;
 
+/**
+ * OnClickListener for the delete button in habit description page
+ */
 public class HabitDescriptionDeleteListener implements View.OnClickListener{
     FragmentManager fragmentManager;
 
@@ -14,6 +17,10 @@ public class HabitDescriptionDeleteListener implements View.OnClickListener{
 
     }
 
+    /**
+     * Create the confirmation fragment for delete button
+     * @param view
+     */
     @Override
     public void onClick(View view) {
         // invoke a fragment to ask for confirmation for deletion of the habit from user and delete the habit if user click confirm

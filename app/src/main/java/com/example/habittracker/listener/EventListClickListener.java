@@ -10,6 +10,9 @@ import android.widget.ArrayAdapter;
 import com.example.habittracker.HabitEvent;
 import com.example.habittracker.HabitEventEditActivity;
 
+/**
+ * OnClickListener for the event list in habit event list page
+ */
 public class EventListClickListener implements AdapterView.OnItemClickListener{
     ArrayAdapter<HabitEvent> habitEventAdapter;
     Context context;
@@ -22,6 +25,13 @@ public class EventListClickListener implements AdapterView.OnItemClickListener{
 
     }
 
+    /**
+     * Shift to the edit page for the corresponding habit event
+     * @param adapterView
+     * @param view
+     * @param i
+     * @param l
+     */
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 

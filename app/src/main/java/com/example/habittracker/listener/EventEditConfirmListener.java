@@ -25,6 +25,9 @@ import com.google.firebase.storage.UploadTask;
 import java.io.File;
 import java.util.HashMap;
 
+/**
+ * OnClickListener for the confirm button in habit event edit page
+ */
 public class EventEditConfirmListener implements View.OnClickListener{
 
     // Views and UI elements
@@ -53,6 +56,11 @@ public class EventEditConfirmListener implements View.OnClickListener{
         this.uid = uid;
     }
 
+    /**
+     * The onclick method for habit event confirm button
+     * Processes the event and add it to firebase and the event list
+     * @param view
+     */
     @Override
     public void onClick(View view) {
         // First create a progress dialogue showing that we are currently processing this habit event

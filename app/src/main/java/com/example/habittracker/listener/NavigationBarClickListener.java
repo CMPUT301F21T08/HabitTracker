@@ -17,6 +17,11 @@ import com.example.habittracker.ProfileActivity;
 import com.example.habittracker.R;
 import com.google.android.material.navigation.NavigationBarView;
 
+/**
+ *
+ * OnClickListener for the navigation bar
+ *
+ */
 public class NavigationBarClickListener implements NavigationBarView.OnItemSelectedListener{
     Context context;
     Activity activity;
