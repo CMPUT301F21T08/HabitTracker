@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Point;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.EditText;
@@ -16,6 +17,8 @@ import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.robotium.solo.Solo;
 
 import org.junit.After;
@@ -38,9 +41,7 @@ import java.util.ArrayList;
 public class HabitEventIntentTest {
     private Solo solo;
 
-    private HabitEventListAdapter testAdapter;
-    private ArrayList<HabitEvent> testList;
-    private HabitEvent testEvent;
+
 
 
     @Rule
@@ -56,12 +57,6 @@ public class HabitEventIntentTest {
     public void setUp() throws Exception{
         solo = new Solo(InstrumentationRegistry.getInstrumentation(), rule.getActivity());
 
-        testList = new ArrayList<>();
-
-        // Create mock habit event
-        testEvent = new HabitEvent("Run", "11111", "Edmonton", "1111-2222", "3333-4444");
-        testList.add(testEvent);
-        testAdapter = new HabitEventListAdapter(ApplicationProvider.getApplicationContext(), testList);
     }
 
     /**
@@ -92,23 +87,22 @@ public class HabitEventIntentTest {
         //From Main Page, we need to click on Habits events
         // So that we can see all habit events
 
+        solo.clickOnView(solo.getView(R.id.navigation_habit));
+//        solo.clickOnText("Habit");
+        solo.assertCurrentActivity("Wrong Activity", HabitListActivity.class);
 
-        solo.clickOnView(solo.getView(R.id.navigation_habitEvent));
-        solo.clickOnText("Habit");
 
-       HabitEditActivity habitEditActivity = (HabitEditActivity) solo.getCurrentActivity();
-       EditText titleText = habitEditActivity.findViewById(R.id.TitleInput);
 
-//        solo.enterText(titleText,"habitTest1");
-//
-//        solo.clickOnText("Start Date");
-//
-//        solo.setDatePicker(0, 2021, 11, 1);
-//        solo.clickOnText("OK");
-//
-//
-//        solo.clickOnView(solo.getView(R.id.frequency_spinner));
-//        solo.clickOnText("per day");
+        solo.sleep(5000);
+        FloatingActionButton floatingActionButton = (FloatingActionButton) solo.getView(R.id.allHabits_addButton_button);
+        solo.clickOnView(floatingActionButton);
+        solo.sleep(5000);
+
+        solo.assertCurrentActivity("Wrong Activity", HabitEditActivity.class);
+        HabitEditActivity habitEditActivity = (HabitEditActivity) solo.getCurrentActivity();
+        EditText titleText = habitEditActivity.findViewById(R.id.TitleInput);
+
+
 
 
         solo.enterText((EditText) solo.getView(R.id.TitleInput), "Habit1");//habit title
@@ -117,191 +111,26 @@ public class HabitEventIntentTest {
         solo.enterText((EditText) solo.getView(R.id.frequencyInput), "2");//times per day
         solo.enterText((EditText) solo.getView(R.id.contentInput), "This is a test");
         solo.enterText((EditText) solo.getView(R.id.reasonInput), "Started for testing");
-        solo.clickOnButton("Confirm");
+        solo.clickOnButton("CONFIRM");
 
-
-    }
-
-    /**
-     * check if we can edit a habit event and confirm to the habit event page
-     */
-    @Test
-    public void checkConfirm() {
-        //Asserts that current activity is the LogInActivity
-        // because that is where we start
-        solo.assertCurrentActivity("Wrong Activity", LogInActivity.class);
-        solo.enterText((EditText) solo.getView(R.id.login_useremail_editText), "123456nnn@gmail.com");
-        solo.enterText((EditText) solo.getView(R.id.login_password_editText), "123456nnn");
-        solo.clickOnButton("Login");
-        //After logIn we go to the Main Page
-        //Here we check if we are on the Main Page Activity
+        solo.assertCurrentActivity("Wrong Activity", HabitListActivity.class);
+        solo.clickOnView(solo.getView(R.id.navigation_homePage));
         solo.assertCurrentActivity("Wrong Activity", MainPageActivity.class);
-        //From Main Page, we need to click on Habits events
-        // So that we can see all habit events
 
-
-        solo.clickOnView(solo.getView(R.id.navigation_habitEvent));
-        solo.clickOnText("Habit Event");
-
-
-        //Asserts that current activity is the HabitEventListActivity
-        solo.assertCurrentActivity("Wrong Activity", HabitEventListActivity.class);
-
-        // get the first habit event
-        // only habit in the one
-        //assert in correct Activity
-        HabitEventListActivity activity = (HabitEventListActivity) solo.getCurrentActivity();
-        //get listView
-        ListView listView = activity.findViewById(R.id.lv_habit_event);
-        HabitEvent newHabE = (HabitEvent) listView.getItemAtPosition(0);
-        String eventName = newHabE.getEventTitle();
-
-
-        solo.clickOnText(eventName);
-
+        solo.sleep(5000);
+        solo.clickOnView(solo.getView(R.id.done_button));
 
         solo.assertCurrentActivity("Wrong Activity", HabitEventEditActivity.class);
-
-
-        // click on upload photo button
-
-        // click on camera button
-        // click on get location button
-
-        solo.clickOnText("get location");
-        solo.assertCurrentActivity("Wrong Activity", HabitEventEditMapActivity.class);
-
-
-        solo.clickOnText("return");
-        solo.assertCurrentActivity("Wrong Activity", HabitEventEditActivity.class);
-
-        // click on confirm button
         solo.clickOnText("CONFIRM");
-        solo.assertCurrentActivity("Wrong Activity", HabitEventListActivity.class);
-
-
-
-        HabitEventListActivity activity2 = (HabitEventListActivity) solo.getCurrentActivity();
-        //get listView
-        ListView listView2 = activity2.findViewById(R.id.lv_habit_event);
-        HabitEvent newHabE2 = (HabitEvent) listView2.getItemAtPosition(0);
-        String eventName2 = newHabE2.getEventTitle();
-        assertEquals(eventName2,eventName);
-
-
 
 
     }
 
 
 
-    /**
-     * check if we can delete a habit event to the habit event page
-     */
-    @Test
-    public void checkDelete() {
-        //Asserts that current activity is the LogInActivity
-        // because that is where we start
-        solo.assertCurrentActivity("Wrong Activity", LogInActivity.class);
-        solo.enterText((EditText) solo.getView(R.id.login_useremail_editText), "123456nnn@gmail.com");
-        solo.enterText((EditText) solo.getView(R.id.login_password_editText), "123456nnn");
-        solo.clickOnButton("Login");
-        //After logIn we go to the Main Page
-        //Here we check if we are on the Main Page Activity
-        solo.assertCurrentActivity("Wrong Activity", MainPageActivity.class);
-        //From Main Page, we need to click on Habits events
-        // So that we can see all habit events
-
-
-        solo.clickOnView(solo.getView(R.id.navigation_habitEvent));
-        solo.clickOnText("Habit Event");
-
-
-        //Asserts that current activity is the HabitEventListActivity
-        solo.assertCurrentActivity("Wrong Activity", HabitEventListActivity.class);
-
-        // get the first habit event
-        // only habit in the one
-        //assert in correct Activity
-        HabitEventListActivity activity = (HabitEventListActivity) solo.getCurrentActivity();
-        //get listView
-        ListView listView = activity.findViewById(R.id.lv_habit_event);
-        HabitEvent newHabE = (HabitEvent) listView.getItemAtPosition(0);
-        String eventName = newHabE.getEventTitle();
-
-
-        solo.clickOnText(eventName);
-
-
-        solo.assertCurrentActivity("Wrong Activity", HabitEventEditActivity.class);
-
-
-        // click on upload photo button
-
-        // click on camera button
-        // click on get location button
-
-        solo.clickOnText("get location");
-        solo.assertCurrentActivity("Wrong Activity", HabitEventEditMapActivity.class);
-
-
-        solo.clickOnText("return");
-        solo.assertCurrentActivity("Wrong Activity", HabitEventEditActivity.class);
-
-
-        // click on confirm button
-        solo.clickOnText("Delete Event");
-        solo.clickOnText("Confirm");
-        solo.assertCurrentActivity("Wrong Activity", HabitEventListActivity.class);
-
-        // click on delete event button
 
 
 
-
-
-    }
-
-    /**
-     * Test whether clicking the camera button in the habit event edit page actually opens a camera interface
-     */
-    @Test
-    public void checkCamera(){
-        //Asserts that current activity is the LogInActivity
-        // because that is where we start
-        solo.assertCurrentActivity("Wrong Activity", LogInActivity.class);
-        solo.enterText((EditText) solo.getView(R.id.login_useremail_editText), "123456nnn@gmail.com");
-        solo.enterText((EditText) solo.getView(R.id.login_password_editText), "123456nnn");
-        solo.clickOnButton("Login");
-        //After logIn we go to the Main Page
-        //Here we check if we are on the Main Page Activity
-        solo.assertCurrentActivity("Wrong Activity", MainPageActivity.class);
-        //From Main Page, we need to click on Habits events
-        // So that we can see all habit events
-
-        solo.clickOnView(solo.getView(R.id.navigation_habitEvent));
-        solo.clickOnText("Habit Event");
-
-
-        //Asserts that current activity is the HabitEventListActivity
-        solo.assertCurrentActivity("Wrong Activity", HabitEventListActivity.class);
-
-        // get the first habit event
-        // only habit in the one
-        //assert in correct Activity
-        HabitEventListActivity activity = (HabitEventListActivity) solo.getCurrentActivity();
-        //get listView
-        ListView listView = activity.findViewById(R.id.lv_habit_event);
-        HabitEvent newHabE = (HabitEvent) listView.getItemAtPosition(0);
-        String eventName = newHabE.getEventTitle();
-
-
-        solo.clickOnText(eventName);
-
-        solo.assertCurrentActivity("Wrong Activity", HabitEventEditActivity.class);
-
-        solo.clickOnText("Camera");
-    }
 
 
     /**
@@ -360,46 +189,6 @@ public class HabitEventIntentTest {
         assertNotNull(locationEditText.getText());
     }
 
-    /**
-     * Test whether we can successfully enter the upload photo page
-     */
-    @Test
-    public void checkUploadImage() {
-        //Asserts that current activity is the LogInActivity
-        // because that is where we start
-        solo.assertCurrentActivity("Wrong Activity", LogInActivity.class);
-        solo.enterText((EditText) solo.getView(R.id.login_useremail_editText), "123456nnn@gmail.com");
-        solo.enterText((EditText) solo.getView(R.id.login_password_editText), "123456nnn");
-        solo.clickOnButton("Login");
-        //After logIn we go to the Main Page
-        //Here we check if we are on the Main Page Activity
-        solo.assertCurrentActivity("Wrong Activity", MainPageActivity.class);
-        //From Main Page, we need to click on Habits events
-        // So that we can see all habit events
-
-        solo.clickOnView(solo.getView(R.id.navigation_habitEvent));
-        solo.clickOnText("Habit Event");
-
-
-        //Asserts that current activity is the HabitEventListActivity
-        solo.assertCurrentActivity("Wrong Activity", HabitEventListActivity.class);
-
-        // get the first habit event
-        // only habit in the one
-        //assert in correct Activity
-        HabitEventListActivity activity = (HabitEventListActivity) solo.getCurrentActivity();
-        //get listView
-        ListView listView = activity.findViewById(R.id.lv_habit_event);
-        HabitEvent newHabE = (HabitEvent) listView.getItemAtPosition(0);
-        String eventName = newHabE.getEventTitle();
-
-
-        solo.clickOnText(eventName);
-
-        solo.assertCurrentActivity("Wrong Activity", HabitEventEditActivity.class);
-
-        solo.clickOnText("Upload Photo");
-    }
 
     /**
      * Check whether adding comment functions properly
@@ -463,6 +252,119 @@ public class HabitEventIntentTest {
 
         solo.clickOnText("CONFIRM");
         solo.assertCurrentActivity("Wrong Activity", HabitEventListActivity.class);
+
+    }
+
+
+
+    /**
+     * check if we can edit a habit event and confirm to the habit event page
+     * check if we can delete a habit event
+     */
+    @Test
+    public void checkConfirmAndDelete() {
+        //Asserts that current activity is the LogInActivity
+        // because that is where we start
+        solo.assertCurrentActivity("Wrong Activity", LogInActivity.class);
+        solo.enterText((EditText) solo.getView(R.id.login_useremail_editText), "123456nnn@gmail.com");
+        solo.enterText((EditText) solo.getView(R.id.login_password_editText), "123456nnn");
+        solo.clickOnButton("Login");
+        //After logIn we go to the Main Page
+        //Here we check if we are on the Main Page Activity
+        solo.assertCurrentActivity("Wrong Activity", MainPageActivity.class);
+        //From Main Page, we need to click on Habits events
+        // So that we can see all habit events
+
+
+        solo.clickOnView(solo.getView(R.id.navigation_habitEvent));
+        solo.clickOnText("Habit Event");
+
+
+        //Asserts that current activity is the HabitEventListActivity
+        solo.assertCurrentActivity("Wrong Activity", HabitEventListActivity.class);
+
+        // get the first habit event
+        // only habit in the one
+        //assert in correct Activity
+        HabitEventListActivity activity = (HabitEventListActivity) solo.getCurrentActivity();
+        //get listView
+        ListView listView = activity.findViewById(R.id.lv_habit_event);
+        HabitEvent newHabE = (HabitEvent) listView.getItemAtPosition(0);
+        String eventName = newHabE.getEventTitle();
+
+
+        solo.clickOnText(eventName);
+
+
+        solo.assertCurrentActivity("Wrong Activity", HabitEventEditActivity.class);
+
+
+        // click on upload photo button
+
+        // click on camera button
+        // click on get location button
+
+        solo.clickOnText("get location");
+        solo.assertCurrentActivity("Wrong Activity", HabitEventEditMapActivity.class);
+
+
+        solo.clickOnText("return");
+        solo.assertCurrentActivity("Wrong Activity", HabitEventEditActivity.class);
+
+        // click on confirm button
+        solo.clickOnText("CONFIRM");
+        solo.assertCurrentActivity("Wrong Activity", HabitEventListActivity.class);
+
+
+
+        HabitEventListActivity activity2 = (HabitEventListActivity) solo.getCurrentActivity();
+        //get listView
+        ListView listView2 = activity2.findViewById(R.id.lv_habit_event);
+        HabitEvent newHabE2 = (HabitEvent) listView2.getItemAtPosition(0);
+        String eventName2 = newHabE2.getEventTitle();
+        assertEquals(eventName2,eventName);
+
+
+
+        // delete part
+
+        HabitEventListActivity activity3 = (HabitEventListActivity) solo.getCurrentActivity();
+        //get listView
+        ListView listView3 = activity.findViewById(R.id.lv_habit_event);
+        HabitEvent newHabE3 = (HabitEvent) listView3.getItemAtPosition(0);
+        String eventName3 = newHabE3.getEventTitle();
+
+
+        solo.clickOnText(eventName3);
+
+
+        solo.assertCurrentActivity("Wrong Activity", HabitEventEditActivity.class);
+
+
+        // click on upload photo button
+
+        // click on camera button
+        // click on get location button
+
+        solo.clickOnText("get location");
+        solo.assertCurrentActivity("Wrong Activity", HabitEventEditMapActivity.class);
+
+
+        solo.clickOnText("return");
+        solo.assertCurrentActivity("Wrong Activity", HabitEventEditActivity.class);
+
+
+        // click on confirm button
+        solo.clickOnText("Delete Event");
+        solo.clickOnText("Confirm");
+        solo.sleep(3000);
+        solo.assertCurrentActivity("Wrong Activity", HabitEventListActivity.class);
+
+        // click on delete event button
+
+
+
+
 
     }
 
