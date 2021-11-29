@@ -21,7 +21,7 @@ import java.util.Date;
  * Using Serializable interface to achieve passing habit objects between activities
  */
 public class Habit implements Serializable {
-// attributes of the habit class
+    // attributes of the habit class
     // title of the habit
     private String habitTitle;
     // reason of the habit
@@ -58,21 +58,21 @@ public class Habit implements Serializable {
     private String recordDate;
 
 
-
     /**
-     * Habit Event Constructor
-     * @param habitTitle title of the habit
-     * @param habitReason reason of the habit
-     * @param habitContent content of the habit
-     * @param startDate the starting date of the habit
-     * @param frequency the frequency of the habit
+     * Habit Constructor
+     *
+     * @param habitTitle    title of the habit
+     * @param habitReason   reason of the habit
+     * @param habitContent  content of the habit
+     * @param startDate     the starting date of the habit
+     * @param frequency     the frequency of the habit
      * @param frequencyType the frequency type of the habit
      * @param occurrenceDay the occurrence day of the habit
-     * @param uuid the id for the habit
-     * @param index the index for the habit in the habit list
-     * @param publicHabit disclosure status of the habit
+     * @param uuid          the id for the habit
+     * @param index         the index for the habit in the habit list
+     * @param publicHabit   disclosure status of the habit
      */
-    public Habit(String habitTitle, String habitReason, String habitContent, String startDate, int frequency, String frequencyType, ArrayList<Integer> occurrenceDay, String uuid, int index, boolean publicHabit){
+    public Habit(String habitTitle, String habitReason, String habitContent, String startDate, int frequency, String frequencyType, ArrayList<Integer> occurrenceDay, String uuid, int index, boolean publicHabit) {
         this.habitTitle = habitTitle;
         this.habitReason = habitReason;
         this.habitContent = habitContent;
@@ -93,18 +93,19 @@ public class Habit implements Serializable {
     /**
      * Null constructor (never used, only for database)
      */
-    public Habit(){
+    public Habit() {
     }
 
     /**
      * This method will take the current date time as parameter to compare with the date that have already been store
      * in the lastDate attribute to determine whether the current date has ended or not. And it will refresh the
      * notDone and doneTime attribute when the current date has ended.
+     *
      * @param currentDate
      */
-    public void refresh(String currentDate){
+    public void refresh(String currentDate) {
         // if this two date is different, we will refresh the attributes
-        if(!currentDate.equals(this.lastDate)){
+        if (!currentDate.equals(this.lastDate)) {
             this.notDone = true;
             this.doneTime = 0;
             this.lastDate = currentDate;
@@ -118,21 +119,20 @@ public class Habit implements Serializable {
      * This method will be invoked when the habit is being checked in the to do list(main page).This method will return
      * true to denote that the habit has been done today; and will return false to denote that the habit has not yet been
      * finished today.
-     *
      */
-    public boolean setDoneTime(){
+    public boolean setDoneTime() {
         // "per week" and "per month" frequency only need to be done one time per day, so it will return true when this function
         // is called
-        if(this.frequencyType.equals("per week") || this.frequencyType.equals("per month")){
+        if (this.frequencyType.equals("per week") || this.frequencyType.equals("per month")) {
             doneTime++;
             number_of_completion++;
             notDone = false;
             return true;
-        // for the "per day" frequency habit, we need to compare the done time with the frequency to determine whether it is finished
-        // or not
+            // for the "per day" frequency habit, we need to compare the done time with the frequency to determine whether it is finished
+            // or not
         } else {
             // if the frequency is 1, then it will return true since only need to be done for one time
-            if(this.frequency == 1){
+            if (this.frequency == 1) {
                 doneTime++;
                 number_of_completion++;
                 notDone = false;
@@ -141,7 +141,7 @@ public class Habit implements Serializable {
                 doneTime++;
                 number_of_completion++;
                 // compare the doneTime with the frequency
-                if(doneTime == this.frequency){
+                if (doneTime == this.frequency) {
                     notDone = false;
                     return true;
                 } else {
@@ -153,6 +153,7 @@ public class Habit implements Serializable {
 
     /**
      * Getter for habit title
+     *
      * @return
      */
     public String getHabitTitle() {
@@ -161,6 +162,7 @@ public class Habit implements Serializable {
 
     /**
      * Setter for habit title
+     *
      * @param habitTitle
      */
     public void setHabitTitle(String habitTitle) {
@@ -169,6 +171,7 @@ public class Habit implements Serializable {
 
     /**
      * Getter for habit reason
+     *
      * @return
      */
     public String getHabitReason() {
@@ -177,6 +180,7 @@ public class Habit implements Serializable {
 
     /**
      * Setter for habit reason
+     *
      * @param habitReason
      */
     public void setHabitReason(String habitReason) {
@@ -185,6 +189,7 @@ public class Habit implements Serializable {
 
     /**
      * Getter for habit content
+     *
      * @return
      */
     public String getHabitContent() {
@@ -193,6 +198,7 @@ public class Habit implements Serializable {
 
     /**
      * Setter for habit content
+     *
      * @param habitContent
      */
     public void setHabitContent(String habitContent) {
@@ -201,6 +207,7 @@ public class Habit implements Serializable {
 
     /**
      * Getter for habit starting date
+     *
      * @return
      */
     public String getStartDate() {
@@ -209,6 +216,7 @@ public class Habit implements Serializable {
 
     /**
      * Setter for starting date of habit
+     *
      * @param startDate
      */
     public void setStartDate(String startDate) {
@@ -217,6 +225,7 @@ public class Habit implements Serializable {
 
     /**
      * Getter for habit frequency
+     *
      * @return
      */
     public int getFrequency() {
@@ -225,6 +234,7 @@ public class Habit implements Serializable {
 
     /**
      * Setter for habit frequency
+     *
      * @param frequency
      */
     public void setFrequency(int frequency) {
@@ -233,6 +243,7 @@ public class Habit implements Serializable {
 
     /**
      * Getter for habit frequency type
+     *
      * @return
      */
     public String getFrequencyType() {
@@ -241,20 +252,21 @@ public class Habit implements Serializable {
 
     /**
      * Setter for habit frequency type
+     *
      * @param frequencyType
      */
     public void setFrequencyType(String frequencyType) {
-    // this if statement will update the notDone attribute when user modifies the frequency and frequency type of the habit
+        // this if statement will update the notDone attribute when user modifies the frequency and frequency type of the habit
         // when the new frequency type is "per week" or "per month", if user have already done more than once for the habit,
         // then set the habit as done since these two types of frequency can only occur one time per day
-        if(frequencyType.equals("per week") || frequencyType.equals("per month") ){
-            if(this.doneTime >= 1){
+        if (frequencyType.equals("per week") || frequencyType.equals("per month")) {
+            if (this.doneTime >= 1) {
                 this.notDone = false;
             }
         } else {
             // if the new frequency type is "per day", then comparing the doneTime and the frequency to determine whether the
             // habit is done today
-            if(this.doneTime >= this.frequency){
+            if (this.doneTime >= this.frequency) {
                 this.notDone = false;
             } else {
                 this.notDone = true;
@@ -265,6 +277,7 @@ public class Habit implements Serializable {
 
     /**
      * Getter for habit occurrence days
+     *
      * @return
      */
     public ArrayList<Integer> getOccurrenceDay() {
@@ -273,6 +286,7 @@ public class Habit implements Serializable {
 
     /**
      * Setter for habit occurrenceDay
+     *
      * @param occurrenceDay
      */
     public void setOccurrenceDay(ArrayList<Integer> occurrenceDay) {
@@ -281,6 +295,7 @@ public class Habit implements Serializable {
 
     /**
      * Getter for the notDone attribute
+     *
      * @return
      */
     public boolean isNotDone() {
@@ -289,6 +304,7 @@ public class Habit implements Serializable {
 
     /**
      * Getter for the total completion times of habit
+     *
      * @return
      */
     public int getNumber_of_completion() {
@@ -297,6 +313,7 @@ public class Habit implements Serializable {
 
     /**
      * Getter for lastDate attribute of habit
+     *
      * @return
      */
     public String getLastDate() {
@@ -305,6 +322,7 @@ public class Habit implements Serializable {
 
     /**
      * Getter for doneTime attribute of habit
+     *
      * @return
      */
     public int getDoneTime() {
@@ -313,6 +331,7 @@ public class Habit implements Serializable {
 
     /**
      * Getter for list of habit events related to habit
+     *
      * @return
      */
     public ArrayList<String> getEventList() {
@@ -321,6 +340,7 @@ public class Habit implements Serializable {
 
     /**
      * Setter for list of habit events related to habit
+     *
      * @param eventList
      */
     public void setEventList(ArrayList<String> eventList) {
@@ -329,6 +349,7 @@ public class Habit implements Serializable {
 
     /**
      * adding a new event to eventList attributes of habit
+     *
      * @param eventName
      */
     public void addEvent(String eventName) {
@@ -338,6 +359,7 @@ public class Habit implements Serializable {
 
     /**
      * Setter for lastDate of habit
+     *
      * @param lastDate
      */
     public void setLastDate(String lastDate) {
@@ -346,6 +368,7 @@ public class Habit implements Serializable {
 
     /**
      * Setter for notDone of habit
+     *
      * @param notDone
      */
     public void setNotDone(boolean notDone) {
@@ -354,6 +377,7 @@ public class Habit implements Serializable {
 
     /**
      * Getter for UUID
+     *
      * @return
      */
     public String getUUID() {
@@ -362,6 +386,7 @@ public class Habit implements Serializable {
 
     /**
      * Setter for UUID
+     *
      * @param UUID
      */
     public void setUUID(String UUID) {
@@ -370,6 +395,7 @@ public class Habit implements Serializable {
 
     /**
      * Getter for publicHabit
+     *
      * @return
      */
     public boolean isPublicHabit() {
@@ -378,6 +404,7 @@ public class Habit implements Serializable {
 
     /**
      * Setter for publicHabit
+     *
      * @param publicHabit
      */
     public void setPublicHabit(boolean publicHabit) {
@@ -386,6 +413,7 @@ public class Habit implements Serializable {
 
     /**
      * Getter for needCompletion
+     *
      * @return
      */
     public int getNeedCompletion() {
@@ -394,6 +422,7 @@ public class Habit implements Serializable {
 
     /**
      * Getter for index
+     *
      * @return
      */
     public int getIndex() {
@@ -402,6 +431,7 @@ public class Habit implements Serializable {
 
     /**
      * Setter for index
+     *
      * @param index
      */
     public void setIndex(int index) {
@@ -410,6 +440,7 @@ public class Habit implements Serializable {
 
     /**
      * Getter for recordDate
+     *
      * @return
      */
     public String getRecordDate() {
@@ -419,11 +450,11 @@ public class Habit implements Serializable {
     /**
      * the method used to calculate how many times the habit needed to be done for the current time
      */
-    public void calculateTimes(){
+    public void calculateTimes() {
         // the simpleDateFormat used to create the Date variable
         SimpleDateFormat myFormat = new SimpleDateFormat("yyyy-MM-dd");
         // calculate the times needed for the habits with per day frequency
-        if(this.frequencyType.equals("per day")){
+        if (this.frequencyType.equals("per day")) {
             try {
                 // create the Date variables for the record date and the current date
                 Date date1 = myFormat.parse(this.recordDate);
@@ -431,20 +462,20 @@ public class Habit implements Serializable {
                 // get the difference between two dates
                 long diff = date2.getTime() - date1.getTime();
                 // round up the difference into integer to reflect the amount of days
-                int days = (int) (diff / (1000*60*60*24)) + 1;
+                int days = (int) (diff / (1000 * 60 * 60 * 24)) + 1;
                 // calculate the number of times needed for the period between record date and current date and add it to the variable needCompletion
                 this.needCompletion = this.needCompletion + days * this.frequency;
             } catch (ParseException e) {
                 e.printStackTrace();
             }
             // calculate the times needed for the habit with per week frequency
-        } else if(this.frequencyType.equals("per week")){
+        } else if (this.frequencyType.equals("per week")) {
             try {
                 // create the Date variables for the record date and the current date
                 Date date1 = myFormat.parse(this.recordDate);
                 Date date2 = myFormat.parse(this.lastDate);
                 // loop through all the weekly occurrence days to calculate the number of times that the habit need to be done
-                for (int i = 0; i < this.occurrenceDay.size(); i++ ){
+                for (int i = 0; i < this.occurrenceDay.size(); i++) {
                     // call the calculateWeekdays method to calculate the number of  a specific week day in a period
                     this.needCompletion = this.needCompletion + calculateWeekdays(date1, date2, this.occurrenceDay.get(i));
                 }
@@ -477,12 +508,13 @@ public class Habit implements Serializable {
 
     /**
      * the method used to calculate the total amount of a specific week day in a given period
+     *
      * @param start the starting date of the period
-     * @param end the end date of the period
-     * @param i the number that represent the week day in the week
+     * @param end   the end date of the period
+     * @param i     the number that represent the week day in the week
      * @return
      */
-    private int calculateWeekdays(Date start, Date end, int i){
+    private int calculateWeekdays(Date start, Date end, int i) {
         // using the two Date variables to create Calendar variables for the starting date and the end date
         Calendar startCal = Calendar.getInstance();
         startCal.setTime(start);
@@ -495,7 +527,7 @@ public class Habit implements Serializable {
             return days;
         }
         // a loop that used to calculate the number of occurrence of a weekday in the period
-        while (startCal.getTimeInMillis() <= endCal.getTimeInMillis()){
+        while (startCal.getTimeInMillis() <= endCal.getTimeInMillis()) {
             // check if the the date in the startCal is the specific week day
             if (startCal.get(Calendar.DAY_OF_WEEK) == i) {
                 ++days;
@@ -509,12 +541,13 @@ public class Habit implements Serializable {
 
     /**
      * the method used to calculate the total amount of the monthly occurrence day in a given period
+     *
      * @param start the starting date of the period
-     * @param end the end date of the period
-     * @param i the number that represent the week day in the week
+     * @param end   the end date of the period
+     * @param i     the number that represent the week day in the week
      * @return
      */
-    private int calculateMonthDays(Date start, Date end, int i){
+    private int calculateMonthDays(Date start, Date end, int i) {
         // using the two Date variables to create Calendar variables for the starting date and the end date
         Calendar startCal = Calendar.getInstance();
         startCal.setTime(start);
@@ -527,7 +560,7 @@ public class Habit implements Serializable {
             return days;
         }
         // a loop that used to calculate the number of occurrence of a date of month in the period
-        while (startCal.getTimeInMillis() <= endCal.getTimeInMillis()){
+        while (startCal.getTimeInMillis() <= endCal.getTimeInMillis()) {
             if (startCal.get(Calendar.DAY_OF_MONTH) == i) {
                 ++days;
             }
@@ -543,20 +576,20 @@ public class Habit implements Serializable {
      * the method used to reset the times in the needCompletion variable and the date in the recordDate variable
      * if the user edits habit
      */
-    public void reset(){
+    public void reset() {
         // set up the Calendar variable
         SimpleDateFormat myFormat = new SimpleDateFormat("yyyy-MM-dd");
         Calendar current = Calendar.getInstance();
-        try{
+        try {
             Date time = myFormat.parse(lastDate);
             current.setTime(time);
         } catch (ParseException e) {
             e.printStackTrace();
         }
         // if the habit is with per week frequency
-        if(frequencyType.equals("per week") ){
+        if (frequencyType.equals("per week")) {
             // if the habit need to be done today
-            if(this.occurrenceDay.contains(current.get(Calendar.DAY_OF_WEEK))){
+            if (this.occurrenceDay.contains(current.get(Calendar.DAY_OF_WEEK))) {
                 // decrement the times in the needCompletion by 1
                 this.needCompletion--;
                 // set the date in the recordDate to be the current date in the lastDate
@@ -565,9 +598,9 @@ public class Habit implements Serializable {
 
         }
         // if the habit is with per month frequency
-        if (frequencyType.equals("per month")){
+        if (frequencyType.equals("per month")) {
             // if the habit need to be done today
-            if(this.occurrenceDay.contains(current.get(Calendar.DAY_OF_MONTH))){
+            if (this.occurrenceDay.contains(current.get(Calendar.DAY_OF_MONTH))) {
                 // decrement the times in the needCompletion by 1
                 this.needCompletion--;
                 // set the date in the recordDate to be the current date in the lastDate
@@ -576,7 +609,7 @@ public class Habit implements Serializable {
 
         }
         // if the habit is with per day frequency
-        if(frequencyType.equals("per day")){
+        if (frequencyType.equals("per day")) {
             // decrement the times in the needCompletion by the number of frequency of the habit
             this.needCompletion = this.needCompletion - this.frequency;
             // set the date in the recordDate to be the current date in the lastDate

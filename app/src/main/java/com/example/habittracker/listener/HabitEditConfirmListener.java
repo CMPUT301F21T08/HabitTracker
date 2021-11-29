@@ -119,7 +119,7 @@ public class HabitEditConfirmListener implements View.OnClickListener{
                 String value_of_startDate = date.getText().toString();
                 String value_of_content = content.getText().toString();
                 String value_of_reason = reason.getText().toString();
-                // vlaue_of_occurrence is a global variable
+                // value_of_occurrence is a global variable
                 String uuid = UUID.randomUUID().toString(); // Generate the unique uuid for each habit
                 habit = new Habit(value_of_title, value_of_reason, value_of_content, value_of_startDate, value_of_frequency, value_of_frequencyType, value_of_OccurrenceDate, uuid, index, publicHabit);
                 // adding habit into the firebase
