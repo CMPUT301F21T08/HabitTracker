@@ -16,21 +16,31 @@ public class HabitListAddListener implements View.OnClickListener{
     Context context;
     Activity activity;
     int amount;
+    ArrayList<Habit> habitList;
+    String uid;
 
-    public HabitListAddListener(Context context, Activity activity, int amount){
+    public HabitListAddListener(Context context, Activity activity, int amount,ArrayList<Habit> habitList, String ui ){
         this.context = context;
         this.activity = activity;
         this.amount = amount;
+        this.habitList = habitList;
+        this.uid = uid;
+
     }
 
     @Override
     public void onClick(View view) {
-        // go to habit edit page
+        for(int i = 0; i < habitList.size(); i++){
+            Habit habit = habitList.get(i);
+            // upload the information to database to update all habit
+            HashMap<String, Object> map = new HashMap<>();
+            map.put(habit.getUUID(),habit);
+            FirebaseDatabase.getInstance().getReference().child(uid).child("Habit").updateChildren(map);
+        }
         Intent intent = new Intent(context, HabitEditActivity.class);
-        intent.putExtra("action", "add");
         intent.putExtra("amount", amount);
-        Log.d(TAG, "fromPosition is " + amount);
+        intent.putExtra("action", "add");
         activity.startActivity(intent);
-        activity.finish(); // finish activity
+        activity.finish();
     }
 }
