@@ -10,11 +10,11 @@
         android:id="@+id/toDo_habitContent_textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_toLeftOf="@id/done_button"
         android:layout_alignTop="@id/done_button"
         android:layout_alignBottom="@id/done_button"
-        android:text="Habit content"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@id/done_button"
+        android:text="Habit contentxxxxxxxxxxxx"
         android:textSize="26sp"
         android:textStyle="bold" />
 
@@ -23,7 +23,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_marginStart="160dp"
         android:layout_marginEnd="40dp"
         android:clickable="true" />
 

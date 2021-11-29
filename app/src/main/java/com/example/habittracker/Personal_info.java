@@ -13,10 +13,6 @@ public class Personal_info {
         return genderId;
     }
 
-    public void setGenderId(int genderId) {
-        this.genderId = genderId;
-    }
-
     public String getDownloadUrl() {
         return downloadUrl;
     }
