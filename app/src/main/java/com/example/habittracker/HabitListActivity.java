@@ -57,25 +57,8 @@ public class HabitListActivity extends AppCompatActivity {
     private FirebaseAuth authentication; // user authentication reference
     private String uid; // User unique ID
     // set up the OnItemClickListener to allow the user to click on the habit to see its detailed information
-    private View.OnClickListener onItemClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            // get the position of the tapped habit
-            RecyclerView.ViewHolder viewHolder = (RecyclerView.ViewHolder) view.getTag();
-            int position = viewHolder.getAdapterPosition();
-            // get the tapped habit
-            Habit tapHabit = habitList.get(position);
-            // upload the information to database to update all habit
-            for(int i = 0; i < habitList.size(); i++){
-                Habit habit = habitList.get(i);
-                HashMap<String, Object> map = new HashMap<>();
-                map.put(habit.getUUID(),habit);
-                FirebaseDatabase.getInstance().getReference().child(uid).child("Habit").updateChildren(map);
-            }
-            // call the goToHabitDescriptionActivity method to go to HabitEditActivity
-            goToHabitDescriptionActivity(position, tapHabit);
-        }
-    };
+    private View.OnClickListener onItemClickListener;
+    
     BottomNavigationView bottomNavigationView;
 
     @Override
@@ -98,6 +81,8 @@ public class HabitListActivity extends AppCompatActivity {
         habitAdapter = new HabitListAdapter(this, habitList);
         habitRecycleView.setAdapter(habitAdapter);
         habitRecycleView.setLayoutManager(new LinearLayoutManager(this));
+        //  Allow the user to click on the habit to see its detailed information
+        onItemClickListener = new HabitListClickListener(this, getApplicationContext(), habitList, uid);
         // attach the onItemClickListener to the adapter
         habitAdapter.setOnItemClickListener(onItemClickListener);
         // set up the itemTouchHelper to change the index of habits to record the order of habits in the habit list
@@ -187,45 +172,10 @@ public class HabitListActivity extends AppCompatActivity {
         // Process Navigation Bar
         bottomNavigationView = findViewById(R.id.bottom_navigation_event);
         bottomNavigationView.setSelectedItemId(R.id.navigation_habit);
-
-        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                // upload the information to database to update all habit
-                for(int i = 0; i < habitList.size(); i++){
-                    Habit habit = habitList.get(i);
-                    HashMap<String, Object> map = new HashMap<>();
-                    map.put(habit.getUUID(),habit);
-                    FirebaseDatabase.getInstance().getReference().child(uid).child("Habit").updateChildren(map);
-                }
-                switch (item.getItemId()) {
-                    case R.id.navigation_habit:
-                        return true;
-                    case R.id.navigation_habitEvent:
-                        Intent intent1 = new Intent(HabitListActivity.this, HabitEventListActivity.class);
-                        intent1.putExtra("StartMode", "normal");
-                        startActivity(intent1);
-                        finish();
-                        return true;
-                    case R.id.navigation_homePage:
-                        Intent intent2 = new Intent(HabitListActivity.this, MainPageActivity.class);
-                        startActivity(intent2);
-                        finish();
-                        return true;
-                    case R.id.navigation_following:
-                        Intent intent3 = new Intent(HabitListActivity.this, FollowingActivity.class);
-                        startActivity(intent3);
-                        finish();
-                        return true;
-                    case R.id.navigation_settings:
-                        Intent intent4 = new Intent(HabitListActivity.this, ProfileActivity.class);
-                        startActivity(intent4);
-                        finish();
-                        return true;
-                }
-                return false;
-            }
-        });
+        
+        NavigationBarView.OnItemSelectedListener bottomNavigationViewOnItemSelectedListener = new HabitListNavigationBarClickListener(getApplicationContext(),this, uid, habitList);
+        bottomNavigationView.setOnItemSelectedListener(bottomNavigationViewOnItemSelectedListener);
+       
     }
 
     /**
