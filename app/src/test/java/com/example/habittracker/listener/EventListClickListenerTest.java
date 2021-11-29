@@ -37,10 +37,6 @@ public class EventListClickListenerTest extends TestCase {
     @BeforeEach
     public void constructEvent() {
         testEvent = new HabitEvent("Run", "I've finished running", "Edmonton", "1234-5678", "1111-2222");
-//        Intent intent = new Intent(context, HabitEventEditActivity.class);
-//        activity.startActivity(intent);
-//        activity = new Activity(context, HabitEventEditActivity.class);
-
         HabitEventListAdapter habitEventListAdapter = new HabitEventListAdapter(activity.getApplicationContext(),habitEventArrayList);
         habitEventListAdapter.add(testEvent);
     }

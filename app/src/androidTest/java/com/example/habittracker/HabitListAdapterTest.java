@@ -5,10 +5,8 @@ package com.example.habittracker;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import android.content.Context;
-import android.view.View;
-import android.widget.TextView;
-
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.test.core.app.ApplicationProvider;
 
 import org.junit.Before;
@@ -39,13 +37,13 @@ public class HabitListAdapterTest {
 
     }
 
-//    @Test
-//    public void testGetView() {
-//        View view = testAdapter.getView(0, null, null);
-//
-//        TextView textView = view.findViewById(R.id.allHabitsContent_habitContent_textView);
-//        assertNotNull(view);
-//        assertNotNull(textView);
-//        assertEquals(testHabit.getHabitTitle(), textView.getText());
-//    }
+    @Test
+    public void testAdapter() {
+        RecyclerView habitView = new RecyclerView(ApplicationProvider.getApplicationContext());
+        habitView.setLayoutManager(new LinearLayoutManager(ApplicationProvider.getApplicationContext()));
+        HabitListAdapter.HabitViewHolder viewHolder = testAdapter.onCreateViewHolder(habitView, 0);
+        testAdapter.onBindViewHolder(viewHolder, 0);
+        assertNotNull(viewHolder.habitTitleView);
+        assertEquals(testHabit.getHabitTitle(), viewHolder.habitTitleView.getText());
+    }
 }

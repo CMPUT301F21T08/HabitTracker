@@ -68,8 +68,7 @@ public class HabitDescriptionActivityTest {
         solo.enterText((EditText) solo.getView(R.id.frequencyInput), "2");//times per day
         solo.enterText((EditText) solo.getView(R.id.contentInput), "This is a test");
         solo.enterText((EditText) solo.getView(R.id.reasonInput), "Started for testing");
-        solo.clickOnButton("Confirm");
-
+        solo.clickOnButton("CONFIRM");
     }
     /**
      * Check to see if the description of an activity is correct
@@ -81,21 +80,20 @@ public class HabitDescriptionActivityTest {
         // add Habit
         helperAddHabit();
         // now we are back in HabitList Page
+        solo.sleep(10000);
         //click on the Habit
-        HabitListActivity activity = (HabitListActivity) solo.getCurrentActivity();
-        //get listView
-        RecyclerView recyclerView = activity.findViewById(R.id.allHabits_habitList_recycleView);
+        solo.waitForActivity("HabitListActivity");
         // click on the Habit
-        solo.clickInList(0,0);
+        solo.clickInRecyclerView(0,0);
         // check information is the same.
         solo.waitForActivity("HabitDescriptionActivity");
         // now get info
 
-        assertEquals(solo.getText(R.id.TitleInput),"Habit1" );
-        assertEquals(solo.getText(R.id.dateInput),"2021-11-06" );
-        assertEquals(solo.getText(R.id.frequencyInput),"2" );
-        assertEquals(solo.getText(R.id.contentInput),"This is a test");
-        assertEquals(solo.getText(R.id.reasonInput),"Started for testing");
+        assertEquals(solo.getText(R.id.description_habitTitle_textView),"Habit1" );
+        assertEquals(solo.getText(R.id.description_startDate_textView),"2021-11-06" );
+        assertEquals(solo.getText(R.id.description_frequency_textView),"2" );
+        assertEquals(solo.getText(R.id.description_content_textView),"This is a test");
+        assertEquals(solo.getText(R.id.description_reason_textView),"Started for testing");
         // done
 
     }

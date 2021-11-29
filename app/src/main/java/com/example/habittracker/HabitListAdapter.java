@@ -17,12 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,6 +33,7 @@ public class HabitListAdapter extends RecyclerView.Adapter<HabitListAdapter.Habi
     private Context context;
     private View.OnClickListener onItemClickListener;
     private ProgressBar progression;
+    private CheckBox disclose;
 
 
 
@@ -70,10 +66,10 @@ public class HabitListAdapter extends RecyclerView.Adapter<HabitListAdapter.Habi
         holder.habitTitleView.setText(habit.getHabitTitle());
         // set up the disclosure status of the habit in the checkbox
         if(habit.isPublicHabit()){
-            holder.disclose.setChecked(true);
+            disclose.setChecked(true);
         }
         // attach the onCheckChangeListener to the checkbox to record the disclosure status of the habit
-        holder.disclose.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        disclose.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 habit.setPublicHabit(isChecked);
@@ -111,7 +107,7 @@ public class HabitListAdapter extends RecyclerView.Adapter<HabitListAdapter.Habi
     public class HabitViewHolder extends RecyclerView.ViewHolder {
         // variables of views
         public TextView habitTitleView;
-        public CheckBox disclose;
+
 
         public HabitViewHolder(@NonNull View itemView) {
             // set up the views

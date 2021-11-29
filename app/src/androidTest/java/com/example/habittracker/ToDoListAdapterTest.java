@@ -20,9 +20,6 @@ public class ToDoListAdapterTest {
     private ArrayList<Habit> testList;
     private Habit testHabit;
 
-    //    private HabitEventListAdapter testAdapter;
-//    private ArrayList<HabitEvent> testList;
-//    private HabitEvent testEvent;
     @Before
     public void setUp() {
 

@@ -1,6 +1,8 @@
 package com.example.habittracker;
 
 
+import static org.junit.Assert.assertEquals;
+
 import android.app.Activity;
 import android.util.Log;
 import android.widget.EditText;
@@ -15,6 +17,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
@@ -25,8 +28,6 @@ import androidx.test.rule.ActivityTestRule;
 public class HabitListActivityTest{
     private Solo solo;
 
-
-    final float NAVIGATION_Y = 1994;
 
     // We created user with info userName 'Test', email 'test@gmail.com', password '123456'
 
@@ -65,7 +66,7 @@ public class HabitListActivityTest{
         solo.enterText((EditText) solo.getView(R.id.frequencyInput), "2");//times per day
         solo.enterText((EditText) solo.getView(R.id.contentInput), "This is a test");
         solo.enterText((EditText) solo.getView(R.id.reasonInput), "Started for testing");
-        solo.clickOnButton("Confirm");
+        solo.clickOnButton("CONFIRM");
     }
 
     // this is not working as I don't know how to interact with Fragment
@@ -74,7 +75,7 @@ public class HabitListActivityTest{
         // wait for the page
         solo.waitForActivity("HabitDescriptionActivity");
         solo.waitForView(R.id.description_edit_button);
-        solo.clickOnButton("Delete");
+        solo.clickOnButton("DELETE");
         // wait for the EditText to be ready
         solo.waitForFragmentByTag("Are you sure you want to delete?");
         solo.clickOnView(solo.getView(android.R.id.button1));
@@ -90,16 +91,16 @@ public class HabitListActivityTest{
             // wait for HabitListActivity to load
             solo.waitForActivity("HabitListActivity");
             solo.assertCurrentActivity("Wrong Activity", HabitListActivity.class);
-
             //wait until the ListView is loaded
             solo.waitForView(R.id.allHabits_habitList_recycleView);
             //assert in correct Activity
             HabitListActivity activity = (HabitListActivity) solo.getCurrentActivity();
-            //get listView
-            ListView listView = activity.findViewById(R.id.allHabits_habitList_recycleView);
-            Habit newHabit = (Habit) listView.getItemAtPosition(0);// only habit in the one
-            //check that the Habit is the same as entered.
-            if ((!newHabit.getHabitTitle().equals("Habit1"))) throw new AssertionError();
+            // click on the Habit
+            solo.clickInRecyclerView(0,0);
+            // check information is the same.
+            solo.waitForActivity("HabitDescriptionActivity");
+            // now get info
+            assertEquals(solo.getText(R.id.description_habitTitle_textView),"Habit1" );
             helperDeleteHabit();
     }
 
@@ -121,26 +122,18 @@ public class HabitListActivityTest{
         solo.assertCurrentActivity("Wrong Activity", HabitListActivity.class);
         //wait until the ListView is loaded
         solo.waitForView(R.id.allHabits_habitList_recycleView);
-        //assert in correct Activity
-        HabitListActivity activity = (HabitListActivity) solo.getCurrentActivity();
-        //get listView
-        ListView listView = activity.findViewById(R.id.allHabits_habitList_recycleView);
-        Habit newHabit = (Habit) listView.getItemAtPosition(0);// only habit in the one
-        //check that the Habit is the same as entered.
-        if ((!newHabit.getHabitTitle().equals("Habit1"))) throw new AssertionError();
-
         // now we will edit it
-        solo.clickInList(0, 0);
+        solo.clickInRecyclerView(0,0);
         // wait for the page
         solo.waitForActivity("HabitDescriptionActivity");
         solo.waitForView(R.id.description_edit_button);
-        solo.clickOnButton("Edit");
+        solo.clickOnButton("EDIT");
         // wait for the EditText to be ready
         solo.waitForActivity("HabitEditActivity");
         solo.waitForView(R.id.TitleInput);
         // change the habit name
         solo.enterText((EditText) solo.getView(R.id.TitleInput), "2");
-        solo.clickOnButton("Confirm");
+        solo.clickOnButton("CONFIRM");
         solo.sleep(10000);
         solo.waitForActivity("HabitListActivity");
         solo.assertCurrentActivity("Wrong Activity", HabitListActivity.class);
@@ -149,10 +142,11 @@ public class HabitListActivityTest{
         solo.waitForView(R.id.allHabits_habitList_recycleView);
         //assert in correct Activity
         //get the habit. should have new name
-        newHabit = (Habit) listView.getItemAtPosition(0);// only habit in the one
-        //check that the Habit is the same as the edited one
-        if ((!newHabit.getHabitTitle().equals("Habit12"))) throw new AssertionError();
-
+        solo.clickInRecyclerView(0,0);
+        // check information is the same.
+        solo.waitForActivity("HabitDescriptionActivity");
+        // now get info
+        assertEquals(solo.getText(R.id.description_habitTitle_textView),"Habit12" );
     }
 
     /**
@@ -173,22 +167,16 @@ public class HabitListActivityTest{
 
         //wait until the ListView is loaded
         solo.waitForView(R.id.allHabits_habitList_recycleView);
-        //assert in correct Activity
-        HabitListActivity activity = (HabitListActivity) solo.getCurrentActivity();
-        //get listView
-        ListView listView = activity.findViewById(R.id.allHabits_habitList_recycleView);
 
         //check that there is nothing left
         try {
-            Habit newHabit = (Habit) listView.getItemAtPosition(0);// only habit in the one
+            solo.clickInRecyclerView(0,0);
         }
-        catch (IndexOutOfBoundsException e){
+        catch (Exception e){
             Log.v("Success: ", e.toString());
         }
 
     }
-
-
 
 
 
