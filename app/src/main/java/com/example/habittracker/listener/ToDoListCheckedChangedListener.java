@@ -59,7 +59,7 @@ public class ToDoListCheckedChangedListener implements CompoundButton.OnCheckedC
                 ((MainPageActivity) context).finish();
             } else {
                 HashMap<String, Object> map = new HashMap<>();
-                map.put(tappedHabit.getHabitTitle(), tappedHabit);
+                map.put(tappedHabit.getUUID(), tappedHabit);
                 FirebaseDatabase.getInstance().getReference().child(uid).child("Habit").updateChildren(map);
                 done.setChecked(false);
             }
