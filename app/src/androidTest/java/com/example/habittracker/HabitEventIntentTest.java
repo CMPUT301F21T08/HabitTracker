@@ -1,8 +1,11 @@
 package com.example.habittracker;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -205,6 +208,106 @@ public class HabitEventIntentTest {
 //
 //
 //    }
+
+    /**
+     * Test whether clicking the camera button in the habit event edit page actually opens a camera interface
+     */
+    @Test
+    public void checkCamera(){
+        //Asserts that current activity is the LogInActivity
+        // because that is where we start
+        solo.assertCurrentActivity("Wrong Activity", LogInActivity.class);
+        solo.enterText((EditText) solo.getView(R.id.login_useremail_editText), "123456nnn@gmail.com");
+        solo.enterText((EditText) solo.getView(R.id.login_password_editText), "123456nnn");
+        solo.clickOnButton("Login");
+        //After logIn we go to the Main Page
+        //Here we check if we are on the Main Page Activity
+        solo.assertCurrentActivity("Wrong Activity", MainPageActivity.class);
+        //From Main Page, we need to click on Habits events
+        // So that we can see all habit events
+
+        solo.clickOnView(solo.getView(R.id.navigation_habitEvent));
+        solo.clickOnText("Habit Event");
+
+
+        //Asserts that current activity is the HabitEventListActivity
+        solo.assertCurrentActivity("Wrong Activity", HabitEventListActivity.class);
+
+        // get the first habit event
+        // only habit in the one
+        //assert in correct Activity
+        HabitEventListActivity activity = (HabitEventListActivity) solo.getCurrentActivity();
+        //get listView
+        ListView listView = activity.findViewById(R.id.lv_habit_event);
+        HabitEvent newHabE = (HabitEvent) listView.getItemAtPosition(0);
+        String eventName = newHabE.getEventTitle();
+
+
+        solo.clickOnText(eventName);
+
+        solo.assertCurrentActivity("Wrong Activity", HabitEventEditActivity.class);
+
+        solo.clickOnText("Camera");
+    }
+
+
+    /**
+     * Test whether we can successfully get the location information by pressing the get location button
+     */
+    @Test
+    public void checkGetLocation() {
+        //Asserts that current activity is the LogInActivity
+        // because that is where we start
+        solo.assertCurrentActivity("Wrong Activity", LogInActivity.class);
+        solo.enterText((EditText) solo.getView(R.id.login_useremail_editText), "123456nnn@gmail.com");
+        solo.enterText((EditText) solo.getView(R.id.login_password_editText), "123456nnn");
+        solo.clickOnButton("Login");
+        //After logIn we go to the Main Page
+        //Here we check if we are on the Main Page Activity
+        solo.assertCurrentActivity("Wrong Activity", MainPageActivity.class);
+        //From Main Page, we need to click on Habits events
+        // So that we can see all habit events
+
+        solo.clickOnView(solo.getView(R.id.navigation_habitEvent));
+        solo.clickOnText("Habit Event");
+
+
+        //Asserts that current activity is the HabitEventListActivity
+        solo.assertCurrentActivity("Wrong Activity", HabitEventListActivity.class);
+
+        // get the first habit event
+        // only habit in the one
+        //assert in correct Activity
+        HabitEventListActivity activity = (HabitEventListActivity) solo.getCurrentActivity();
+        //get listView
+        ListView listView = activity.findViewById(R.id.lv_habit_event);
+        HabitEvent newHabE = (HabitEvent) listView.getItemAtPosition(0);
+        String eventName = newHabE.getEventTitle();
+
+
+        solo.clickOnText(eventName);
+
+        solo.assertCurrentActivity("Wrong Activity", HabitEventEditActivity.class);
+
+        solo.clickOnText("get location");
+        solo.assertCurrentActivity("Wrong Activity", HabitEventEditMapActivity.class);
+
+        // wait for 10 seconds to allow the location information to pop up
+        solo.sleep(10000);
+
+        solo.clickOnText("confirm");
+        solo.assertCurrentActivity("Wrong Activity", HabitEventEditActivity.class);
+
+        solo.sleep(5000);
+
+        HabitEventEditActivity activity2 = (HabitEventEditActivity) solo.getCurrentActivity();
+
+        EditText locationEditText = activity2.findViewById(R.id.habitEvent_enterLocation_editText);
+
+        assertNotNull(locationEditText.getText());
+    }
+
+
     /**
      * Closes the activity after each test
      * @throws Exception
