@@ -56,6 +56,7 @@ public class FollowingListAdapter extends ArrayAdapter<Personal_info> {
 
         UserNameView.setText(User.getName());
         if (User.getDownloadUrl() != null){
+            System.out.println(User.getDownloadUrl());
             Uri uri = Uri.parse(User.getDownloadUrl());
             Glide.with(context.getApplicationContext()).load(uri).into(UserImage);
         }
