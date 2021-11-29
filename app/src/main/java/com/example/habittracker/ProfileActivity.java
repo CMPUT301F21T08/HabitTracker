@@ -88,7 +88,7 @@ public class ProfileActivity extends AppCompatActivity {
         gender_RadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
-                gender_RadioButton = findViewById(i);
+                gender_RadioButton = gender_RadioGroup.findViewById(i);
             }
         });
 
