@@ -307,6 +307,111 @@ public class HabitEventIntentTest {
         assertNotNull(locationEditText.getText());
     }
 
+    /**
+     * Test whether we can successfully enter the upload photo page
+     */
+    @Test
+    public void checkUploadImage() {
+        //Asserts that current activity is the LogInActivity
+        // because that is where we start
+        solo.assertCurrentActivity("Wrong Activity", LogInActivity.class);
+        solo.enterText((EditText) solo.getView(R.id.login_useremail_editText), "123456nnn@gmail.com");
+        solo.enterText((EditText) solo.getView(R.id.login_password_editText), "123456nnn");
+        solo.clickOnButton("Login");
+        //After logIn we go to the Main Page
+        //Here we check if we are on the Main Page Activity
+        solo.assertCurrentActivity("Wrong Activity", MainPageActivity.class);
+        //From Main Page, we need to click on Habits events
+        // So that we can see all habit events
+
+        solo.clickOnView(solo.getView(R.id.navigation_habitEvent));
+        solo.clickOnText("Habit Event");
+
+
+        //Asserts that current activity is the HabitEventListActivity
+        solo.assertCurrentActivity("Wrong Activity", HabitEventListActivity.class);
+
+        // get the first habit event
+        // only habit in the one
+        //assert in correct Activity
+        HabitEventListActivity activity = (HabitEventListActivity) solo.getCurrentActivity();
+        //get listView
+        ListView listView = activity.findViewById(R.id.lv_habit_event);
+        HabitEvent newHabE = (HabitEvent) listView.getItemAtPosition(0);
+        String eventName = newHabE.getEventTitle();
+
+
+        solo.clickOnText(eventName);
+
+        solo.assertCurrentActivity("Wrong Activity", HabitEventEditActivity.class);
+
+        solo.clickOnText("Upload Photo");
+    }
+
+    /**
+     * Check whether adding comment functions properly
+     */
+    @Test
+    public void checkComment() {
+        //Asserts that current activity is the LogInActivity
+        // because that is where we start
+        solo.assertCurrentActivity("Wrong Activity", LogInActivity.class);
+        solo.enterText((EditText) solo.getView(R.id.login_useremail_editText), "123456nnn@gmail.com");
+        solo.enterText((EditText) solo.getView(R.id.login_password_editText), "123456nnn");
+        solo.clickOnButton("Login");
+        //After logIn we go to the Main Page
+        //Here we check if we are on the Main Page Activity
+        solo.assertCurrentActivity("Wrong Activity", MainPageActivity.class);
+        //From Main Page, we need to click on Habits events
+        // So that we can see all habit events
+
+        solo.clickOnView(solo.getView(R.id.navigation_habitEvent));
+        solo.clickOnText("Habit Event");
+
+
+        //Asserts that current activity is the HabitEventListActivity
+        solo.assertCurrentActivity("Wrong Activity", HabitEventListActivity.class);
+
+        // get the first habit event
+        // only habit in the one
+        //assert in correct Activity
+        HabitEventListActivity activity = (HabitEventListActivity) solo.getCurrentActivity();
+        //get listView
+        ListView listView = activity.findViewById(R.id.lv_habit_event);
+        HabitEvent newHabE = (HabitEvent) listView.getItemAtPosition(0);
+        String eventName = newHabE.getEventTitle();
+
+
+        solo.clickOnText(eventName);
+
+        solo.assertCurrentActivity("Wrong Activity", HabitEventEditActivity.class);
+
+        HabitEventEditActivity activity2 = (HabitEventEditActivity) solo.getCurrentActivity();
+        EditText commentEditText = activity2.findViewById(R.id.habitEvent_comment_editText);
+
+        String currentComment = commentEditText.getText().toString();
+        currentComment += "111111";
+
+        solo.enterText(commentEditText, "111111");
+
+        // click on confirm button
+        solo.clickOnText("CONFIRM");
+        solo.assertCurrentActivity("Wrong Activity", HabitEventListActivity.class);
+
+        solo.clickOnText(eventName);
+        solo.assertCurrentActivity("Wrong Activity", HabitEventEditActivity.class);
+
+        solo.sleep(5000);
+
+
+        assertEquals(currentComment, commentEditText.getText().toString());
+
+        solo.clearEditText((EditText) solo.getView(R.id.habitEvent_comment_editText));
+
+        solo.clickOnText("CONFIRM");
+        solo.assertCurrentActivity("Wrong Activity", HabitEventListActivity.class);
+
+    }
 
     /**
      * Closes the activity after each test
