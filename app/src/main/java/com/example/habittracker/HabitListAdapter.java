@@ -80,7 +80,7 @@ public class HabitListAdapter extends RecyclerView.Adapter<HabitListAdapter.Habi
             }
         });
         // set up the progress bar for the habit
-        progression.getProgressDrawable().setColorFilter(Color.RED, android.graphics.PorterDuff.Mode.SRC_IN); // set color of the progression to be red
+        progression.getProgressDrawable().setColorFilter(Color.BLUE, android.graphics.PorterDuff.Mode.SRC_IN); // set color of the progression to be red
         progression.setMax(100);
         if(habit.getNeedCompletion() == 0){
             progression.setProgress(0);

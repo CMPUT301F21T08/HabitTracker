@@ -44,7 +44,7 @@
 
             <Button
                 android:id="@+id/habitEvent_camera_button"
-                android:layout_width="155dp"
+                android:layout_width="wrap_content"
                 android:layout_height="48dp"
                 android:layout_marginTop="4dp"
                 android:layout_marginEnd="16dp"
@@ -83,6 +83,7 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/habitEvent_comment_textView" />
+
             <TextView
                 android:id="@+id/habitEvent_location_textView"
                 android:layout_width="0dp"
@@ -143,6 +144,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="60dp"
+                android:backgroundTint="@android:color/holo_red_light"
                 android:layout_marginRight="60dp"
                 android:text="@string/delete_event"
                 app:layout_constrainedHeight="true"

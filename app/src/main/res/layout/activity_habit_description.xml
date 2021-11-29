@@ -33,6 +33,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
+                android:padding="10dp"
                 android:text="Start Date:"
                 android:textSize="20sp"/>
 
@@ -48,6 +49,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
+                android:padding="10dp"
                 android:text="Frequency:"
                 android:textSize="20sp"/>
 
@@ -81,27 +83,31 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
+                android:padding="10dp"
                 android:text="Content:"
                 android:textSize="20sp"/>
 
             <TextView
                 android:id="@+id/description_content_textView"
                 android:layout_width="match_parent"
-                android:layout_height="132dp"
+                android:layout_height="100dp"
+                android:layout_marginStart="10dp"
                 android:text="Briefly describe the content of the Habit"
-                android:textSize="16sp"/>
+                android:textSize="16sp" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
+                android:padding="10dp"
                 android:text="Reason:"
                 android:textSize="20sp"/>
 
             <TextView
                 android:id="@+id/description_reason_textView"
                 android:layout_width="match_parent"
-                android:layout_height="132dp"
+                android:layout_marginStart="10dp"
+                android:layout_height="100dp"
                 android:text="Briefly describe the reason about why the Habit Occurs"
                 android:textSize="16sp"/>
 
@@ -122,6 +128,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
+                    android:backgroundTint="@android:color/holo_red_light"
                     android:text="Delete" />
 
                 <Button

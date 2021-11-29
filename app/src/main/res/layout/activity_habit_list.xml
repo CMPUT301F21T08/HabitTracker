@@ -4,8 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/list_background"
     tools:context=".HabitListActivity">
     <LinearLayout
+        android:layout_marginHorizontal="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -13,19 +15,18 @@
             android:id="@+id/RelativeLayout01"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:padding="10dp">
+            android:paddingVertical="10dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="0dp"
                 android:layout_marginEnd="30dp"
-                android:layout_marginStart="10dp"
-                android:padding="10dp"
+                android:paddingVertical="10dp"
                 android:text="All Habits"
                 android:textColor="@color/black"
-                android:textStyle="bold"
-                android:textSize="15sp">
-            </TextView>
+                android:textSize="15sp"
+                android:textStyle="bold"></TextView>
 
 
         </RelativeLayout>
@@ -44,6 +45,7 @@
         android:clickable="true"
         android:focusable="true"
         android:layout_marginBottom="60dp"
+        android:backgroundTint="@color/blue"
         android:layout_gravity="bottom|end"
         app:srcCompat="@android:drawable/ic_input_add"
         />

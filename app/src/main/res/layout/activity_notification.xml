@@ -2,7 +2,8 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/list_background">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -16,7 +17,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="20dp"
                 android:layout_marginEnd="30dp"
                 android:padding="10dp"
                 android:text="Following requests"
@@ -41,6 +42,7 @@
         </RelativeLayout>
 
         <ListView
+            android:layout_marginHorizontal="20dp"
             android:id="@+id/request_users_ListView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">

@@ -16,14 +16,15 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:padding="20dp">
+
             <ImageView
                 android:id="@+id/followed_user_avatar_imageView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
-                android:layout_marginStart="0dp"
-                android:layout_marginTop="0dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
                 app:srcCompat="@drawable/empty_profile" />
 
             <TextView
@@ -80,7 +81,7 @@
 
 
         <ListView
-            android:paddingHorizontal="25dp"
+            android:paddingHorizontal="30dp"
             android:id="@+id/followed_user_habits_listview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">

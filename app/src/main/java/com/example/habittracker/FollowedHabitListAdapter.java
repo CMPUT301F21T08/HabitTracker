@@ -47,7 +47,7 @@ public class FollowedHabitListAdapter extends ArrayAdapter<Habit> {
         habitTitleView.setText(habit.getHabitTitle());
         progression = view.findViewById(R.id.progression_bar);
 
-        progression.getProgressDrawable().setColorFilter(Color.RED, android.graphics.PorterDuff.Mode.SRC_IN);
+        progression.getProgressDrawable().setColorFilter(Color.BLUE, android.graphics.PorterDuff.Mode.SRC_IN);
         progression.setMax(100);
         if(habit.getNeedCompletion() == 0){
             progression.setProgress(0);
