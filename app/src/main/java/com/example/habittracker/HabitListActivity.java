@@ -164,8 +164,24 @@ public class HabitListActivity extends AppCompatActivity {
 
 
         // set up the OnClickListener to allow user to add a new habit
-        View.OnClickListener addBtnOnclickListener = new HabitListAddListener(getApplicationContext(), this, amount,habitList,uid);
-        addButton.setOnClickListener(addBtnOnclickListener);        
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // upload the information to database to update all habits
+                for(int i = 0; i < habitList.size(); i++){
+                    Habit habit = habitList.get(i);
+                    HashMap<String, Object> map = new HashMap<>();
+                    map.put(habit.getUUID(),habit);
+                    FirebaseDatabase.getInstance().getReference().child(uid).child("Habit").updateChildren(map);
+                }
+                // go to the HabitEditActivity to allow user add a habit
+                Intent intent = new Intent(getApplicationContext(), HabitEditActivity.class);
+                intent.putExtra("amount", amount);
+                intent.putExtra("action", "add");
+                startActivity(intent);
+                finish();
+            }
+        });    
 
 
         // Process Navigation Bar
