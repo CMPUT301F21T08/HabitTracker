@@ -44,12 +44,10 @@ public class ToDoListCheckedChangedListener implements CompoundButton.OnCheckedC
                 //Generate a unique id for habit event
                 String uniqueID = UUID.randomUUID().toString();
 
-
-//                      tappedHabit.addEvent(title+": "+ date);
                 tappedHabit.addEvent(uniqueID);
 
                 HashMap<String, Object> map = new HashMap<>();
-                map.put(title, tappedHabit);
+                map.put(tappedHabit.getUUID(), tappedHabit);
                 FirebaseDatabase.getInstance().getReference().child(uid).child("Habit").updateChildren(map);
 
                 intent.putExtra("EventIndex", -1);
