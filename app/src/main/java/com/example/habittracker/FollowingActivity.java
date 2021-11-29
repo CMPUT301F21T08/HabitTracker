@@ -100,7 +100,6 @@ public class FollowingActivity extends AppCompatActivity implements SearchFollow
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             Personal_info info = (Personal_info) snapshot.getValue(Personal_info.class);
 
-                            //****later change the store the entire info class in the list, create a new adatper file to manage changes
                             following_list.add(info);
                             following_adapter.notifyDataSetChanged();
                         }
@@ -172,6 +171,9 @@ public class FollowingActivity extends AppCompatActivity implements SearchFollow
         finish();
     }
 
+    /**
+     * Process the different menu options in the app bar
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -196,6 +198,9 @@ public class FollowingActivity extends AppCompatActivity implements SearchFollow
         void onCallback(String email_toFollow, String uid_toFollow);
     }
 
+    /**
+     * loop throught the firebase, and get the corresponding UID with given email
+     */
     public void getUidByEmail(String email_toFollow, MyCallback myCallback){
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
@@ -219,7 +224,9 @@ public class FollowingActivity extends AppCompatActivity implements SearchFollow
     }
 
 
-
+    /**
+     * sent the request, update in the firebase
+     */
     @Override
     public void onConfirmPressed(String email_toFollow) {
         authentication = FirebaseAuth.getInstance();

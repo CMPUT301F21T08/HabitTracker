@@ -29,9 +29,6 @@ import java.util.HashMap;
 public class NotificationsActivity extends AppCompatActivity {
 
 
-
-    String [] examples = {" User1", " User2", " User3"};
-
     // private variables
     private ListView request_users_ListView;
     private ArrayList<Personal_info> request_list;
@@ -94,6 +91,9 @@ public class NotificationsActivity extends AppCompatActivity {
         void onCallback(String request_uid, Personal_info user);
     }
 
+    /**
+     * loop throught the firebase, and get the corresponding UID with given email
+     */
     public void getInfoByUid(String request_uid, MyCallback_notification myCallback){
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child(request_uid).child("Info");

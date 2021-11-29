@@ -99,33 +99,13 @@ public class HabitDescriptionActivity extends AppCompatActivity implements Delet
         toEventBtn = findViewById(R.id.description_habitEvent_button);
 
         // set up the onClickListener for the frequencyType button
-        frequencyType.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // if the frequencyType is "per week", then invoke a fragment to show the occurrence week day of the habit
-                if(habit.getFrequencyType().equals("per week")){
-                    new ShowWeekDaysFragment(habit).show(getSupportFragmentManager(),"SHOW_OCCURRENCE_DAYS");
-                }
-                // if the frequencyType is "per month", then invoke the alert dialog to show the occurrence month day of the habit
-                if(habit.getFrequencyType().equals("per month")){
-                    AlertDialog alert;
-                    alert = builder
-                            .setTitle("Monthly Occurrence Day")
-                            .setMessage("The monthly occurrence day for this habit is "+ habit.getOccurrenceDay().get(0) + "th")
-                            .setNegativeButton("return", null).create();
-                    alert.show();
-                }
-            }
-        });
+        View.OnClickListener frequencyBtnOnclickListener = new HabitDescriptionFrequencyListener(getSupportFragmentManager(), habit);
+        frequencyType.setOnClickListener(frequencyBtnOnclickListener);
 
         // set up the onClickListener for the deleteBtn button
-        deleteBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // invoke a fragment to ask for confirmation for deletion of the habit from user and delete the habit if user click confirm
-                new DeleteConfirmFragment("Are you sure you want to delete?").show(getSupportFragmentManager(),"DELETE_HABIT");
-            }
-        });
+        View.OnClickListener DeleteBtnOnclickListener = new HabitDescriptionDeleteListener(getSupportFragmentManager());
+        deleteBtn.setOnClickListener(DeleteBtnOnclickListener);
+       
 
         // set up the onClickListener for the returnBtn button
         View.OnClickListener returnBtnOnclickListener = new HabitDescriptionReturnListener(getApplicationContext(), this);

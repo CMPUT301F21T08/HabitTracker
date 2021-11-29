@@ -65,12 +65,7 @@ public class SearchFollowingFragment extends DialogFragment {
     private boolean isEmailValid(CharSequence  email) {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
-//    public static boolean isEmailValid(String email) {
-//        String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
-//        Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
-//        Matcher matcher = pattern.matcher(email);
-//        return matcher.matches();
-//    }
+
 
     @NonNull
     @Override

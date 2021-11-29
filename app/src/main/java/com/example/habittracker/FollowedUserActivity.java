@@ -48,8 +48,10 @@ public class FollowedUserActivity extends AppCompatActivity {
 
         getSupportActionBar().setTitle("Habit - User Habits");
 
+        // fetch the uid from the last intent
         followed_user_uid = getIntent().getExtras().getString("User_Uid");
 
+        // assigned layout variables
         UnsubBtn = findViewById(R.id.followed_user_unsubscribe_button);
         UserHabitsListView = findViewById(R.id.followed_user_habits_listview);
         UserNameTextView = findViewById(R.id.followed_user_name_textView);
@@ -69,10 +71,12 @@ public class FollowedUserActivity extends AppCompatActivity {
         UserHabitsListView.setAdapter(habitArrayAdapter);
 
 
+        // with given UID, go to teh corresponding branch in the firebase to get information
         DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference().child(followed_user_uid).child("Info");
         reference1.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                // set the corresponding information
                 User = (Personal_info) snapshot.getValue(Personal_info.class);
                 UserNameTextView.setText(User.getName());
                 UserAgeTextView.setText("Age: "+User.getName());
