@@ -52,6 +52,7 @@ public class ToDoListCheckedChangedListener implements CompoundButton.OnCheckedC
 
                 intent.putExtra("EventIndex", -1);
                 intent.putExtra("HabitName", title);
+                intent.putExtra("HabitUUID", tappedHabit.getUUID());
                 intent.putExtra("UniqueID", uniqueID);
 
                 context.startActivity(intent);
