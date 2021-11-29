@@ -11,7 +11,7 @@
     <string name="comment">Comment:</string>
     <string name="location">Location:</string>
     <string name="add_location">Enter location</string>
-    <string name="confirm">Confirm</string>
+    <string name="confirm">CONFIRM</string>
     <string name="cancel">Cancel</string>
     <string name="location_information">Your location information is...</string>
     <string name="delete">Delete</string>
