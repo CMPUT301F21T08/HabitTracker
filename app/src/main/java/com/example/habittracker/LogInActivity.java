@@ -100,13 +100,16 @@ public class LogInActivity extends AppCompatActivity {
 
                 if (sUserEmail == null || sUserEmail.isEmpty()){
                     email_layout.setError("Email cannot be empty!");
+                    email_layout.requestFocus();
                     return;
                 } else if (sPassWord == null || sPassWord.isEmpty()){
                     password_layout.setError("Password cannot be empty!");
+                    password_layout.requestFocus();
                     return;
                 }else if (! Patterns.EMAIL_ADDRESS.matcher(sUserEmail).matches()){
                     email_layout.setError("Incorrect email format");
                     email_layout.requestFocus();
+                    return;
                 }
 
                 InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);

@@ -1,7 +1,12 @@
 package com.example.habittracker;
 
+import android.Manifest;
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -41,6 +46,8 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 /**
  * @author 'zwan1'
@@ -75,6 +82,11 @@ public class ProfileActivity extends AppCompatActivity {
     static Personal_info personal_info;
     Uri uri;
 
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    private static String[] PERMISSIONS_STORAGE = {
+            android.Manifest.permission.READ_EXTERNAL_STORAGE,
+    };
+
     public ProfileActivity() {
     }
 
@@ -91,7 +103,6 @@ public class ProfileActivity extends AppCompatActivity {
                 gender_RadioButton = gender_RadioGroup.findViewById(i);
             }
         });
-
 
         // The corresponding user unique uid, in order to locate into the correct user branch in firebase
         authentication = FirebaseAuth.getInstance();
@@ -146,10 +157,20 @@ public class ProfileActivity extends AppCompatActivity {
                 Intent intent = new Intent(Intent.ACTION_PICK);
                 // set type
                 intent.setType("image/*");
-                // launch in intent
-                resultLauncher2.launch(intent);
+                // check for permission
+                if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                    resultLauncher2.launch(intent);
+                }else {
+                    requestStoragePermission();
+                    if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                        resultLauncher2.launch(intent);
+                    }
+                    }
+
             }
         });
+
+
 
 
         // Using the user uid to get the correct branch for this user, go into the "Info" branch to fetch user information
@@ -180,6 +201,8 @@ public class ProfileActivity extends AppCompatActivity {
         });
 
 
+
+
         // Create a button that lets user to sign out and go back to the login page
         signOut_btn = findViewById(R.id.profile_signOut_button);
         signOut_btn.setOnClickListener(new View.OnClickListener() {
@@ -194,31 +217,28 @@ public class ProfileActivity extends AppCompatActivity {
 
 
 
-        // Create a button that apply the changes that user made to either "User Name", "Gender" or "Age"
+        // Create a button that apply the changes that user made to either "User Name", "Gender", "Image" or "Age"
         applyChanges_btn = findViewById(R.id.profile_change_button);
         applyChanges_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (100<=Integer.parseInt(userAge.getText().toString().trim()) || Integer.parseInt(userAge.getText().toString().trim()) <0 || gender_RadioButton == null){
+                if ( gender_RadioButton == null){
+                    Toast.makeText(ProfileActivity.this, "Select a gender", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (100<=Integer.parseInt(userAge.getText().toString().trim()) || Integer.parseInt(userAge.getText().toString().trim()) <0){
                     Toast.makeText(ProfileActivity.this, "Wrong Input for Age, please enter an integer between 0 to 100", Toast.LENGTH_SHORT).show();
+                    return;
+                    // if image is set, need to upload it
                 } else if (personal_info.getLocalImagePath() != null){
                     personal_info = new Personal_info(userName.getText().toString().trim(),userEmail.getText().toString(),gender_RadioButton.getText().toString(), gender_RadioButton.getId(),Integer.parseInt(userAge.getText().toString().trim()), personal_info.getLocalImagePath());
                     personal_info.setUid(uid);
-
-
-                    System.out.println(personal_info.getGender());
-
                     uploadImage(personal_info, uid);
                     Toast.makeText(ProfileActivity.this, "Changes has been made!", Toast.LENGTH_SHORT).show();
                 } else{
                     HashMap<String,Object> map = new HashMap<>();
                     personal_info = new Personal_info(userName.getText().toString().trim(),userEmail.getText().toString(),gender_RadioButton.getText().toString(), gender_RadioButton.getId(),Integer.parseInt(userAge.getText().toString().trim()), personal_info.getLocalImagePath());
                     personal_info.setUid(uid);
-
-
-                    System.out.println(personal_info.getGender());
-
-
                     map.put("Info",personal_info);
                     FirebaseDatabase.getInstance().getReference().child(uid).updateChildren(map);
                     Toast.makeText(ProfileActivity.this, "Changes has been made!", Toast.LENGTH_SHORT).show();
@@ -230,6 +250,7 @@ public class ProfileActivity extends AppCompatActivity {
         bottomNavigationView = findViewById(R.id.bottom_navigation_event);
         bottomNavigationView.setSelectedItemId(R.id.navigation_settings);
 
+        // to move between pages
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -263,6 +284,29 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
+    // method to ask for permission to access storage
+    private void requestStoragePermission() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)){
+            new AlertDialog.Builder(this)
+                    .setTitle("Permission needed")
+                    .setMessage("It is needed to get the picture")
+                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            ActivityCompat.requestPermissions(ProfileActivity.this, new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_EXTERNAL_STORAGE);
+                        }
+                    }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+                }
+            });
+        } else {
+            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_EXTERNAL_STORAGE);
+        }
+    }
+
+
     /**
      * Process the KEY_RETURN signal in profile activity
      * When back button is pressed, return to main page activity
@@ -274,7 +318,14 @@ public class ProfileActivity extends AppCompatActivity {
         finish();
     }
 
+    // The following methods took reference from: https://www.youtube.com/watch?v=-sItRxJ3rVk
 
+    /**
+     * This function extracts the on-device path of a picture from its uri
+     * @param context
+     * @param uri picture's uri
+     * @return
+     */
     public String getPathFromURI(Context context, Uri uri) {
         String[] proj = {MediaStore.Images.Media.DATA};
         Cursor cursor = context.getContentResolver().query(uri, proj, null, null, null);
@@ -308,4 +359,20 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_EXTERNAL_STORAGE) {
+            if (grantResults.length > 0 &&
+                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                System.out.println("---------------------> access granted!");
+            } else {
+                System.out.println("---------------------> request access failed!");
+            }
+            return;
+        }
+    }
+
+
 }
