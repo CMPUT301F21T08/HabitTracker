@@ -108,7 +108,7 @@ public class HabitEventIntentTest {
         solo.enterText((EditText) solo.getView(R.id.TitleInput), "Habit1");//habit title
         solo.enterText((EditText) solo.getView(R.id.dateInput), "2021-11-06");// startDate
         solo.pressSpinnerItem(0, 1);// for daily
-        solo.enterText((EditText) solo.getView(R.id.frequencyInput), "2");//times per day
+        solo.enterText((EditText) solo.getView(R.id.frequencyInput), "1");//times per day
         solo.enterText((EditText) solo.getView(R.id.contentInput), "This is a test");
         solo.enterText((EditText) solo.getView(R.id.reasonInput), "Started for testing");
         solo.clickOnButton("CONFIRM");
