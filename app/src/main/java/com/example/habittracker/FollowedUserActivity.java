@@ -79,7 +79,7 @@ public class FollowedUserActivity extends AppCompatActivity {
                 // set the corresponding information
                 User = (Personal_info) snapshot.getValue(Personal_info.class);
                 UserNameTextView.setText(User.getName());
-                UserAgeTextView.setText("Age: "+User.getName());
+                UserAgeTextView.setText("Age: "+User.getAge());
                 UserGenderTextView.setText("Gender: "+User.getGender());
                 if (User.getDownloadUrl() != null){
                     Uri uri = Uri.parse(User.getDownloadUrl());
